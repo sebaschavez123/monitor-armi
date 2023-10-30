@@ -58,6 +58,7 @@ export class Store2x2FtdComponent implements OnInit {
         //     "¡Información actualizada!",
         //     "Error al actualizar información!!"
         // );
+        
     }
 
     reset() {
