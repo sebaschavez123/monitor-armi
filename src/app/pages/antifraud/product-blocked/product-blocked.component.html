@@ -1,0 +1,106 @@
+<div class="card">
+  <div class="card-header card-header-flex align-items-center">
+    <div class="d-flex flex-column justify-content-center mr-auto">
+      <h6 class="mb-0">Productos</h6>
+    </div>
+    <div>
+      <a class="btn btn-sm btn-light mr-2" (click)="fireModal()">
+        <i class="fa fa-plus"></i>
+      </a>
+    </div>
+  </div>
+  <div class="card-body" style="padding:5px 0px;">
+    <table>
+      <thead>
+        <tr>
+          <th width="60px;">&nbsp;</th>
+          <th width="90px">ID</th>
+          <th width="*%">Nombre</th>
+          <th width="*%">Descripción.</th>
+          <!-- <th width="*%">Marca</th>
+          <th width="*%">Distibuidor</th> -->
+          <th width="50px;">&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody class="scrollable">
+        <tr *ngFor="let product of products; let i = index">
+          <td td width="60px" class="text-right">
+            <img class="imgProduct" [src]="product.mediaImageUrl">
+          </td>
+          <td td width="90px">{{ product.id }}</td>
+          <td width="*%" class="text-truncate">
+            {{ product.firstDescription }}
+          </td>
+          <td width="*%" class="text-truncate" [title]="product.secondDescription">
+            {{ product.secondDescription }}
+          </td>
+          <!-- <td width="*%">{{ product.brand }}</td>
+          <td width="*%">{{ product.assortment }}</td> -->
+          <td width="50px" class="text-right">
+            <div class="btn-item" style="margin:0 auto;" (click)="rmButton(product)">
+              <i class="fa fa-trash"></i>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="btn-container-list" *ngIf="plite">
+    <li class="btn-item" title="inicio" (click)="goPage(1)" *ngIf="plite.showHome">
+      <i class="fa fa-angle-double-left"></i>
+    </li >
+    <li class="btn-item" title="Anterior" (click)="goPage(plite.page-1)" *ngIf="plite.hasPrevious">
+      <i class="fa fa-angle-left"></i>
+    </li>
+    <li class="btn-item" *ngFor="let p of plite.getPages"
+      [ngClass]="{'active': p == plite.page}" (click)="goPage(p)">
+      {{p}}
+    </li>
+    <li class="btn-item" title="Siguiente" (click)="goPage(plite.page+1)" *ngIf="plite.hasNext">
+      <i class="fa fa-angle-right"></i>
+    </li>
+    <li class="btn-item" title="Final" (click)="goPage(plite.totalPages)" *ngIf="plite.showEnd" >
+      <i class="fa fa-angle-double-right"></i>
+    </li>
+  </ul>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" [id]="mdlInx" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="font-size:10pt">
+      <div class="modal-body">
+        <div class="form-group">
+          <!-- <input type="text" class="form-control" placeholder="Búscar producto ..."> -->
+          <app-input-search (onSearch)="search($event)" placeholder="Ingrese id del producto."></app-input-search>
+        </div>
+        <div class="row animated fadeIn" *ngIf="product">
+          <div class="col-sm-3">
+            <img class="imgProduct bigsize" [src]="getImage(product.image)">
+          </div>
+          <div class="col-sm-9">
+            <div class="row">
+              <div class="col-sm-12">
+                <p>
+                  <b>Nombre:</b><br>
+                  {{ product.name }}
+                </p>
+                <p>
+                  <b>Desctipción:</b><br>
+                  {{ product.desc }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+          [ngClass]="{'cursor-block': btnLock}"
+          (click)="addProduct(product.id)"
+          [disabled]="btnLock || !product">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<div class="purchase animated fadeIn" *ngIf="customer" [ngClass]="{'removed-item': hide, 'border-green': status.review == 1, 'border-orange': status.review == 2,'border-cyan': status.review == 3,'border-red': status.review == 4}">
+    <!-- <div class="line-type" [ngClass]="{'border-green': type == 1, 'border-orange': type == 2,'border-cyan': type == 3}"></div> -->
+
+    <div class="header-p d-flex bd-highlight">
+        <div *ngIf="customer" class="inf-client d-flex mr-auto bd-highlight">
+            <img *ngIf="!customer.profileImageUrl" class="photo" src="/assets/images/profile.png" />
+            <img *ngIf="customer.profileImageUrl" class="photo" [src]="customer.profileImageUrl" />
+
+            <div class="data">
+                <div class="name">{{customer.firstname}} {{customer.lastname}}
+                </div>
+                <div class="cc">Id {{customer.id}}</div>
+                <div class="points" *ngIf="customer.score">
+                    <img src="/assets/images/scango/star.png" alt=""> {{customer.score}}
+                </div>
+                <div *ngIf="isPurchaseFinished" class="date">{{status.createDate | date:'medium'}}</div>
+            </div>
+            <div *ngIf="userWarnning" class="user-alert d-flex align-items-center ml-2 h-100">
+                <img src="/assets/images/scango/userwarn.png" alt="icon warnning" height="22px" width="24px">
+                <div [ngStyle]="{'color': '#f65136'}" class="ml-1 font-12">Alerta usuario</div>
+            </div>
+        </div>
+        <div class="inf-purchase d-flex align-items-center bd-highlight">
+            <span class="text-order-id text-right mt-1 mr-2">
+                <span 
+                    *ngIf="isAntifraud" 
+                    class="bg bg-red text-white ml-2 mr-2 pl-2 pr-2">ANTIFRAUDE</span>
+                <span *ngIf="isPurchaseFinished">Compra #{{status.orderId}}</span>
+            </span>
+            <div class="font-bold d-flex bd-highlight" id="content-price-{{customer.id}}" [ngClass]="{'color-green': status.review == 1, 'color-yellow': status.review == 2,'color-cyan': status.review == 3,'color-red': status.review == 4}">
+                <div class="count m-auto bd-highlight" *ngIf="listOrderItem">Total productos: <b>{{listOrderItem.length}}</b></div>
+                <div class="bd-highlight" style="line-height: 28px;">
+                    <span>Total: {{symbolMoney}} {{purchaseValueTotal | number}}</span>
+                    <!-- <span *ngIf="type != 1">Total: {{symbolMoney}}{{purchaseValueTotal() | number}}</span> -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isPurchaseFinished && listOrderItem" class="content-products row m-1" [ngClass]="{'min': !expand, 'expand':expand, 'max': maxHeightContentProd}" (resized)="onResizedContentProd($event)">
+        <label *ngFor="let product of listOrderItem; let i = index" class="col-sm-4 product">
+
+            <div class="inf-product d-flex">
+              <div *ngIf="!product.image" class="photo" [ngStyle]="{'background-image': 'url(/assets/images/scango/no-image.png)'}"></div>
+              <div *ngIf="product.image" class="photo" [ngStyle]="{'background-image': 'url('+product.image+')'}"></div>
+              <div class="data ml-2">
+                <div class="name font-bold" title="{{product.itemName}}">{{product.itemName}}</div>
+                <div class="d-flex bd-highlight">
+                  <div class="mr-auto bd-highlight">{{symbolMoney}} {{product.price | number}}</div>
+                  <div class="bd-highlight">Cantidad {{product.units}}</div>
+                </div>
+              </div>
+            </div>
+        </label>
+    </div>
+
+    <div *ngIf="!isPurchaseFinished && listOrderItem" class="content-products row m-1" [ngClass]="{'min': !expand, 'expand':expand, 'max': maxHeightContentProd, 'check-purchase-absolute': listOrderItem.length == 0}" (resized)="onResizedContentProd($event)">
+        <label *ngFor="let product of listOrderItem; let i = index" class="col-sm-4 product">
+            <input *ngIf="status.review == 2" type="checkbox" [(ngModel)]="checks[i]" name="check-{{i}}" (ngModelChange)="changeCheck()">
+            <span *ngIf="status.review == 2" class="checkmark"></span>
+                    <div class="inf-product d-flex">
+                      <div *ngIf="!product.mediaImageURL" class="photo" [ngStyle]="{'background-image': 'url(/assets/images/scango/no-image.png)'}"></div>
+                      <div *ngIf="product.mediaImageURL" class="photo" [ngStyle]="{'background-image': 'url('+product.mediaImageURL+')'}"></div>
+                      <div class="data ml-2">
+                        <div class="name font-bold" title="{{product.firstDescription}}">{{product.firstDescription}}</div>
+                        <div class="d-flex bd-highlight">
+                          <div class="mr-auto bd-highlight">{{symbolMoney}}{{product.price | number}}</div>
+                          <div class="bd-highlight">Cantidad {{product.quantitySold}}</div>
+                        </div>
+                      </div>
+                    </div>
+                </label>
+
+        <div *ngIf="isColombia && status.review == 3" class="buttons ml-auto">
+            <button class="btn btn-orange" (click)="checkPurchase(true)">ENVIAR A REVISÓN</button>
+        </div>
+    </div>
+
+    <div *ngIf="!isPurchaseFinished && (!listOrderItem || listOrderItem.length == 0)">
+        <div class="text-not-found">No hay productos escaneados</div>
+    </div>
+
+    <div class="d-flex bd-highlight justify-content-center p-b-10">
+        <div *ngIf="maxHeightContentProd" class="btn-show-more" [ngStyle]="status.review == 2 ? {'margin-right': 'auto'}:{'margin': 'auto'}" (click)="expand = !expand">
+            <div>{{!expand ? 'Ver todos los productos' : 'Ver menos productos'}}</div>
+            <i class="fa" [ngClass]="{'fa-angle-down': !expand, 'fa-angle-up':expand}"></i>
+        </div>
+
+        <div *ngIf="status.review == 2" class="buttons">
+            <button class="btn btn-outline-danger" (click)="report()">REPORTAR USUARIO</button>
+            <button class="btn btn-outline-warning" (click)="confirm(false)">COMPRA IRREGULAR</button>
+            <button class="btn btn-primary" (click)="confirm(true)">CONFIRMAR PEDIDO</button>
+        </div>
+    </div>
+
+</div>

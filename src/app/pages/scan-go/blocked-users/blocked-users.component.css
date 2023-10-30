@@ -1,0 +1,83 @@
+.content-search {
+    border-radius: 100px;
+    box-shadow: 0 0 4px 0 rgba(180, 178, 178, 0.19);
+    border: solid 1px #f0f0f0;
+    padding: 4px;
+    position: relative;
+    width: 50%;
+    height: 35px;
+}
+
+.content-search>input {
+    border: none;
+    width: 90%;
+    margin-left: 10px;
+    font-size: 11pt !important;
+}
+
+.content-search>i {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    color: #418fde;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 5px;
+}
+
+ ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+ ::-webkit-scrollbar-thumb {
+    background: #007ad93d;
+}
+
+ ::-webkit-scrollbar-thumb:hover {
+    background: #007ad9cc;
+}
+
+.header {
+    display: flex;
+    padding: 10px 0 10px 0;
+    border-bottom: 1px solid #e1e2e4;
+    align-items: center;
+}
+
+.header>h5 {
+    min-width: 30%;
+    font-size: 17pt;
+    margin: 0;
+}
+
+.header>div {
+    display: flex;
+    width: 100%;
+}
+
+.select-type {
+    max-width: 170px;
+    border-radius: 5px;
+    height: 50px;
+    align-items: center;
+    font-weight: 600;
+    color: black;
+    padding: 13px;
+    -webkit-appearance: auto;
+    border-color: #e4e9f0;
+}
+
+.btn-unblock {
+    font-size: 12px;
+    padding: 4px;
+}
+
+.card-boby {
+    min-height: 200px;
+}
+
+.no-blocked {
+    position: relative;
+}

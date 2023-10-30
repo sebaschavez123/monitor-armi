@@ -1,0 +1,26 @@
+<div class="search-head text-left w-50 col-lg-12 w-100 d-flex align-items-center">
+    <nz-form-item>
+        <h6 class="font-resalt text-body w-100" style="font-size: 15px;">Búsqueda por:</h6>
+        <div class="d-flex">
+            <select [(ngModel)]="searchParams.option" class="select-type mr-3">
+                <option *ngFor="let opt of searchOptions" [value]="opt.field">{{opt.name}}</option>
+            </select>
+            <input [(ngModel)]="searchParams.text" id="'textSearch'" nz-input placeholder="Ingrese dato del cliente " class="pr-5" />
+        </div>
+    </nz-form-item>
+    <button (click)="search()" nz-button [nzType]="'primary'" class="btn btn-success btn-lg font-weight-bold ml-2 mt-3" [disabled]="!validateSearch()">Buscar</button>
+</div>
+
+<div *ngIf="loadingSearch" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando cliente</p>
+</div>
+
+<h6 *ngIf="noCustomer" class="font-resalt text-body w-100 text-uppercase text-center mt-5" style="font-size: 22px;">Usuario no encontrado</h6>
+
+<div *ngIf="customers" class="border-top pt-2">
+
+    <h6 class="font-resalt text-body w-100 text-uppercase" style="font-size: 22px;">Resultado de búsqueda:</h6>
+    <customer-table [customers]="customers" [options]="true" (reload)="search()"></customer-table>
+
+</div>

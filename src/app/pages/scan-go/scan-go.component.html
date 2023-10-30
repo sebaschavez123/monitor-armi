@@ -1,0 +1,21 @@
+<div class="page-wrapper-scan">
+    <div class="row">
+        <div class="menu">
+            <div class="content-img">
+                <img src="../../../assets/images/scango/logo-sa-g.svg" alt="Logo Scan&Go">
+            </div>
+
+            <div class="menu-items">
+                <a *ngFor="let item of menu; let i = index" class="item" [ngClass]="{'item-selected': (i+1) == indexSelected}" [routerLink]="[item.url]" routerLinkActive="router-link-active">{{item.name}}</a>
+                <a class="item-icon" (click)="refresh()"><i title="Refrescar datos" class="fa fa-refresh"></i></a>
+                <a *ngIf="isAdmin()" class="item-icon" (click)="openSettings.emit(true)"><i title="Ajustes" class="fa fa-cog"></i></a>
+            </div>
+        </div>
+        <div class="scan-nav">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>
+
+
+<settings [event]="openSettings"></settings>

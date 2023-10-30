@@ -1,0 +1,23 @@
+<div class="w-75 mb-5">
+    <h6>Ingresa un archivo de tipo excel en donde la primera columna de esta sea
+        el listado de Id de ordenes que desea reprogramar y la segunda sea la fecha de reprogramación</h6>
+
+    <div class="alert alert-info mt-4">
+        <h6 class="text-white"><b><i class="fa fa-info-circle mr-2"></i> Tenga en cuenta</b></h6>
+        <ul>
+            <li>El formato de la fecha debe ser <b>YYYY/MM/DD H:mm</b></li>
+            <li>Vérifique que las fechas sean mayores que la actual</li>
+            <li>Tenga en cuenta el modelo presentado en la siguiente imagen</li>
+            <img class="mt-2" src="assets/images/model-programmer.png" height="100rem" alt="">
+            <li>Al final del proceso se descargará automaticamente un excel con la información del reultado de cada orden</li>
+        </ul>
+    </div>
+</div>
+
+<div class="d-flex flex-wrap align-items-center">
+    <nz-upload nzType="drag" [nzBeforeUpload]="beforeUpload" class="mr-1 w-100" [nzMultiple]="false" [nzShowUploadList]="false">
+        <p class="ant-upload-drag-icon"><i nz-icon [nzType]="uploading ? 'loading' : 'inbox'"></i></p>
+        <p class="ant-upload-text text-width">{{ uploading ? 'Subiendo información...' : 'Arrastra los archivos aquí o haz clic aquí' }}</p>
+    </nz-upload>
+</div>
+

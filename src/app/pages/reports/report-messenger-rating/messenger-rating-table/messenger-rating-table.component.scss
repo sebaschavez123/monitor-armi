@@ -1,0 +1,29 @@
+:host {
+    padding: 1rem;
+    display: block;
+    border: 1px solid #e4e9f1;
+}
+
+.search-box {
+    padding: 8px;
+    
+    input {
+      width: 188px;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    button {
+      width: 90px;
+    }
+  }
+
+  .search-button {
+    margin-right: 8px;
+  }
+
+  .div-expand {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }

@@ -1,0 +1,114 @@
+<div class="modal fade" [ngClass]="{'show': mdlOpen}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-custom modal-sm">
+        <div class="modal-content">
+            <div class="head">
+                &nbsp;
+                <div class="title">
+                    <h4>
+                        {{ !editMode ? 'Agregar nuevo' : 'Editar'}} incentivo
+                    </h4>
+                </div>
+                <div class="close" (click)="modalToogle(false)"><i class="fe fe-x-circle"></i></div>
+            </div>
+
+            <div class="content pl-5 pr-5">
+                <div class="row">
+                    <div class="col-12">
+                        <nz-form-item class="mb-2">
+                            <nz-form-label class="w-100 label-bold text-left">{{ !editMode ? 'Subir i' : 'I'}}ncentivo por</nz-form-label>
+                            <label *ngIf="editMode" class="w-100 border-control text-left">{{ incentive.title }}</label>
+                            <nz-form-control nzSpan *ngIf="!editMode">
+                                <nz-select [(ngModel)]="incentiveType" name="filtervalue" (ngModelChange)="changeType()">
+                                    <nz-option *ngFor="let it of incentiveTypes" [nzValue]="it" [nzLabel]="it.label"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+                </div>
+                
+                <form nz-form (ngSubmit)="dataSend(forma)" #forma="ngForm" novalidate>
+                    <div class="row">
+                        <div class="col-12">
+                            <nz-form-item class="mb-2" *ngIf="!editMode" >
+                                <nz-form-label class="w-100 label-bold text-left text-strong">{{incentiveType.pluralLabel}}</nz-form-label>
+                                <general-filter name="list" ngDefaultControl keyLocal="{{incentiveType?.service}}" label="Selecione"
+                                    [ngClass]="{isRequired: frmTouched && incentive.list.length < 1}"
+                                    [filters]="[]"
+                                    [asControl]="true"
+                                    [options]="selectList"
+                                    #incentiveList="ngModel"
+                                    [key]="incentiveType.key"
+                                    [ngModel]="incentive.list"
+                                    [function]="incentiveType.filterFn"
+                                    (filterEvent)="activeFilter($event)">
+                                </general-filter>
+                                <span class="error-text">* Este campo es requerido.</span>
+                            </nz-form-item>
+                            <nz-form-item class="mb-2" *ngIf="editMode" >
+                                <nz-form-label class="w-100 label-bold text-left text-strong">{{incentiveType?.label}}</nz-form-label>
+                                <label class="w-100 border-control text-left text-capitalize">
+                                    <span *ngIf="incentive.cityName">{{incentive.cityName}}</span>
+                                    <span *ngIf="incentive.storeName">{{incentive.storeName}}</span>
+                                    <span *ngIf="incentive.courierName">{{incentive.courierName}}</span>
+                                    <span *ngIf="incentive?.km">{{incentive.km}}</span>
+                                </label>
+                            </nz-form-item>
+                        </div>
+                    </div>                   
+                    <nz-form-item class="mb-2">
+                        <nz-form-label class="w-100 label-bold text-left">Valor</nz-form-label>
+                        <nz-form-control nzSpan class="w-100">
+                            <nz-select  name="value" [(ngModel)]="incentive.value" #incentiveValue="ngModel">
+                                <nz-option *ngFor="let vlst of valuesList" [nzValue]="vlst" nzLabel="{{getFormatPrice(vlst)}}"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <div class="row">
+                        <div class="col-6">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 label-bold text-left">Min</nz-form-label>
+                                <nz-form-control nzSpan class="w-100">
+                                    <nz-select name="valueMin" [(ngModel)]="incentive.valueMin" #incentiveValue="ngModel">
+                                        <nz-option *ngFor="let vlst of valuesListMin" [nzValue]="vlst" nzLabel="{{getFormatPrice(vlst)}}"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div class="col-6">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 label-bold text-left">Max</nz-form-label>
+                                <nz-form-control nzSpan class="w-100">
+                                    <nz-select name="valueMax" [(ngModel)]="incentive.valueMax" #incentiveValue="ngModel">
+                                        <nz-option *ngFor="let vlst of valuesListMax" [nzValue]="vlst" nzLabel="{{getFormatPrice(vlst)}}"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 label-bold text-left">Perfil</nz-form-label>
+                                <nz-range-picker
+                                    name="dates"
+                                    [nzShowTime]="{ nzFormat: 'HH:mm' }"
+                                    nzFormat="yyyy-MM-dd HH:mm"
+                                    [ngModel]="incentive.dates"
+                                    #incentiveDates="ngModel">
+                                    <!-- (ngModelChange)="onChange($event)"
+                                    (nzOnCalendarChange)="onCalendarChange($event)"
+                                    (nzOnOk)="onOk($event)"-->
+                                </nz-range-picker>
+                            </nz-form-item>
+                        </div>
+                    </div>  
+                    <div class="row">
+                        <div class="col-12 action-buttons">
+                            <button nz-button nzType="primary" type="submit">{{!editMode ? 'Crear' : 'Actualizar'}} Incentivo</button> 
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

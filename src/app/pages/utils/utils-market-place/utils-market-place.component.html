@@ -1,0 +1,59 @@
+<div class="form-inventory">
+
+    <div class="d-flex flex-wrap align-items-center">
+        <nz-upload nzType="drag" [nzBeforeUpload]="beforeUpload" class="mr-1 w-100" [nzMultiple]="false" [nzShowUploadList]="false">
+            <p class="ant-upload-drag-icon"><i nz-icon [nzType]="uploading ? 'loading' : 'inbox'"></i></p>
+            <p class="ant-upload-text text-width">{{ uploading ? 'Subiendo información...' : 'Arrastra un archivo excel y actuliza el stock' }}</p>
+        </nz-upload>
+    </div>
+
+    <div class="mb-3 mt-3 pm-2 border-bottom small"> 
+        Descarga <a href="/assets/files/updateStoreFormat.xlsx" target="_blank">aquí</a> formato de actualización y tenga en cuenta que si envía el campo de las tiendas vacio se asume que el cambio se quiere aplicar a todas las tiendas
+    </div>
+     
+
+    <div class="row m-0 pb-2 border-bottom">
+        <div class="col-lg-9">
+            <label *ngIf="countryConfig.isVenezuela" nz-checkbox [(ngModel)]="form.delete" (ngModelChange)="changeDelete($event)">Eliminar</label>
+            <label *ngIf="countryConfig.isColombia" nz-checkbox [(ngModel)]="form.algolia">Algolia</label>
+            <label *ngIf="countryConfig.isColombia" nz-checkbox [(ngModel)]="form.oracle">Oracle</label>
+            <label nz-checkbox [(ngModel)]="form.allStores" [disabled]="countryConfig.isVenezuela && form.delete">Todas las tiendas</label>
+            <label *ngIf="countryConfig.isColombia && !form.delete" class="ml-3" style="color: #786fa4;">Stock <input nz-input nzSize="small" type="number" placeholder="Número de stock" [(ngModel)]="form.value" name="value" /> </label>
+        </div>
+        <div class="col-lg-3">
+            <button (click)="addItem()" class="btn btn-info small btn-rounded-md m-0 float-lg-right"><i class="fa fa-plus r-1"></i>  Agregar item</button>
+        </div>
+    </div>
+
+
+    <table style="width:99%">
+        <tr class="head">
+            <th style="width: 40%; border-radius: 10px 0 0 0;" [ngClass]="{'d-none': form.allStores}">Tienda</th>
+            <th style="width: 40%;">Item</th>
+            <th style="width: 20%; border-radius: 0 10px 0 0;"></th>
+        </tr>
+        <tbody>
+            <tr *ngFor="let itemt of items; let i = index" class="table-body">
+                <td [ngClass]="{'d-none': form.allStores}">
+                    <nz-select [(ngModel)]="itemt.store" nzPlaceHolder="Seleccionar tienda" nzSize="small">
+                        <nz-option *ngFor="let store of _dS.stores" [nzLabel]="store.city+' '+store.name" [nzValue]="store.id"></nz-option>
+                    </nz-select>
+                </td>
+                <td>
+                    <input nz-input nzSize="small" type="number" placeholder="Id de item" [(ngModel)]="itemt.id" name="id" />
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-opc btn-danger" (click)="deleteItem(i)">Eliminar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text text-danger text-center" *ngIf="formSwValidate && !validateItems()"><small>Faltan campos por llenar, por favor verifique o borre los registros necesarios</small></div>
+
+    <div class="w-100 mt-4">
+        <button *ngIf="!form.delete" nz-button [disabled]="!validateItems()" [nzType]="'primay'" class="btn btn-success btn-lg font-weight-bold ml-2" nz-popconfirm nzPopconfirmTitle="¿Seguro de guardar los cambios?" (nzOnConfirm)="save()">Guardar</button>
+        <button *ngIf="form.delete" nz-button [disabled]="!validateItems()" [nzType]="'primay'" class="btn btn-danger btn-lg font-weight-bold ml-2" nz-popconfirm nzPopconfirmTitle="¿Seguro de eliminar estos items?" (nzOnConfirm)="delete()">Eliminar</button>
+    </div>
+
+</div>

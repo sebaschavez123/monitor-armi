@@ -1,0 +1,19 @@
+<div class="row content-addresess">
+    <div *ngFor="let address of addresses; let i = index" (click)="changeStatus(i)" class="address-tarjet">
+        <div class="d-flex">
+            <div class="status" [ngClass]="{'status-active': address.active, 'status-inactive': !address.active}">
+                <span class="text">{{address.active?'Activo':'Inactivo'}}</span>
+            </div>
+            <div class="ml-4">
+                <div class="text-right mr-2">
+                    <a *ngIf="countryConfig.isVenezuela" (click)="eventEdit($event, address)" class="edit">Editar</a>
+                </div>
+                <div class="nick">{{address.nickname}}</div>
+                <div class="address">{{address.address}}</div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="addresses.length == 0" class="no-addresses ml-2">
+        No hay direcciones registradas
+    </div>
+</div>

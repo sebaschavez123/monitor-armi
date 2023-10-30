@@ -1,0 +1,46 @@
+<div class="row m-0">
+    <div class="col-lg-6 col-sm-6 pb-2">
+        <button 
+            (click)="openRegister = true" 
+            class="btn btn-info small btn-rounded-md">
+            <em class="fa fa-bar-chart r-1"></em> 
+            Registrar reporte
+        </button>
+    </div>
+    <div class="col-lg-6 col-sm-6 ml-auto">
+        <nz-input-group [nzPrefix]="suffixIconSearch">
+            <input type="text" [(ngModel)]="searchText" (ngModelChange)="searchData()" nz-input placeholder="Busca por nombre" />
+        </nz-input-group>
+        <ng-template #suffixIconSearch>
+            <em nz-icon nzType="search"></em>
+        </ng-template>
+    </div>
+</div>
+ 
+
+<div class="amplitude-reports">
+    <div class="report-preview" *ngFor="let report of reports">
+        <button class="close" (click)="delete(report, $event)" title="Eliminar"><em class="fa fa-close"></em></button>
+        <div class="preview" (click)="reportSelected = report">
+            <iframe 
+                allow="false"
+                allowfullscreen="false"
+                [src]="report.url" 
+                frameborder="0">
+             </iframe>
+        </div>
+        <h4>{{report.name}}</h4>
+    </div>
+</div>
+
+<nz-modal *ngIf="reportSelected" [nzStyle]="{ 'width': 'auto'}" [(nzVisible)]="reportSelected" nzTitle="Reporte" [nzFooter]="modalFooterReportSelected" (nzOnCancel)="reportSelected = undefined">
+    <ng-container *nzModalContent>
+        <iframe  style="width: 100%; height: 60vh;" [src]="reportSelected.url" title="report monitor">
+        </iframe>
+    </ng-container>
+    <ng-template #modalFooterReportSelected>
+        <button nz-button nzType="primary" (click)="reportSelected = undefined">Ok</button>
+    </ng-template>
+</nz-modal>
+
+<app-report-amplitud-register [show]="openRegister" (close)="openRegister = false" (refresh)="getReports()"></app-report-amplitud-register>

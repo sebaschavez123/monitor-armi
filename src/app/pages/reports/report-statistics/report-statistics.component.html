@@ -1,0 +1,70 @@
+<!-- <iframe src="https://webview-dot-monitor-dot-web-farmatodo.uc.r.appspot.com/estadisticas" title="W3Schools Free Online Web Tutorials">
+</iframe> -->
+
+<div class="controls-header text-left w-50 col-lg-12 w-100 d-flex flex-wrap align-items-center">
+    <nz-form-item>
+        <h6 class="w-100" style="font-size: 15px;">Fecha</h6>
+        <nz-date-picker [(ngModel)]="date" [nzSize]="'large'"></nz-date-picker>
+    </nz-form-item>
+
+    <nz-form-item>
+        <h6 class="w-100" style="font-size: 15px;">Ciudades</h6>
+        <nz-select [nzSize]="'large'" nzPlaceHolder="Selecciona" [(ngModel)]="selectedCity" (ngModelChange)="getStoresByCity($event)">
+            <nz-option *ngFor="let city of _dS.cities" [nzLabel]="city.label" [nzValue]="city.value"></nz-option>
+        </nz-select>
+    </nz-form-item>
+
+    <nz-form-item *ngIf="selectedCity && stores.length > 0">
+        <h6 class="w-100" style="font-size: 15px;">Tiendas</h6>
+        <nz-select [nzSize]="'large'" nzPlaceHolder="Selecciona" [(ngModel)]="selectedStore">
+            <nz-option *ngFor="let store of stores" [nzLabel]="store.label" [nzValue]="store.value"></nz-option>
+        </nz-select>
+    </nz-form-item>
+
+
+    <button (click)="graph()" nz-button class="btn btn-success btn-lg font-weight-bold ml-auto">Buscar</button>
+    <button (click)="cleanFilters()" nz-button class="btn btn-outline-success btn-lg font-weight-bold">Limpiar filtros</button>
+</div>
+
+<div *ngIf="loading_search" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando estadisticas en tienda</p>
+</div>
+
+<div *ngIf="animationData">
+    <h4 class="mb-4 w-100 text-center"><strong>Estadistica tienda {{getStoreName(selectedStore)}}</strong></h4>
+    <x-chartist [data]="animationData" [type]="'Line'" [options]="animationOptions" class="height-300 chartist-animated">
+    </x-chartist>
+
+    <div class="indicators mb-5">
+        <div class="item"><span style="background: blue;" class="color"></span>Tiempo Promedio de entrega</div>
+        <div class="item"><span style="background: red;" class="color"></span>Porcentaje de encolados</div>
+    </div>
+
+    <div class="row m-0">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title-o font-bold">Promedio general</div>
+                    <div class="table-responsive w-100">
+                        <table class="table-data w-100">
+                            <tr>
+                                <td class="font-bold text-prom">Tiempo promedio de entrega total:</td>
+                                <td class="text-right">{{totalDeliveryTime | number}}</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-prom">Total de pedidos entregados:</td>
+                                <td class="text-right">{{totalDeliveryTimeOrders | number}}</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-prom">Porcentaje de encolados total:</td>
+                                <td class="text-right" style="max-width: 100px;">{{totalStuck | number}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

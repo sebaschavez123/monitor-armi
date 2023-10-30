@@ -1,0 +1,98 @@
+<ng-container *ngFor="let item of objectKeys(renderedFlyoutItems)">
+    <ng-container *ngTemplateOutlet="flyoutTpl; context: {$implicit: renderedFlyoutItems[item]}"></ng-container>
+</ng-container>
+<div [ngClass]="{
+  air__menuLeft: true,
+  air__menuLeft__mobileToggled: isMobileMenuOpen,
+  air__menuLeft__toggled: isMenuCollapsed,
+  air__menuLeft__unfixed: isMenuUnfixed
+}">
+    <div class="air__menuLeft__outer">
+        <div class="air__menuLeft__mobileToggleButton" (click)="toggleMobileMenu()">
+            <span>&nbsp;</span>
+        </div>
+        <div class="air__menuLeft__toggleButton" (click)="toggleMenu()">
+            <span>&nbsp;</span>
+            <span>&nbsp;</span>
+        </div>
+        <div class="air__menuLeft__logo">
+            <img [src]="iconLogo" alt="Logo ftd" width="142px" height="30px" />
+        </div>
+        <div class="air__menuLeft__user" *ngIf="user">
+            <div class="air__menuLeft__user__avatar">
+                <img src="assets/images/avatars/avatar.png" alt="image" width="42px" height="42px" />
+            </div>
+            <div class="air__menuLeft__user__name">{{user.employeeName}}</div>
+            <div class="air__menuLeft__user__role">{{user.rolUser}}</div>
+        </div>
+        <perfect-scrollbar>
+            <div class="air__menuLeft__container">
+                <ul class="air__menuLeft__list">
+                    <ng-container *ngFor="let item of menuService.menu">
+                        <ng-container *ngTemplateOutlet="itemTpl; context: {$implicit: item}"></ng-container>
+                        <ng-container *ngTemplateOutlet="submenuTpl; context: {$implicit: item}"></ng-container>
+                        <ng-container *ngTemplateOutlet="categoryTpl; context: {$implicit: item}"></ng-container>
+                    </ng-container>
+                </ul>
+            </div>
+        </perfect-scrollbar>
+    </div>
+</div>
+<div class="air__menuLeft__backdrop" (click)="toggleMobileMenu()"></div>
+
+<ng-template #itemTpl let-item>
+        <ng-container *ngIf="!item.children && !item.category && isActive(item)">
+        <li class="air__menuLeft__item" [ngClass]="{air__menuLeft__item__active: item.key === menuService.activeItem}">
+            <div [routerLink]="item.url ? item.url : 'javascript: void(0)'" class="air__menuLeft__link"
+                [inlineSVG]="extractSVG(item)" [prepend]="true" [replaceContents]="false">
+                <i *ngIf="item.icon" class="air__menuLeft__icon" [ngClass]="item.icon"></i>
+                <span>{{ item.title }}</span>
+            </div>
+        </li>
+    </ng-container>
+</ng-template>
+<ng-template #submenuTpl let-item>
+    <ng-container *ngIf="item.children">
+        <li class="air__menuLeft__item air__menuLeft__submenu" [ngClass]="{air__menuLeft__submenu__active: item.key === activeSubmenu}">
+            <div href="javascript: void(0);" class="air__menuLeft__link"
+                [prepend]="true"
+                [replaceContents]="false"
+                [inlineSVG]="extractSVG(item)"
+                (click)="handleSubmenuClick(item.key)"
+                (mouseenter)="handleFlyoutOver($event, item.key, item.children)"
+                (mouseleave)="handleFlyoutOut(item.key)">
+                <i *ngIf="item.icon" class="air__menuLeft__icon" [ngClass]="item.icon"></i>
+                <span>{{ item.title }}</span>
+            </div>
+            <ul class="air__menuLeft__list">
+                <ng-container *ngFor="let item of item.children">
+                    <ng-container *ngTemplateOutlet="itemTpl; context: {$implicit: item}"></ng-container>
+                </ng-container>
+            </ul>
+        </li>
+    </ng-container>
+</ng-template>
+<ng-template #categoryTpl let-item>
+    <ng-container *ngIf="item.category">
+        <li class="air__menuLeft__category">
+            <span>{{ item.title }}</span>
+        </li>
+    </ng-container>
+</ng-template>
+<ng-template #flyoutTpl let-item>
+    <div @flyoutAnimation [ngStyle]="{
+      left: item.itemDimensions.left + item.itemDimensions.width - 10 + 'px',
+      top: item.itemDimensions.top + 'px'
+    }" class="air__menuFlyout" [ngClass]="{
+    air__menuFlyoutLeft: menuLayoutType === 'left',
+    air__menuFlyout__black: flyoutMenuColor === 'dark',
+    air__menuFlyout__white: flyoutMenuColor === 'white',
+    air__menuFlyout__gray: flyoutMenuColor === 'gray'
+  }">
+        <ul class="air__menuLeft__list" (mouseenter)="handleFlyoutContainerOver(item.key)" (mouseleave)="handleFlyoutOut(item.key)">
+            <ng-container *ngFor="let item of item.items">
+                <ng-container *ngTemplateOutlet="itemTpl; context: {$implicit: item}"></ng-container>
+            </ng-container>
+        </ul>
+    </div>
+</ng-template>

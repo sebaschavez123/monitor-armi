@@ -1,0 +1,100 @@
+ kendo-pdf-export {
+  font-family: "DejaVu Sans", "Arial", sans-serif;
+  font-size: 12px;
+}
+@font-face {
+  font-family: "DejaVu Sans";
+  src: url("/assets/fonts/DejaVuSans.ttf") format("truetype");
+}
+@font-face {
+  font-family: "DejaVu Sans";
+  font-style: italic;
+  src: url("/assets/fonts/DejaVuSans-Oblique.ttf") format("truetype");
+}
+@font-face {
+  font-family: "DejaVu Sans";
+  font-weight: bold;
+  font-style: italic;
+  src: url("/assets/fonts/DejaVuSans-Oblique.ttf") format("truetype");
+}
+.header {
+      font-size: 30px;
+      font-weight: bold;
+      margin: 0 0 20px 0;
+      border-bottom: 1px solid #e5e5e5;
+      color: #3aabf0;
+    }
+
+    .address {
+            opacity: 0.8;
+      font-family: "DejaVu Sans", "Arial", sans-serif;
+      font-size: 34px;
+      font-weight: 100;
+      text-align: center;
+      color: #2e4255;
+    }
+
+    .from p, .for p {
+      color: #787878;
+    }
+
+    .signature {
+      padding-top: 36px;
+    }
+    table {
+  font-family: "DejaVu Sans", "Arial", sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 0.5px solid black;
+  text-align: left;
+  padding: 8px;
+
+  font-family: "DejaVu Sans", "Arial", sans-serif;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+  font-family: "DejaVu Sans", "Arial", sans-serif;
+}
+
+.message-cuf{
+    padding: 5px;
+    font-family: "DejaVu Sans", "Arial", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+    background-color: #b9b9b9;
+    margin-top: 25px;
+    margin-bottom: 40px;
+}
+
+.title-detail{
+    color: white!important;
+    background-color: #007ad9;
+    font-size: 18px;
+    padding: 5px;
+    margin-top: 15px;
+    font-family: "DejaVu Sans", "Arial", sans-serif;
+}
+
+.title-envio{
+      opacity: 0.8;
+    font-family: "DejaVu Sans", "Arial", sans-serif;
+    font-size: 22px;
+    font-weight: 100;
+    text-align: center;
+    color: #2e4255;
+    margin: 0;
+    padding: 0;
+}
+
+tr td, tr th{
+  padding: 3px;
+  font-size: small;
+  font-family: "DejaVu Sans", "Arial", sans-serif;
+}
+

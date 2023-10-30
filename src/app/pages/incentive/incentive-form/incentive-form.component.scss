@@ -1,0 +1,47 @@
+:host {
+
+    .head {
+        position: relative;
+        display: inline-flex;
+        justify-content: space-between;
+        align-items: center;
+        align-content: center;
+        h4 { margin: 0; padding: 0; }
+        .close { position: relative !important;}
+    }
+
+    nz-form-control {
+        display: inline-table;
+    }
+
+    nz-form-label { height: 33px; }
+    input { height: 33px; }
+    .label-bold {font-weight: 600;}
+    .action-buttons {
+        display: inline-flex;
+        justify-content: center;
+        padding: 1.2rem;
+    }
+    .border-control {
+        margin: 0;
+        height: 32px;
+        padding: 0 .5rem;
+        line-height: 30px;
+        cursor: not-allowed;
+        border-radius: 0.3rem;
+        border: solid 1px #e4e9f1;
+    }
+    .error-text{
+        color: red;
+        display: none;
+    }
+    general-filter {
+        display: inline-flex;
+        width: 100%;
+
+        &.isRequired {
+            border: 1px solid red;
+            +.error-text { display: inline-block; }
+        }
+    }
+}

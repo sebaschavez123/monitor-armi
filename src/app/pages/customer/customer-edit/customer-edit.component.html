@@ -1,0 +1,194 @@
+<div class="modal fade" [ngClass]="{'show': customer, 'page-mode': pageMode}" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-custom modal-sm">
+    <div class="modal-content" *ngIf="customer">
+      <div class="head">
+        <div class="close" (click)="close.emit()"><i class="fe fe-x-circle"></i></div>
+        <div class="blocked-inf" [ngClass]="{'inactive': customer?.blocked, 'active': !customer?.blocked}">
+          {{customer?.blocked ? 'Usuario bloqueado' : 'Usuario activo'}}</div>
+      </div>
+
+      <div class="content mt-5">
+        <div class="alertBlocked" *ngIf="customer.blocked">
+          ¡Ususario bloqueado! <br>
+          por: {{blockedMessage}}
+        </div>
+        <form nz-form [nzLayout]="form.get('formLayout')?.value" [formGroup]="form">
+          <div class="card-title-o font-bold m-2">Información cliente</div>
+          <div class="row m-0">
+            <div class="col-lg-6">
+              <nz-form-item class="mb-2">
+                <nz-form-label class="w-100 text-left">Id</nz-form-label>
+                <nz-form-control nzSpan nzErrorTip="Debes ingresar el id del cliente">
+                  <input nz-input [nzSize]="'small'" type="number" formControlName="id" placeholder="Escribe aquí…"
+                    [disabled]="true" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-lg-6">
+              <nz-form-item class="mb-2">
+                <nz-form-label class="w-100 text-left">Documento</nz-form-label>
+                <nz-form-control nzSpan nzErrorTip="Debes ingresar el documento del cliente">
+                  <input nz-input [nzSize]="'small'" type="number" formControlName="documentNumber"
+                    placeholder="Escribe aquí…" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <div class="row m-0">
+            <div class="col-lg-6">
+              <nz-form-item class="mb-2">
+                <nz-form-label class="w-100 text-left">Nombre</nz-form-label>
+                <nz-form-control nzSpan nzErrorTip="Debes ingresar el nombre del cliente">
+                  <input nz-input [nzSize]="'small'" type="text" formControlName="firstname"
+                    placeholder="Escribe aquí…" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-lg-6">
+              <nz-form-item class="mb-2">
+                <nz-form-label class="w-100 text-left">Apellido</nz-form-label>
+                <nz-form-control nzSpan nzErrorTip="Debes ingresar el apellido del cliente">
+                  <input nz-input [nzSize]="'small'" type="text" formControlName="lastname"
+                    placeholder="Escribe aquí…" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <div class="row m-0">
+            <div class="col-lg-6">
+              <nz-form-item class="mb-2" *ngIf="isAdmin()">
+                <nz-form-label nzFor="phoneNumber">Télefono</nz-form-label>
+                <nz-form-control [nzValidateStatus]="f['phone']" [nzErrorTip]="emailErrorPhone">
+                  <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+                    <ng-template #addOnBeforeTemplate>
+                      <nz-select formControlName="phonePrefix" class="phone-select">
+                        <nz-option nzLabel="+57" nzValue="57"></nz-option>
+                        <nz-option nzLabel="+58" nzValue="58"></nz-option>
+                      </nz-select>
+                    </ng-template>
+                    <input formControlName="phone" id="'phoneNumber'" nz-input />
+                  </nz-input-group>
+                  <ng-template #emailErrorPhone let-control>
+                    <ng-container *ngIf="control.hasError('required')">Debe ingresar el télefono del cliente
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('email')">Ingrese un número de télefono válido</ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-lg-6">
+              <nz-form-item class="mb-2">
+                <nz-form-label class="w-100 text-left">Correo electónico</nz-form-label>
+                <nz-form-control nzSpan [nzErrorTip]="emailErrorTpl">
+                  <input nz-input [nzSize]="'small'" type="email" formControlName="email" placeholder="Escribe aquí…" />
+                  <ng-template #emailErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">Debe ingresar el email del usuario</ng-container>
+                    <ng-container *ngIf="control.hasError('email')">Ingrese un email válido</ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <div class="m-2">
+            <div class="card-title-o font-bold ">Direcciones</div>
+            <input-addresses formControlName="addresses" (edit)="selectAddress($event)"></input-addresses>
+          </div>
+
+          <div class="m-2" *ngIf="!isVenezuela">
+            <div class="card-title-o font-bold ">Tarjetas de crédito</div>
+            <input-creditcard [customer]="customer"></input-creditcard>
+          </div>
+
+
+
+          <div class="m-2">
+            <div class="card-title-o font-bold">Suscripción a Prime</div>
+            <div class="row m-0 p-2" *ngIf="customer.isPrime; else noPrime">
+              <label class="prime-item">
+                <div class="title">Tipo de suscripción</div>
+                <div class="value">{{getPrimeType(lastSubscription?.typeSusbcription)}}</div>
+              </label>
+              <label class="prime-item">
+                <div class="title">Orden</div>
+                <div class="value">{{customer?.lastPrimePurchaseOrder}}</div>
+              </label>
+              <label class="prime-item">
+                <div class="title">Renovación</div>
+                <div class="value">{{lastSubscription?.renewSusbcription ? 'Automática' : 'No'}}</div>
+              </label>
+              <label class="prime-item">
+                <div class="title">Fecha Inicio</div>
+                <div class="value">{{lastSubscription?.startDate | date}}</div>
+              </label>
+              <label class="prime-item">
+                <div class="title">Fecha Final</div>
+                <div class="value">{{lastSubscription?.finishDate | date}}</div>
+              </label>
+            </div>
+            <ng-template #noPrime>
+              <div class="row m-0 p-2">
+                <label class="prime-item">
+                  <div class="title">Tipo de Subcripción</div>
+                  <div class="value">No tiene</div>
+                </label>
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="m-2" *ngIf="countryConfig?.isVenezuela">
+            <div class="card-title-o font-bold">Lifemile</div>
+            <div class="row m-0 p-2">
+              <label *ngFor="let lm of lifemile; let i = index" nz-checkbox formControlName="lifemile"><strong
+                  class="text-body font-weight-bold">{{lm.lifemile}}</strong> <small class="ml-2">{{lm.createDate |
+                  date}}</small></label>
+              <div *ngIf="lifemile.length == 0" class="no-addresses">
+                No hay lifemiles registradas
+              </div>
+            </div>
+          </div>
+          <div class="m-2" *ngIf="customer?.primeSusbcriptionDomain?.length >= 1 && customer?.isPrime ">
+            <div class="card-title-o font-bold justify-content" (click)="openDetails = !openDetails" > Ver más detalles de las suscripción
+                <i class="fa" [ngClass]="{'fa-chevron-up': openDetails, 'fa-chevron-down': !openDetails}"></i>
+            </div>
+            <div class="row m-0 p-2" *ngIf="openDetails">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Renovación</th>
+                    <th>Suscripción</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Final</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of customer.primeSusbcriptionDomain; let i=index">
+                      <td *ngIf="i >= 1">{{item.renewSusbcription ? 'Automática' : 'No'}}</td>
+                      <td *ngIf="i >= 1">{{getPrimeType(item.typeSusbcription)}}</td>
+                      <td *ngIf="i >= 1">{{item.startDate | date}}</td>
+                      <td *ngIf="i >= 1">{{item.finishDate | date}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div> 
+       
+
+          <div *ngIf="formError && formError.length > 0" class="text-danger font-size-12">*{{formError}}*</div>
+
+          <nz-form-control class="mt-4 text-center">
+            <button *ngIf="editMode" nz-button nzType="primary" class="btn btn-sm pl-5 pr-5 w-40 mr-2"
+              [ngClass]="{'btn-danger': !customer.blocked, 'btn-secondary': customer.blocked}" [nzLoading]="loadingForm"
+              (click)="customer.blocked ? unblockUser() : blockUser()">{{customer.blocked ? 'Desbloquear' :
+              'Bloquear'}}</button>
+            <button nz-button nzType="primary" class="btn btn-sm btn-success pl-5 pr-5 ml-3" *ngIf="canEdit()"
+              [nzLoading]="loadingForm" [disabled]="form.invalid" (click)="action()">Guardar</button>
+          </nz-form-control>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<customer-address-edit [address]="addressSelected" (close)="addressSelected = undefined"
+  (refresh)="refreshAddress($event)"></customer-address-edit>

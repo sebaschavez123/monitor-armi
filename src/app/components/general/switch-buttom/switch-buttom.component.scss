@@ -1,0 +1,27 @@
+.switch-buttom {
+    border-radius: 6px;
+    border: solid 1px #e4e9f1;
+    display: flex;
+    .option {
+        display: flex;
+        align-items: center;
+        max-width: 100px;
+        text-align: center;
+        padding: 3px;
+        color: #616161;
+        font-weight: 400;
+        &.active {
+            background-color: #1b56e3;
+            color: white;
+        }
+        &:first-child {
+            border-radius: 6px 0 0 6px;
+        }
+        &:last-child {
+            border-radius: 0 6px 6px 0;
+        }
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

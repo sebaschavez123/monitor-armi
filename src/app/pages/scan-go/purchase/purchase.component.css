@@ -1,0 +1,334 @@
+.color-green {
+    background-color: #65c302;
+}
+
+.color-yellow {
+    background-color: #ff7800;
+}
+
+.color-cyan {
+    background-color: #44D7B6;
+}
+
+.color-red {
+    background-color: red;
+}
+
+.border-green {
+    border: 2px solid #65c302;
+}
+
+.border-orange {
+    border: 2px solid #ff7800;
+    box-shadow: 0 0 6px 2px rgba(250, 100, 0, 0.63);
+}
+
+.border-cyan {
+    border: 2px solid #44D7B6 !important;
+}
+
+.border-red {
+    border: 2px solid red !important;
+}
+
+.purchase {
+    width: 100%;
+    overflow: hidden;
+    margin-top: 15px;
+    object-fit: contain;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 0 4px 0 rgba(180, 178, 178, 0.19);
+    -moz-box-shadow: 0 0 4px 0 rgba(180, 178, 178, 0.19);
+    box-shadow: 0 0 4px 0 rgba(180, 178, 178, 0.19);
+    background-color: #ffffff;
+    position: relative;
+    padding-left: 10px;
+}
+
+.line-type {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px 0 0 5px;
+    position: absolute;
+    left: 0;
+    padding: 0px 0px 0px 10px;
+}
+
+.purchase>.header-p {
+    border-bottom: 1px solid #f1f1f1;
+    padding: 0px 0px 0px 10px
+}
+
+.inf-client {
+    align-items: center;
+}
+
+.inf-client>img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.inf-client>.data {
+    display: flex;
+}
+
+.inf-client>.data>.name {
+    font-weight: 600;
+    max-width: 180px;
+    max-height: 45px;
+    overflow: hidden;
+    text-transform: capitalize;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 26px;
+    font-size: 16px;
+}
+
+.inf-client>.data>.cc {
+    font-size: 15px;
+    margin-left: 1.5rem;
+    color: #616161;
+}
+
+.inf-client>.data>.points {
+    font-size: 15px;
+    margin-left: 1.5rem;
+    color: #000;
+    font-weight: 600;
+}
+
+.inf-client>.data>.points>img {
+    margin-bottom: 5px;
+}
+
+.inf-client>.data>.date {
+    color: #616161;
+    font-family: Helvetica;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 1.5rem;
+}
+
+.content-products {
+    padding: 9px;
+}
+
+.content-products.min {
+    min-height: 100px;
+    overflow: hidden;
+    transition: all 1s ease;
+}
+
+.content-products.min.max {
+    max-height: 170px;
+}
+
+.content-products.expand {
+    max-height: 350px;
+    overflow: auto;
+    transition: all 1s ease;
+}
+
+.btn-show-more {
+    width: 100%;
+    -webkit-box-shadow: 0 5px 13px -3px rgba(11, 11, 11, 0.15);
+    -moz-box-shadow: 0 5px 13px -3px rgba(11, 11, 11, 0.15);
+    box-shadow: 0 5px 13px -3px rgba(11, 11, 11, 0.15);
+    background-color: #ffffff;
+    text-align: center;
+    margin: 10px 0 10px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #616161;
+    color: #616161;
+    border-radius: 50px;
+    width: 300px;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.btn-show-more>i {
+    font-size: 21pt;
+    margin-left: 5px;
+}
+
+.btn-show-more:hover {
+    background-color: #f1f1f173;
+    cursor: pointer;
+}
+
+.inf-purchase {
+    font-family: Helvetica;
+    font-size: 15px;
+}
+
+.inf-purchase>div {
+    color: white;
+    height: 100%;
+    padding: 10px;
+}
+
+.inf-purchase>.text-order-id {
+    color: #616161;
+}
+
+.inf-purchase .count {
+    border-right: 2px solid white;
+    padding: 0 10px 0 0;
+    margin-right: 10px !important;
+}
+
+
+/* PRODUCT */
+
+.product {
+    display: block;
+    max-width: 300px;
+    height: 67px;
+    border-radius: 2.5px;
+    position: relative;
+    border: solid 1px #eaeaea;
+    background-color: #ffffff;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin: 0px 15px 14px 0px;
+}
+
+.product input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+
+/* Create a custom checkbox */
+
+.checkmark {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    height: 25px;
+    width: 25px;
+    border: 1px solid #f1f1f1;
+    background-color: white;
+    border-radius: 4px;
+}
+
+
+/* On mouse-over, add a grey background color */
+
+.product:hover input~.checkmark {
+    background-color: #359ce059;
+}
+
+
+/* When the checkbox is checked, add a blue background */
+
+.product input:checked~.checkmark {
+    background-color: #359be0;
+}
+
+
+/* Create the checkmark/indicator (hidden when not checked) */
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+
+/* Show the checkmark when checked */
+
+.product input:checked~.checkmark:after {
+    display: block;
+}
+
+
+/* Style the checkmark/indicator */
+
+.product .checkmark:after {
+    left: 8px;
+    top: 2px;
+    width: 7px;
+    height: 14px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.inf-product>.photo {
+    height: 60px;
+    width: 60px;
+    background-size: contain;
+    background-repeat: no-repeat, repeat;
+    background-position: center;
+}
+
+.inf-product>.data>.name {
+    font-size: 10pt;
+    line-height: 18px;
+    margin-bottom: 7px;
+    text-overflow: ellipsis;
+    white-space: normal;
+    overflow: hidden;
+    height: 36px;
+    max-height: 36px;
+    max-width: 207px;
+}
+
+.inf-product>.data>.d-flex>div {
+    font-size: 9pt;
+}
+
+.inf-product>.data>.d-flex>div:nth-child(1) {
+    color: #418fde;
+    font-weight: bold;
+}
+
+.inf-product>.data>.d-flex>div:nth-child(2) {
+    color: #999999;
+}
+
+.buttons {
+    text-align: center;
+    padding: 15px;
+}
+
+.buttons>* {
+    margin-right: 10px;
+    font-size: 8pt;
+    font-weight: 900;
+    padding: 10px;
+    opacity: 0.8;
+}
+
+.btn-orange {
+    background: #ff7800;
+    color: white;
+}
+
+.text-not-found {
+    padding: 3rem;
+    text-align: center;
+    font-style: oblique;
+    color: #c4c1c1;
+    font-size: 16pt;
+    font-weight: 700;
+}
+
+.check-purchase-absolute {
+    position: absolute;
+    right: 0;
+}

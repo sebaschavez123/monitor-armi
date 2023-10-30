@@ -1,0 +1,17 @@
+<div class="row m-0 mb-3">
+    <div class="col-lg-6 p-0" [ngClass]="{'col-lg-12': contentUploadFull}" *ngIf="uploadGuide">
+        <div class="d-flex flex-wrap align-items-center">
+            <nz-upload nzType="drag" [nzBeforeUpload]="beforeUpload" class="mr-1" [nzMultiple]="false" [nzShowUploadList]="false" [ngClass]="{'w-100': contentUploadFull}">
+                <p class="ant-upload-drag-icon"><i nz-icon [nzType]="uploading ? 'loading' : 'inbox'"></i></p>
+                <p class="ant-upload-text text-width">{{ uploading ? 'Subiendo información...' : 'Arrastra los archivos aquí o haz clic aquí para subir guias' }}</p>
+            </nz-upload>
+        </div>
+    </div>
+    <div class="col-lg-6 p-0 mt-lg-0" *ngIf="export || exportDetail || exportDirect">
+        <div class="d-flex align-items-center">
+            <button *ngIf="export" (click)="exportExcel()" [disabled]="disabled" class="btn btn-sm ml-sm-0" [ngClass]="{'ml-lg-auto': uploadGuide, 'btn-lg font-weight-bold btn-outline-success':btnLg, 'btn-success': !btnLg}"> <i class="fa fa-file-excel-o mr-2"></i> Exportar</button>
+            <button *ngIf="exportDetail" (click)="exportDeatilExcel()" [disabled]="disabled" class="btn btn-sm ml-1" [ngClass]="{'btn-lg font-weight-bold btn-outline-success':btnLg, 'btn-success': !btnLg}"> <i class="fa fa-file-excel-o mr-2"></i> Exportar con detalle</button>
+            <button *ngIf="exportDirect" (click)="exportDirectExcel()" [disabled]="disabled" class="btn btn-sm ml-1" [ngClass]="{'btn-lg font-weight-bold btn-outline-success':btnLg, 'btn-success': !btnLg}"> <i class="fa fa-file-excel-o mr-2"></i> Reporte</button>
+        </div>
+    </div>
+</div>

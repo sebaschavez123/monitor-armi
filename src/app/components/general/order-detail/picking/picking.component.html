@@ -1,0 +1,156 @@
+<div class="picking">
+    <div *ngIf="showAllButtons(); then defaultButtons; else showRapiButtons">
+</div>
+
+<ng-template #defaultButtons>
+    <button *ngIf="permission.edit" class="btn btn-success text-center" type="button" (click)="edit()"> Editar orden</button>
+    <button *ngIf="restrictionZendesk" class="btn btn-dark text-center" type="button" (click)="createTicket()"> Crear Ticket</button>
+    <button *ngIf="restrictionReassing" class="btn btn-default text-center" type="button" (click)="reasign()">Reasignar orden</button>
+    <button *ngIf="restrictionRepush" class="btn btn-primary text-center" type="button" (click)="repush()">Reimpulsar orden</button>
+    <button *ngIf="restrictionCancel && canShowButton" class="btn btn-danger text-center" type="button" (click)="openCancel()">Cancelar orden</button>
+    <button *ngIf="restrictionManager" class="btn btn-secondary text-center" type="button" (click)="manager()">Gestionar orden</button>
+    <button *ngIf="restrictionFinish && canShowButton" class="btn btn-warning text-center" type="button" (click)="finish()">Finalizar orden</button>
+    <button *ngIf="restrictionEnlist" class="btn btn-warning text-center" type="button" (click)="enlist()">Alistar orden</button>
+    <button *ngIf="restrictionSend" class="btn btn-dark text-center" type="button" (click)="send()">Enviar orden</button>
+    <button *ngIf="restrictionIncomplete" class="btn btn-default text-center" type="button" (click)="sendIncomplete()">Enviar orden incompleta</button>
+    <button *ngIf="restrictionIncomplete" class="btn btn-secondary text-center" type="button" (click)="waitingCustomer()">Cliente en espera</button>
+    <button *ngIf="restrictionIncompleteOrder" class="btn btn-primary text-center" type="button">Pedido incompleto</button>
+    <button *ngIf="restrictionActive" [disabled]="disabledActiveButton" class="btn btn-success text-center" type="button" (click)="active()">Activar orden</button>
+    <button *ngIf="restrictionUpdateDate" class="btn btn-info text-center" type="button" (click)="updateDate()">Cambiar fecha de entrega</button>
+    <button *ngIf="restrictionMessengerFinish" class="btn btn-warning text-center" type="button" (click)="messengerFinish()">Finalizar a mensajero</button>
+    <button *ngIf="restrictionReschedule" class="btn btn-primary text-center" type="button" (click)="reschedule()">Reprogramar orden</button>
+    <button *ngIf="restrictionReservation" class="btn btn-dark text-center" type="button" (click)="reservation()">Reservar orden</button>
+    <button *ngIf="restrictionLaunch && canShowButton" class="btn btn-success text-center" type="button" (click)="openLaunch()">Relanzar orden</button>
+    <button *ngIf="restrictionAssing" class="btn btn-default text-center" type="button" (click)="assingMessenger()">Asignar mensajero</button>
+    <button *ngIf="restrictionInvoiceManual" class="btn btn-warning text-center" type="button" (click)="invoiceManually()"><strong>{{invoice ? 'Marcar' : 'Desmarcar'}}</strong> facturación manual</button>
+    <button *ngIf="restrictionAssing && restrictionLaunch && isVenezuela" class="btn btn-default text-center" type="button" (click)="reasignAndRelaunch()">Reasignar y Relanzar orden</button>
+    <!-- button *ngIf="restrictionStops" class="btn btn-info text-center" type="button" (click)="addStop()">Marcación de traslado</button -->
+    <div class="mt-2 mb-2"  *ngIf="showChangeButtons()"> 
+        <div class="card-title-o font-bold text-left mb-2">Botones especiales</div>
+        <button *ngFor="let cbs of changeButtons"
+            class="btn btn-info text-center" type="button" (click)="changeButtonShow(cbs)">
+            {{cbs.btnLabel}}{{ cbs.marked ? ' (Marcado)' : ''}}
+        </button>
+        <button *ngIf="order.status === 'FINALIZADA'" class="btn btn-info text-center" type="button" (click)="recalculate()">Recalcular Orden</button>
+        <br>
+    </div>
+</ng-template>
+
+<ng-template #showRapiButtons>
+    <button *ngIf="restrictionStarPicking" class="btn btn-success text-center" type="button" (click)="starPicking()"> Iniciar Picking</button>
+    <button *ngIf="!onMobile" class="btn btn-warning text-center" type="button" (click)="copyLink()"> Link Armirene</button>
+    <a *ngIf="onMobile" [href]="armireneLink">
+        <button class="btn btn-warning text-center" type="button" > Abrir Armirene</button>
+    </a>
+    
+</ng-template>
+
+
+<nz-modal [(nzVisible)]="mdlLaunch.show" [nzTitle]="mdlLaunch.title"
+    [nzClosable]="false" [nzCentered]="true"
+    nzCancelText="Cancelar" nzOkText="Relanzar"
+    (nzOnCancel)="mdlLaunch.show = false" nzClassName="mdlLaunch"
+    (nzOnOk)="launch()">
+    <ng-container *nzModalContent>
+        <nz-form-item class="w-100">
+            <nz-form-label nz-col [nzSpan]="6" nzFor="launch-incentive">Incentivo</nz-form-label>
+            <nz-select nz-col [nzSpan]="16" class="w-100" [(ngModel)]="mdlLaunch.incentive" name="incentive" id="launch-incentive">
+            <nz-option *ngFor="let vle of maxValueList" [nzValue]="vle" [nzLabel]="vle">}}</nz-option>
+            </nz-select>
+        </nz-form-item>
+    </ng-container>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="mdlCancel.show" [nzTitle]="mdlCancel.title"
+    [nzClosable]="false" [nzCentered]="true"
+    nzCancelText="Cerrar" nzOkText="Cancelar"
+    (nzOnCancel)="mdlCancel.show = false" nzClassName="mdlLaunch"
+    (nzOnOk)="cancel(true)">
+    <ng-container *nzModalContent>
+        <nz-spin nzTip="un momento ..." [nzSpinning]="mdlCancel.loading"></nz-spin>
+            <nz-form-item class="w-100">
+                <nz-form-label nz-col [nzSpan]="6" nzFor="cancel-reason">Razón:</nz-form-label>
+                <nz-select nz-col [nzSpan]="16"
+                    (ngModelChange)="reasonChanged($event)"
+                    [(ngModel)]="mdlCancel.options.reason"
+                     name="reason" id="cancel-reason">
+                    <nz-option [nzValue]="-1" nzLabel="Seleccione ..."></nz-option>
+                    <nz-option *ngFor="let reason of cancellationReasons" [nzValue]="reason.value" [nzLabel]="reason.label"></nz-option>
+                </nz-select>
+            </nz-form-item>
+            <nz-form-item class="w-100" *ngIf="mdlCancel.invalid && mdlCancel.options.reason < 0">
+                <label class="text-danger">* Debe seleccionar por lo menos una razón de cancelación.</label>
+            </nz-form-item>
+            <ng-container *ngIf="this.showProductList(mdlCancel.options.reason)">
+                <nz-form-item class="w-100">
+                    <cdk-virtual-scroll-viewport itemSize="73" class="products-container">
+                        <nz-list class="product-list"
+                            nzItemLayout="horizontal"
+                            [nzLoading]="mdlCancel.loading"
+                            [ngClass]="{invalid: mdlCancel.invalid}">
+                            <nz-list-item *cdkVirtualFor="let item of mdlCancel.options.products"
+                                class="product-item"
+                                (click)="item.checked = !item.checked"
+                                [ngClass]="{checked: item.checked}">
+                                <nz-list-item-meta [nzAvatar]="getProductAvatar(item.image)">
+                                    <nz-list-item-meta-title>
+                                        <a [href]="getProductUrl(item.id)" target="_blank" rel="noopener">
+                                            <div class="title">{{ item.mediaDescription }}</div>
+                                            <div class="subtitle">{{item.grayDescription}}</div>
+                                        </a>
+                                    </nz-list-item-meta-title>
+                                </nz-list-item-meta>
+                            </nz-list-item>
+                            <nz-list-empty 
+                                nzNoResult="No se ha encontrado productos asociados a esta orden"
+                                *ngIf="mdlCancel.options.products.length === 0"></nz-list-empty>
+                        </nz-list>
+                    </cdk-virtual-scroll-viewport>
+                </nz-form-item>
+                <nz-form-item class="w-100" *ngIf="this.showProductList(mdlCancel.options.reason)">
+                    <label *ngIf="mdlCancel.invalid" class="text-danger">* Debe seleccionar por lo menos un producto.</label>
+                </nz-form-item>
+            </ng-container>
+            <div *ngIf="!onlyCol()">
+                <nz-form-item class="w-100 justify-content-center">
+                    <nz-upload id="uploader"
+                        nzType="drag"
+                        nzName="image"
+                        [nzLimit]="limitUpdateEvidence"
+                        nzListType="picture"
+                        nzAction="{{getUploadFileUrl()}}" 
+                        (nzChange)="loadEvidence($event)"
+                        [nzHeaders]="headers"
+                        [ngClass]="{loaded: mdlCancel.options.evidences?.length > (limitUpdateEvidence-1)}">
+                        <div class="preload">Presione o arrastre la imagen para cargar la evidencia</div>
+                    </nz-upload>
+                </nz-form-item>
+            </div>
+            <nz-form-item class="w-100 justify-content-center">
+                <label nz-checkbox [(ngModel)]="mdlCancel.options.sms">Enviar SMS de cancelación</label>
+            </nz-form-item>
+    </ng-container>
+</nz-modal>
+
+<nz-modal *ngIf="mdlChangeButtons?.params"
+    [(nzVisible)]="mdlChangeButtons.show"
+    [nzTitle]="mdlChangeButtons.params.mdlTitle"
+    [nzClosable]="false" [nzCentered]="true"
+    nzCancelText="Cancelar" [nzOkText]="mdlChangeButtons.params ? 'Marcar' : 'Cambiar'"
+    (nzOnCancel)="changeButtonHide()"
+    nzClassName="mdlLaunch"
+    (nzOnOk)="changeButtonClick(mdlChangeButtons.params)">
+    <ng-container *nzModalContent>
+        <nz-form-item class="w-100" *ngFor="let field of mdlChangeButtons?.params.fields">
+            <nz-form-label nz-col [nzSpan]="6" nzFor="launch-incentive">{{field.label}}</nz-form-label>
+            <input nz-input nz-col [nzSpan]="16" class="w-100" *ngIf="field.type == 1" [(ngModel)]="field.value" [name]="field.name" id="input-{{field.name}}" />
+            <input nz-input nz-col [nzSpan]="16" class="w-100" *ngIf="field.type == 2" [(ngModel)]="field.value" [name]="field.name" id="input-{{field.name}}" />
+            <nz-select nz-col [nzSpan]="16" class="w-100" *ngIf="field.type == 3" [(ngModel)]="field.value" [name]="field.name" id="input-{{field.name}}">
+                <nz-option *ngFor="let option of field.options" [nzValue]="getOption(1, option)" [nzLabel]="getOption(2, option)"></nz-option>
+            </nz-select>
+        </nz-form-item>
+    </ng-container>
+</nz-modal>
+
+
+<app-info-modal #finishModal [mdlOptions]="mdlFinishOptions" (submit)="finishAction($event)"></app-info-modal>

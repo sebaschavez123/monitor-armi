@@ -1,0 +1,17 @@
+<nz-tabset (nzSelectChange)="changeTab($event)">
+    <nz-tab nzTitle="Express">
+        <app-dashboard-canceled-express *ngIf="active_number == 1"></app-dashboard-canceled-express>
+    </nz-tab>
+    <nz-tab nzTitle="Proveedores">
+        <app-dashboard-canceled-provider *ngIf="active_number == 2"></app-dashboard-canceled-provider>
+    </nz-tab>
+    <nz-tab nzTitle="Nacionales y Envíalo Ya">
+        <app-dashboard-canceled-nat-send-now *ngIf="active_number == 3"></app-dashboard-canceled-nat-send-now>
+    </nz-tab>
+    <nz-tab nzTitle="Subscribete y ahorra">
+        <app-dashboard-canceled-subscription *ngIf="active_number == 4"></app-dashboard-canceled-subscription>
+    </nz-tab>
+    <nz-tab nzTitle="Escanea y Listo">
+        <app-dashboard-canceled-sag *ngIf="active_number == 5"></app-dashboard-canceled-sag>
+    </nz-tab>
+</nz-tabset>

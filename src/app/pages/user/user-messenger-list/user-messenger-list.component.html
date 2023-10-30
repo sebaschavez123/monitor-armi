@@ -1,0 +1,120 @@
+<div *ngIf="users == undefined" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando usuarios mensajeros</p>
+</div>
+
+<div class="operate mb-3" *ngIf="users != undefined">
+
+    <div class="row mb-4" *ngIf="countryConfig.isVenezuela && permissions.edit">
+        <div class="col-lg-12">
+            <h6 class="font-resalt text-body font-size-16" style="font-size: 15px;">Actualización de usuarios</h6>
+            <div class="d-flex flex-wrap align-items-center">
+                <nz-upload nzType="drag" [nzBeforeUpload]="beforeUpload" class="mr-1 w-100" [nzMultiple]="false" [nzShowUploadList]="false">
+                    <p class="ant-upload-drag-icon"><i nz-icon [nzType]="uploading ? 'loading' : 'inbox'"></i></p>
+                    <p class="ant-upload-text text-width">{{ uploading ? 'Subiendo información...' : 'Arrastra el archivo para actualizar mensajeros' }}</p>
+                </nz-upload>
+            </div>
+        </div>
+    </div>
+
+    <div class="row m-0">
+        <div class="col-lg-6 col-sm-6 pb-2">
+            <button (click)="register()" class="btn btn-info small btn-rounded-md"><i class="fa fa-bicycle r-1"></i> Registrar mensajero</button>
+            <button *ngIf="countryConfig.isVenezuela" (click)="export()" class="btn btn-success small btn-rounded-md ml-2">
+                <i class="fa fa-file-excel-o r-1"></i> Exportar
+            </button>
+        </div>
+        <div class="col-lg-6 col-sm-6 ml-auto">
+            <nz-input-group [nzPrefix]="suffixIconSearch">
+                <input type="text" [(ngModel)]="searchText" (ngModelChange)="searchData()" nz-input placeholder="Busca por código o nombre" />
+            </nz-input-group>
+            <ng-template #suffixIconSearch>
+                <i nz-icon nzType="search"></i>
+            </ng-template>
+        </div>
+    </div>
+</div>
+
+<!-- Filtro estado foto-->
+<div class=" d-flex align-items-center flex-wrap pt-3 pb-3" *ngIf="!countryConfig.isVenezuela && users != undefined">
+    <div style="font-size: 15px;" class="font-resalt text-body ml-auto mr-3">Filtrar:</div>
+
+    <div *ngFor="let option of options, let i = index">
+        <label nz-checkbox [(ngModel)]="option.isSelect" (ngModelChange)="filterByStatePhoto(option, i)"
+            class="text-capitalize">
+            {{ option.optionName }}
+        </label>
+    </div>
+</div>
+
+<nz-table *ngIf="users != undefined" #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="users" [ngClass]="{'empty-table': users.length == 0}">
+    <thead>
+        <tr>
+            <th *ngFor="let col of cols; let i = index" [nzColumnKey]="col.key ? col.key : col.label" [nzSortOrder]="col.sortOrder" [nzSortFn]="col.sortFn" [nzFilters]="col.listOfFilter" [nzFilterFn]="col.filterFn">
+                <div style="font-size: 15px;" class="font-resalt text-body">{{col.label}}</div>
+            </th>
+            <th *ngIf="!countryConfig.isVenezuela">
+                <div style="font-size: 15px;" class="font-resalt text-body text-center">Foto</div>
+            </th>
+            <th>
+                <div style="font-size: 15px;" class="font-resalt text-body text-center">Opción</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of rowSelectionTable.data; let i = index" class="option-border-color">
+            <td *ngFor="let col of cols; let i = index"  (click)="editUser(data)">
+                <span [ngSwitch]=" col.label ">
+                    <div *ngSwitchCase=" 'Código'" class="font-resalt">
+                        {{ data[col.name] ? data[col.name] : 'No data' }}
+                    </div>
+                    <div *ngSwitchDefault>
+                        {{ data[col.name] ? data[col.name] : 'No data' }}
+                    </div>
+                </span>
+
+            </td>
+            <td class="text-center" (click)="approvePhoto(data)" *ngIf="!countryConfig.isVenezuela">
+                <button class="btn btn-sm btn-opc btn-success mr-xl-2 mr-md-0" 
+                [ngClass]="{'btn-success':data?.isValidImage === 1, 'btn-danger': data?.isValidImage === 2, 'btn-warning':data?.isValidImage === 0, 'btn-secondary':data?.isValidImage === undefined}" 
+                >{{getStatusName(data?.isValidImage)}}</button>
+            </td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-opc btn-primary mr-xl-2 mr-md-0" (click)="editUser(data)">Editar</button>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+<user-edit [user]="userSelected" [messengers]="true" (close)="editUser(undefined)"></user-edit>
+
+<nz-modal *ngIf="isOpen" [(nzVisible)]="isOpen" [nzTitle]="Foto"
+[nzClosable]="true" [nzFooter]="null" (nzOnCancel)="isOpen = false" >
+
+ <ng-container *nzModalContent>
+    <div class="col-12 d-flex pt-2 justify-content-center flex-column modal-approval">
+        <img [src]="userData?.urlPhoto" class="img-user"> 
+        <h5  class="font-weight-bold text-center pt-2" > {{userData?.employeeName}}</h5>
+        <p class="text-center"> {{userData?.email}}</p>
+    </div>
+    <div class="col-6 d-flex justify-content-around p-1 mx-auto" *ngIf="userData?.urlPhoto">
+        <button class="btn-outline-success rounded-circle btns p-1" [ngClass]="{'btn-success icon-white':isValidPhoto==1}" (click)="validateApproval(1)"> <span class="fe fe-check"></span></button>
+        <button class="btn-outline-danger rounded-circle btns p-1" [ngClass]="{'btn-danger icon-white':isValidPhoto==2}" (click)="validateApproval(2)"> <span class="fe fe-x"></span> </button>
+    </div>
+
+    <form nz-form [formGroup]="form" *ngIf="rejectionPhoto">
+        <nz-form-item>
+            <nz-form-control nzSpan nzErrorTip="Debes ingresar el motivo">
+                <nz-form-label class="w-100 text-left">Escriba el motivo por el que se rechaza la foto</nz-form-label>
+                <textarea name="reason" class="col-lg-12" formControlName="reason"></textarea>
+            </nz-form-control>
+        </nz-form-item>
+        <div class="mt-4 text-center">
+            <button nz-button nzType="primary"  (click)="sendReason()" class="btn btn-rounded-md btn-success pl-5 pr-5 ml-3"  [disabled]="form.invalid" >Enviar</button>
+        </div>
+    </form>
+
+    <p *ngIf="userData?.urlPhoto===undefined">Actualmente, el mensajero no ha cargado una foto para su aprobación.</p>
+
+ </ng-container>
+</nz-modal>

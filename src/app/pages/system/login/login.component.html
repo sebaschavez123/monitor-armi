@@ -1,0 +1,49 @@
+<div class="auth">
+    <div class="pt-5 pb-5 d-flex align-items-end mt-auto">
+        <img [src]="iconLogo" alt="FTD Logo" height="50px" />
+    </div>
+    <div class="pl-5 pr-5 pt-5 pb-5 bg-white container">
+        <nz-spin nzTip="Un momento..." [nzSpinning]="loading">
+            <div class="text-dark font-size-30 mb-2 text-center">Monitor de pedidos</div>
+            <div class="text-muted text-center mb-4">
+                A continuación ingresa tus credenciales
+            </div>
+            <form nz-form [nzLayout]="'vertical'" [formGroup]="form" (ngSubmit)="submitForm()" role="form">
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="Minímo 4 caracteres.">
+                        <input type="text" nz-input formControlName="code" nzSize="large" placeholder="Codigo de empleado" autocomplete="username" />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="Debe ingresar su contraseña">
+                        <input type="password" nz-input nzSize="large" formControlName="password" placeholder="Contraseña" autocomplete="current-password" />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-control>
+                        <button nz-button nzType="primary" [nzSize]="'large'" class="text-center btn btn-info w-100 font-weight-bold font-size-18">
+                Ingresar
+            </button>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </nz-spin>
+    </div>
+    <div class="mt-auto pb-5 pt-5">
+        <!-- <ul class="list-unstyled d-flex mb-2 flex-wrap justify-content-center footerNav">
+            <li>
+                <a href="javascript: void(0);">Terms of Use</a>
+            </li>
+            <li>
+                <a href="javascript: void(0);">Compliance</a>
+            </li>
+            <li>
+                <a href="javascript: void(0);">Support</a>
+            </li>
+            <li>
+                <a href="javascript: void(0);">Contacts</a>
+            </li>
+        </ul> -->
+        <div class="text-white text-center">© 2020 Farmatodo. Todos los derechos reservados.</div>
+    </div>
+</div>

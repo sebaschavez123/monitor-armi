@@ -1,0 +1,45 @@
+:host {
+
+    .text-capitalize {
+        text-transform: capitalize;
+    }
+
+    th, td {
+        text-align: center;
+
+        &:first-of-type {
+            text-align: start;
+        }
+    }
+
+    .toolbox {
+        width: 100%;
+        display: inline-flex;
+        margin: 1.5rem 0;
+        justify-content: space-between;
+        
+        .filters {
+            min-width: 600px;
+            justify-content: space-between;
+            align-items: center;
+            
+            label { 
+                font-weight: 600;
+                margin: 0 1rem 0 0 !important;
+            }
+            nz-select { min-width: 120px; }
+            .ant-input {
+                padding: 4px 8px;
+                max-width: calc(100% - 400px);
+            }
+
+            general-filter {
+                display: inline-block;
+                min-width: 300px;
+                max-width: calc(100vw - 920px);
+            }
+            
+            * { margin-right: 1rem !important; }
+        }
+    }
+}

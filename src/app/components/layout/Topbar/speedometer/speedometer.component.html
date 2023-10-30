@@ -1,0 +1,23 @@
+<span (click)="showModal()">
+    <img class="speedometer" src="/assets/svg/speedmeter.svg" height="24px" width="24px" alt="Medidor de velocidad">
+</span>
+<nz-modal [(nzVisible)]="isVisible" 
+    nzTitle="Medidor de velocidad (Internet)"
+    nzOkText="Calcular"
+    [nzOkDisabled]="waiting"
+    (nzOnOk)="handleOk()"
+    nzCancelText="Cerrar"
+    (nzOnCancel)="handleCancel()">
+
+    <ng-container *nzModalContent>
+        <nz-spin nzTip="Calculando ..." [nzSpinning]="waiting">
+            <div class="speedtest-container">
+                <div class="st-feature" *ngFor="let ft of feature">
+                    <img class="st-icon" [src]="ft.icon" alt="speed icon" />
+                    <div class="st-value">{{ ft.value }}</div>
+                </div>
+            </div>
+        </nz-spin>
+    </ng-container>
+
+</nz-modal>

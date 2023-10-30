@@ -1,0 +1,165 @@
+.col-sm-3 {
+    background: #F3F7F9;
+}
+
+h5 {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1.5px solid #ecececf1;
+    color: #444751;
+    margin: 0;
+}
+
+.list-sms {
+    overflow: auto;
+    height: 100%;
+    overflow: auto;
+    height: 67vh;
+    color: #696C73;
+}
+
+.item-list-sms {
+    padding: 10px;
+    border-bottom: 1px solid #eaeaeaf1;
+}
+
+.item-list-sms.selected {
+    border-left: 2px solid #007ad9;
+}
+
+.item-list-sms:hover {
+    background-color: #E2E9EC;
+    cursor: pointer;
+}
+
+.item-list-sms>.name {
+    font-size: 11pt;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.item-list-sms>.desc {
+    font-size: 9pt;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 25px;
+}
+
+.col-sm-9 {
+    margin-top: 30px;
+    position: relative;
+    height: 72vh;
+}
+
+.phone {
+    width: 220px;
+    margin: auto;
+    height: 60vh;
+    background: black;
+    border-radius: 13px;
+    padding: 6px;
+    position: relative;
+    max-height: 400px;
+}
+
+.phone::after {
+    content: '';
+    height: 15px;
+    position: absolute;
+    width: 60%;
+    background-color: black;
+    margin: auto;
+    border-radius: 0 0 10px 10px;
+    top: 2px;
+    left: 43px;
+}
+
+.screen {
+    background: white;
+    height: 100%;
+    border-radius: 10px;
+    position: relative;
+    overflow: auto;
+}
+
+.sms {
+    font-size: 11px;
+    padding: 10px;
+    background: #007ad9;
+    color: white;
+    border-radius: 16px;
+    position: absolute;
+    top: 30px;
+    margin: 0 4px;
+}
+
+.sms::before {
+    content: '';
+    width: 0;
+    height: 0;
+    position: absolute;
+    margin: -19px 0 0 -6px;
+    border-bottom: 20px solid #007ad9;
+    border-right: 18px solid transparent;
+    border-left: 18px solid transparent;
+}
+
+.buttons {
+    width: 100%;
+}
+
+.buttons>textarea {
+    width: 100%;
+    border-radius: 10px;
+    padding: 5px;
+    border: 1px solid #a6a4a4;
+    margin-top: 10px;
+    font-size: 8pt;
+    height: 100px;
+}
+
+.buttons>.textarea {
+    width: 100%;
+    border-radius: 10px;
+    padding: 5px;
+    border: 1px solid #a6a4a4;
+    margin-top: 10px;
+    font-size: 8pt;
+    height: 100px;
+    text-align: left;
+}
+
+.tracking {
+    background: white;
+    padding: 2px;
+    border-radius: 5px;
+    border: 1px solid black;
+    color: black;
+    display: inline-block;
+}
+
+.vars {
+    display: flex;
+    font-size: 9pt;
+    line-height: 22px;
+}
+
+.vars>span {
+    background: #80b6e0;
+    padding: 0 2px;
+    border-radius: 5px;
+    border: 1px solid #007ad9;
+    color: black;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.vars>span:hover {
+    background: #2789d6;
+}
+
+.text-characteres {
+    font-size: 8pt;
+    color: #949494;
+}

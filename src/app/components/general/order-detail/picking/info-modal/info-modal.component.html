@@ -1,0 +1,51 @@
+<form #frm="ngForm" >
+    <nz-modal [(nzVisible)]="show" [nzTitle]="title"
+        [nzClosable]="false" [nzCentered]="true"
+        nzCancelText="Cerrar" [nzOkText]="options.btnOkText || 'Aceptar'"
+        (nzOnCancel)="show = false" nzClassName="mdlLaunch"
+        (nzOnOk)="action(frm)">
+        <ng-container *nzModalContent>
+        <div class="mdl-header">
+            <div class="icon"></div>
+            <h3>Confirmación</h3>
+            <h5>¿Realmente desea finalizar la orden?</h5>
+        </div>
+        <nz-spin nzTip="un momento ..." [nzSpinning]="loading"></nz-spin>
+                <nz-form-label *ngIf="options.textarea.label" nzRequired>{{options.textarea.label}}</nz-form-label>
+                <nz-form-item class="w-100 justify-content-center">
+                    <nz-form-control nzHasFeedback nzErrorTip="Please write something here!">
+                    <nz-textarea-count [nzMaxCharacterCount]="2000">
+                        <textarea 
+                            nz-input rows="4" name="comment" required
+                            [(ngModel)]="comment" #inpComment="ngModel"
+                            [nzStatus]="(frmtouch && inpComment.errors) && 'warning'"
+                            [placeholder]="options.textarea.placeholder">
+                        </textarea>
+                    </nz-textarea-count>
+                    </nz-form-control>
+                </nz-form-item>         
+                <nz-form-item class="w-100 justify-content-center">
+                    <nz-upload id="uploader"
+                        nzType="drag"
+                        nzName="image"
+                        [nzLimit]="options.uploads.limitUpdates"
+                        nzListType="picture"
+                        nzAction="{{getUploadFileUrl()}}" 
+                        (nzChange)="loadEvidence($event, inpfiles)"
+                        [nzHeaders]="headers"
+                        [class.hasError]="frmtouch && inpfiles.errors"
+                        [class.loaded]="inpfiles?.value?.length > (options.uploads?.limitUpdates-1)">
+                        <div class="preload">Presione o arrastre la imagen para cargar la evidencia</div>
+                    </nz-upload>
+                    <input type="hidden" [ngModel]="[]" name="files" #inpfiles="ngModel" required />
+                </nz-form-item>
+                <nz-form-item class="w-100" *ngIf="frmtouch && inpfiles.errors">
+                    <label class="text-danger">* La evidencia es requeria para finalizar.</label>
+                </nz-form-item>
+            </ng-container>
+            <div *nzModalFooter>
+                <button class="btn btn-light btn-large" nz-button (click)="close()"> Cancelar </button>
+                <button class="btn btn-primary btn-large" nz-button (click)="action(frm)" [disabled]="!frm?.form?.valid">{{options.btnOkText || 'Aceptar'}}</button>
+            </div>
+        </nz-modal>
+</form>

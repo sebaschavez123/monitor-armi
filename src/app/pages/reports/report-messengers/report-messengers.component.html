@@ -1,0 +1,19 @@
+<div class="controls-header text-left w-50 col-lg-12 w-100 d-flex flex-wrap align-items-center">
+    <nz-form-item>
+        <h6 class="w-100" style="font-size: 15px;">Fecha</h6>
+        <nz-range-picker style="height: 50px;" [(ngModel)]="dateRange" [nzSize]="'large'"></nz-range-picker>
+    </nz-form-item>
+
+    <nz-form-item>
+        <h6 class="w-100" style="font-size: 15px;">Provedor</h6>
+        <nz-select [nzSize]="'large'" nzPlaceHolder="Selecciona" [(ngModel)]="providerSelected">
+            <nz-option *ngFor="let provider of _dS.providers" [nzLabel]="provider.label" [nzValue]="provider.value"></nz-option>
+        </nz-select>
+    </nz-form-item>
+
+    <nz-form-item class="form-check">
+        <label nz-checkbox [(ngModel)]="messengers">Mensajeros</label>
+    </nz-form-item>
+
+    <button (click)="reportGenerate()" nz-button class="btn btn-success btn-lg font-weight-bold ml-auto">Generar reporte</button>
+</div>

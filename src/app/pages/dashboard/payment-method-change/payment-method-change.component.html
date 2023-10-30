@@ -1,0 +1,53 @@
+<div class="card mr-1">
+    <div class="card-body p-4">
+        <h3 class="m-0 font-weight-bolder">Completa los siguientes campos</h3>
+        <div>Botón de pago rechazado</div>
+
+        <div class="col-lg-9 mt-4">
+            <form nz-form [nzLayout]="form.get('formLayout')?.value" [formGroup]="form">
+
+                <nz-form-item>
+                    <nz-form-label>Número de orden (pedido)</nz-form-label>
+                    <nz-form-control nzErrorTip="Debes ingresar el número de la orden">
+                        <input nz-input type="number" formControlName="order" placeholder="Escribe aquí…" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label>Cambio método de pago a</nz-form-label>
+                    <nz-form-control nzErrorTip="Debes ingresar un medio de pago">
+                        <nz-radio-group formControlName="paymentMethod">
+                            <label nz-radio nzValue="dataphone">Datáfono</label>
+                            <label nz-radio nzValue="efecty">Efectivo</label>
+                        </nz-radio-group>
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label>Número nota crédito</nz-form-label>
+                    <nz-form-control nzErrorTip="Debes ingresar el número de nota crédito">
+                        <input nz-input type="number" formControlName="creditNote" placeholder="Escribe aquí…" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item>
+                    <nz-form-label>Nombre mensajero</nz-form-label>
+                    <nz-form-control nzErrorTip="Debes ingresar el nombre del mensajero">
+                        <input nz-input type="text" formControlName="messengerName" placeholder="Escribe aquí…" />
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-control>
+                    <button nz-button nzType="primary" class="btn btn-success pl-5 pr-5" [nzSize]="'large'" [nzLoading]="loadingForm" [disabled]="!form.valid">Enviar</button>
+                </nz-form-control>
+
+
+
+
+
+            </form>
+        </div>
+
+
+    </div>
+</div>

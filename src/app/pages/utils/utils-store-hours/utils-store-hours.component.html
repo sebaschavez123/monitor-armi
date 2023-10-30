@@ -1,0 +1,108 @@
+
+<div class="search-head">
+    <h6 class="font-resalt text-body font-size-16" style="font-size: 15px;">Selecciona ciudad y tienda</h6>
+    <div class="row m-0 align-items-center">
+        <div class="col-lg-5">
+            <nz-form-item>
+                <nz-form-control nzErrorTip="Por favor selecciona la ciudad">
+                    <nz-select [(ngModel)]="citySelected" class="selec-param" nzPlaceHolder="Ciudad" [nzSize]="'large'">
+                        <nz-option *ngFor="let courier of _dS.cities" [nzLabel]="courier.name" [nzValue]="courier.value"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div class="col-lg-5">
+            <nz-form-item>
+                <nz-form-control nzErrorTip="Por favor selecciona la tienda">
+                    <nz-select [(ngModel)]="storeSelected" class="selec-param" nzPlaceHolder="Tienda" [nzSize]="'large'" [disabled]="!citySelected">
+                        <nz-option *ngFor="let store of storesByCity" [nzLabel]="store.name" [nzValue]="store.id"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div class="col-lg-2">
+            <nz-form-item>
+                <button 
+                    (click)="search()" 
+                    [disabled]="!citySelected || !storeSelected" 
+                    nz-button [nzType]="'primary'" 
+                    class="btn btn-success btn-lg font-weight-bold">
+                    Buscar
+                </button>
+            </nz-form-item>
+        </div>
+    </div>
+</div>
+
+
+<ng-container *ngIf="hours">
+
+<h4>Horario semanal</h4>
+<div class="row m-0 week">
+    <div class="col-lg-2 hour" (click)="newHour('MONDAY', getConfig('MONDAY'))">
+        <label>Lunes</label>
+        <div class="hours" *ngIf="getConfig('MONDAY'); else notConfig">
+            <div>Apertura: {{getConfig('MONDAY').open}}</div>
+            <div>Cierre: {{getConfig('MONDAY').close}}</div>
+        </div>
+    </div>
+    <div class="col-lg-2 hour" (click)="newHour('TUESDAY', getConfig('TUESDAY'))">
+        <label>Martes</label>
+        <div class="hours" *ngIf="getConfig('TUESDAY'); else notConfig">
+            <div>Apertura: {{getConfig('TUESDAY').open}}</div>
+            <div>Cierre: {{getConfig('TUESDAY').close}}</div>
+        </div>
+    </div>
+    <div class="col-lg-2 hour" (click)="newHour('WEDNESDAY', getConfig('WEDNESDAY'))">
+        <label>Miercoles</label>
+        <div class="hours" *ngIf="getConfig('WEDNESDAY'); else notConfig">
+            <div>Apertura: {{getConfig('WEDNESDAY').open}}</div>
+            <div>Cierre: {{getConfig('WEDNESDAY').close}}</div>
+        </div>
+    </div>
+    <div class="col-lg-2 hour" (click)="newHour('THURSDAY', getConfig('THURSDAY'))">
+        <label>Jueves</label>
+        <div class="hours" *ngIf="getConfig('THURSDAY'); else notConfig">
+            <div>Apertura: {{getConfig('THURSDAY').open}}</div>
+            <div>Cierre: {{getConfig('THURSDAY').close}}</div>
+        </div>
+    </div>
+    <div class="col-lg-2 hour" (click)=" newHour('FRIDAY',getConfig('FRIDAY'))">
+        <label>Viernes</label>
+        <div class="hours" *ngIf="getConfig('FRIDAY'); else notConfig">
+            <div>Apertura: {{getConfig('FRIDAY').open}}</div>
+            <div>Cierre: {{getConfig('FRIDAY').close}}</div>
+        </div>
+    </div>
+    <div class="col-lg-2 hour" (click)="newHour('SATURDAY', getConfig('SATURDAY'))">
+        <label>Sabado</label>
+        <div class="hours" *ngIf="getConfig('SATURDAY'); else notConfig">
+            <div>Apertura: {{getConfig('SATURDAY').open}}</div>
+            <div>Cierre: {{getConfig('SATURDAY').close}}</div>
+        </div>
+    </div>
+    <div class="col-lg-2 hour" (click)="newHour('SUNDAY', getConfig('SUNDAY'))">
+        <label>Domingo</label>
+        <div class="hours" *ngIf="getConfig('SUNDAY'); else notConfig">
+            <div>Apertura: {{getConfig('SUNDAY').open}}</div>
+            <div>Cierre: {{getConfig('SUNDAY').close}}</div>
+        </div>
+    </div>
+</div>
+
+<ng-template #notConfig>
+    <div>
+        SIN CONFIGURACIÓN
+    </div>
+</ng-template>
+</ng-container>
+
+
+
+
+<div *ngIf="loadingSearch" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando tiendas</p>
+</div>
+
+<store-hours-edit [hours]="hourSelected" (refresh)="search()" (close)="hourSelected = undefined"></store-hours-edit>

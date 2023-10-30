@@ -1,0 +1,93 @@
+<div class="modal fade" [ngClass]="{'show': showModal}">
+    <div class="modal-dialog modal-custom">
+        <div class="modal-content">
+            <div class="close button-close" (click)="closeModal()"><i class="fe fe-x"></i></div>
+            <section class="select-store">
+                <h3 class="select-store__title">Selecciona la tienda</h3>
+                <div class="select-store__options">
+                    <ng-template #loadingTemplate>
+                        <div class="text-center mt-5">
+                            <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+                            <p class="ant-upload-text text-width">Cargando información</p>
+                        </div>
+                    </ng-template>
+                    <!-- STORES -->
+                    <div class="stores" *ngIf="!loading?.getTransferList else loadingTemplate">
+                        <div class="stores__header">
+                            <div class="stores__option" (click)="changeOrderBy('storeName')">
+                                <span>Tienda</span>
+                                <div
+                                    class="stores__sorter"
+                                    [ngClass]="{
+                                        'stores__sorter--asc': orderBy === 'storeName',
+                                        'stores__sorter--desc': orderBy === 'storeNameDesc'
+                                    }"
+                                ></div>
+                            </div>
+                            <div class="stores__option" (click)="changeOrderBy('distance')">
+                                <span>Distancia <br /> Cliente vs tienda</span>
+                                <div
+                                    class="stores__sorter"
+                                    [ngClass]="{
+                                        'stores__sorter--asc': orderBy === 'distance',
+                                        'stores__sorter--desc': orderBy === 'distanceDesc'
+                                    }"
+                                ></div>
+                            </div>
+                            <div class="stores__option" (click)="changeOrderBy('porcentage')">
+                                <span>Productos</span>
+                                <div
+                                    class="stores__sorter"
+                                    [ngClass]="{
+                                        'stores__sorter--asc': orderBy === 'porcentage',
+                                        'stores__sorter--desc': orderBy === 'porcentageDesc'
+                                    }"
+                                ></div>
+                            </div>
+                        </div>
+                        <ul class="stores__list">
+                            <li 
+                                class="store-item"
+                                [ngClass]="{'store-item--active': isSelectedStore(store)}"
+                                *ngFor="let store of formattedStores"
+                            >
+                                <div class="store-item__info" (click)="selectStore(store)">
+                                    <div class="store-item__check" [ngClass]="{'store-item__check--active': isSelectedStore(store)}"></div>
+                                    <div class="store-item__option">{{ store?.storeName | uppercase }}</div>
+                                    <div class="store-item__option">{{ store?.distance }} km</div>
+                                    <div class="store-item__option store-item__option--button">
+                                        <span>{{ store?.porcentage | number: '1.0-0' }}%</span>
+                                        <button class="store-item__button">
+                                            <span>Ver más</span>
+                                            <img
+                                                [ngClass]="{'active': isSelectedStore(store)}"
+                                                src="assets/svg/arrow-down-blue.svg"
+                                                alt="icon arrow down"
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="store-item__content" [ngClass]="{'store-item__content--active': isSelectedStore(store)}">
+                                    <ul class="product-list">
+                                        <li class="product-item" *ngFor="let product of store?.itemList">
+                                            <img class="product-item__image" [src]="product?.itemImage + '=s25'" [alt]="product?.itemName" />
+                                            <h4 class="product-item__name">{{ product?.itemName }}</h4>
+                                            <span class="product-item__stock">{{ product?.stock }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <button 
+                    class="select-store__button"
+                    [disabled]="!selectedStore"
+                    (click)="onSelectStore()"
+                >
+                    Seleccionar
+                </button>
+            </section>
+        </div>
+    </div>
+</div>

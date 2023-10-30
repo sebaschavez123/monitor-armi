@@ -1,0 +1,39 @@
+<div
+    nz-dropdown
+    class="filter"
+    [(nzVisible)]="open"
+    [nzDropdownMenu]="optionsV"
+    [nzTrigger]="!disabled ? 'click': ''"
+    [ngClass]="{'filter-active': verifyChecks() && filterActive && !asControl, 'as-control': asControl, 'disabled': disabled}">
+    {{ getControlName() }} <em nz-icon nzType="down" nzTheme="outline"></em>
+</div>
+
+<nz-dropdown-menu #optionsV="nzDropdownMenu">
+    <nz-input-group [nzSuffix]="sufixClose">
+        <input type="text" nz-input
+            [(ngModel)]="searchText"
+            [placeholder]="placeholder"
+            (ngModelChange)="searchItem()"/>
+    </nz-input-group>
+    <ng-template #sufixClose>
+        <em nz-icon [nzType]="searchText.length > 0 ? 'cerrar':'búscar'" (click)="cleanSearch()"></em>
+    </ng-template>
+    <div class="ant-table-filter-dropdown">
+        <div class="search-box">
+            <ul>
+                <li *ngFor="let item of options">
+                    <label nz-checkbox [(ngModel)]="item.check"  class="text-capitalize">
+                        {{item.text}}
+                    </label>
+                </li>
+            </ul>
+            <div class="d-flex p-2">
+                <button nz-button nzSize="small" nzType="default" class="mv05" (click)="reset()">Reiniciar</button>
+                <button nz-button nzSize="small" nzType="default" class="mv05" (click)="initChecks(!verifyChecks())">
+                    {{ verifyChecks() ? 'Descarcar' : 'Marcar todo'}}
+                </button>
+                <button nz-button nzSize="small" nzType="primary" class="mv05" (click)="action()">Aplicar</button>
+            </div>
+        </div>
+    </div>
+</nz-dropdown-menu>

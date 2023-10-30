@@ -1,0 +1,130 @@
+.all-settings {
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.all-settings.all-open {
+    width: 100vw;
+}
+
+.all-settings.all-close {
+    transition: width 2s;
+    width: 0;
+}
+
+.bar-settings {
+    height: 100vh;
+    background: white;
+    position: absolute;
+    width: 25vw;
+    min-width: 400px;
+    transition: right 1s;
+    -webkit-box-shadow: -6px 0px 9px 3px rgba(0, 0, 0, 0.21);
+    -moz-box-shadow: -6px 0px 9px 3px rgba(0, 0, 0, 0.21);
+    box-shadow: -6px 0px 9px 3px rgba(0, 0, 0, 0.21);
+}
+
+.bar-settings.open {
+    right: 0;
+}
+
+.bar-settings.close {
+    right: -50vw;
+}
+
+.body-settings {
+    padding: 5px 30px 0 30px;
+    overflow-y: auto;
+    height: 100vh;
+}
+
+.body-settings>.title {
+    padding: 10px;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.body-settings>.title>i {
+    float: right;
+    margin-top: 7px;
+    cursor: pointer;
+    color: #418fde;
+}
+
+.body-settings>.conf {
+    margin: 25px 0 20px 0;
+}
+
+.conf>*:nth-child(2) {
+    margin-top: 10px;
+}
+
+.body-settings>.conf>.t-conf {
+    font-size: 13px;
+    color: #418fde;
+    font-weight: 700;
+    border-bottom: 1px solid #418fde;
+    position: relative;
+}
+
+.body-settings>.conf>.t-conf>span {
+    background: white;
+    position: absolute;
+    bottom: -8px;
+    padding-right: 15px;
+}
+
+.name-param {
+    display: block;
+    margin: 10px 0 2px 0;
+    font-size: 10px;
+    color: #7d7575;
+}
+
+select {
+    width: 100%;
+    border-radius: 4px;
+    padding: 5px;
+    border-color: #e4e4e4;
+}
+
+input {
+    width: 100%;
+    padding: 4px;
+    border: 0;
+    border-bottom: 1px solid #e4e4e4;
+    text-align: center;
+}
+
+.conf-underline {
+    display: flex;
+}
+
+.conf-underline>* {
+    width: 50%;
+}
+
+.conf-underline>*:nth-child(2) {
+    margin-top: 0;
+}
+
+.conf-underline>.t-conf {
+    border-bottom: 0px !important;
+}
+
+.conf-underline>.t-conf>span {
+    position: initial !important;
+}
+
+.btn-loading {
+    transition: width 1s;
+    width: auto;
+}
+
+.btn-loading.ldg::after {
+    content: 'Cargando...';
+}

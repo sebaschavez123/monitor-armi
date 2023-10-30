@@ -1,0 +1,36 @@
+<div class="w-75 mb-5">
+    <h6>Seleccione la acción e ingresa un archivo de tipo excel que siga las siguientes reglas:</h6>
+
+    <nz-tabset (nzSelectChange)="changeTab($event)">
+        <nz-tab nzTitle="Reprogramar">
+             <div class="alert alert-primary mt-4">
+                <h6 class="text-white"><b><i class="fa fa-info-circle mr-2"></i> Tenga en cuenta</b></h6>
+                <ul>
+                    <li>La primera columna del archivo debe ser el id de la orden</li>
+                    <li>La segunda columna debe ser la fecha de reprogramación</li>
+                    <li>El formato de la fecha debe ser <b>YYYY/MM/DD H:mm</b></li>
+                    <li>Vérifique que las fechas sean mayores que la actual</li>
+                    <li>Tenga en cuenta el modelo presentado en la siguiente imagen</li>
+                    <img class="mt-2" src="assets/images/model-programmer.png" height="100rem" alt="">
+                    <li>Al final del proceso se descargará automaticamente un excel con la información del reultado de cada orden</li>
+                </ul>
+            </div>
+        </nz-tab>
+        <nz-tab nzTitle="Relanzar">
+            <div class="alert alert-success mt-4">
+                <h6 class="text-white"><b><i class="fa fa-info-circle mr-2"></i> Tenga en cuenta</b></h6>
+                <ul>
+                    <li>La primera columna del archivo debe ser el id de la orden</li>
+                    <li>Al final del proceso se descargará automaticamente un excel con la información del reultado de cada orden</li>
+                </ul>
+            </div>
+        </nz-tab>
+    </nz-tabset>   
+</div>
+
+<div class="d-flex flex-wrap align-items-center">
+    <nz-upload nzType="drag" [nzBeforeUpload]="beforeUpload" class="mr-1 w-100" [nzMultiple]="false" [nzShowUploadList]="false">
+        <p class="ant-upload-drag-icon"><i nz-icon [nzType]="uploading ? 'loading' : 'inbox'"></i></p>
+        <p class="ant-upload-text text-width">{{ uploading ? 'Subiendo información...' : 'Arrastra los archivos aquí o haz clic aquí' }}</p>
+    </nz-upload>
+</div>

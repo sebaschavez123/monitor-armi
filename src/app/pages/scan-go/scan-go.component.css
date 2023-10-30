@@ -1,0 +1,252 @@
+.header {
+    display: flex;
+    padding: 10px 0 10px 0;
+    border-bottom: 1px solid #e1e2e4;
+    align-items: center;
+}
+
+.header>h5 {
+    min-width: 30%;
+    font-size: 17pt;
+    margin: 0;
+}
+
+.header>div {
+    display: flex;
+    width: 100%;
+}
+
+.page-wrapper-scan {
+    background: #ffffff;
+    min-height: 100vh;
+    margin-left: 15px;
+}
+
+.menu {
+    background-color: #f4f4f4;
+    height: calc(100vh - 50px);
+    width: 15%;
+    min-width: 100px;
+    max-width: 300px;
+    position: relative;
+    -webkit-animation-name: init;
+    /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 1s;
+    /* Safari 4.0 - 8.0 */
+    -webkit-animation-delay: 0s;
+    /* Safari 4.0 - 8.0 */
+    animation-name: init;
+    animation-duration: 1s;
+    animation-delay: 0s;
+}
+
+.content-img>img {
+    width: 60%;
+    height: 60%;
+}
+
+.item {
+    display: block;
+    padding: 11px;
+    font-family: Helvetica;
+    font-size: 11pt;
+    text-align: center;
+    color: #000000;
+    font-weight: bold;
+    border-bottom: 1px solid #e1e2e4;
+    border-top: 1px solid #e1e2e4;
+    width: 50%;
+    min-width: 200px;
+}
+
+.item:hover {
+    background-color: #efefef;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.item-selected {
+    opacity: 0.98;
+    background-color: #e1e2e4;
+    font-weight: normal;
+    border-bottom: 2px solid #418fde;
+}
+
+.item-icon {
+    font-size: 30px;
+    padding: 0 25px;
+    color: #848484 !important;
+    text-align: end;
+    cursor: auto;
+}
+
+.item-icon:hover {
+    cursor: pointer;
+}
+
+.item-selected:hover {
+    background-color: #e1e2e4;
+    cursor: auto;
+}
+
+.scan-nav {
+    width: 100%;
+    margin: 0;
+    background-color: white;
+    padding: 0 10px;
+    min-height: 90.7vh;
+}
+
+.menu {
+    height: 46px;
+    display: flex;
+    width: 100%;
+    min-width: 100px;
+    max-width: 100vw;
+    z-index: 1;
+}
+
+.menu>.content-img {
+    margin: 0;
+    text-align: center;
+    margin-left: 15px;
+}
+
+.menu>.content-img>img {
+    width: 90px;
+    height: 45px;
+}
+
+.menu-items {
+    display: flex;
+    margin-left: auto;
+}
+
+@media (max-width: 655px) {
+    .item {
+        min-width: 116px;
+        padding: 2px;
+    }
+    .item:nth-child(1) {
+        padding-top: 10px;
+    }
+}
+
+.row-pant {
+    margin: 10px 0 !important;
+}
+
+.filters {
+    padding-left: 10px;
+}
+
+.filters>a {
+    font-size: 9pt;
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.filters>a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.filter-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+h5>i:hover {
+    text-shadow: 2px 2px #c3bcbc;
+    cursor: pointer;
+}
+
+.color-green {
+    background-color: #65c302;
+}
+
+.color-red {
+    background-color: red;
+}
+
+.color-yellow {
+    background-color: #ff7800;
+}
+
+.color-cyan {
+    background-color: #44D7B6;
+}
+
+.shopping {
+    padding: 0.5rem;
+    overflow: auto;
+    height: calc(100vh - 157px);
+}
+
+.content-refresh {
+    position: absolute;
+    right: 46.5%;
+    top: 69px;
+    height: 45px;
+    width: 80px;
+    text-align: center;
+    border-radius: 50%;
+    -webkit-transition: top 0.3s;
+    transition: top 0.3s;
+}
+
+.content-refresh:hover {
+    cursor: pointer;
+    top: 102px;
+}
+
+.btn-refresh {
+    border: 0;
+    background-color: #007ad9;
+    border-radius: 50px;
+    padding: 6px 8px 3px 8px;
+    cursor: pointer;
+    -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+.btn-refresh>i {
+    color: #005aa0c7;
+    font-size: 26px;
+}
+
+.btn-refresh:focus {
+    outline: none;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 5px;
+}
+
+ ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+ ::-webkit-scrollbar-thumb {
+    background: #007ad93d;
+}
+
+ ::-webkit-scrollbar-thumb:hover {
+    background: #007ad9cc;
+}
+
+.text-not-found {
+    padding: 3rem;
+    text-align: center;
+    font-style: oblique;
+    color: #c4c1c1;
+    font-size: 16pt;
+    font-weight: 700;
+}

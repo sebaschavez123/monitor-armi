@@ -1,0 +1,3 @@
+<div class="switch-buttom">
+    <div *ngFor="let opt of options; let i = index" class="option" [ngClass]="{'active': i == active}" (click)="select(i)">{{opt[text]}}</div>
+</div>

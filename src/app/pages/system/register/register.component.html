@@ -1,0 +1,77 @@
+<div class="auth">
+  <div class="pt-5 pb-5 d-flex align-items-end mt-auto">
+    <img src="assets/images/air-logo.png" alt="AIR UI Logo" />
+    <div class="air__utils__logo__text">
+      <div class="air__utils__logo__name text-uppercase text-dark font-size-21">
+        AIR UI
+      </div>
+      <div class="air__utils__logo__descr text-uppercase font-size-12 text-gray-6">
+        Admin template
+      </div>
+    </div>
+  </div>
+  <div class="pl-5 pr-5 pt-5 pb-5 bg-white container">
+    <div class="text-dark font-size-30 mb-4 text-center">Sign Up</div>
+    <form nz-form [nzLayout]="'vertical'">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your Full Name!">
+          <input type="text" nz-input nzSize="large" placeholder="Full Name" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your Email!">
+          <input type="text" nz-input nzSize="large" placeholder="Email Address" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your Password!">
+          <input type="password" nz-input nzSize="large" placeholder="Password" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [nzSize]="'large'"
+            class="text-center btn btn-success w-100 font-weight-bold font-size-18">
+            Sign Up
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+    <a href="javascript: void(0);"
+      class="font-weight-bold font-size-18 text-dark btn btn-outline-light w-100 mb-3 googleSign"
+      style="background-image: url('assets/images/icons/google-logo.svg')">
+      Sign Up with Google
+    </a>
+    <div class="font-size-18 text-center">
+      By signing up, you agree to the
+      <a href="javascript: void(0);" class="text-blue font-weight-bold font-size-18">
+        Terms of Service
+      </a>
+      and
+      <a href="javascript: void(0);" class="text-blue font-weight-bold font-size-18">
+        Privacy Policy
+      </a>
+    </div>
+  </div>
+  <div class="text-center font-size-18 pt-4 mb-auto">
+    Already have an account?
+    <a routerLink="/system/login" class="font-weight-bold text-blue text-underlined"><u>Log In</u></a>
+  </div>
+  <div class="mt-auto pb-5 pt-5">
+    <ul class="list-unstyled d-flex mb-2 flex-wrap justify-content-center footerNav">
+      <li>
+        <a href="javascript: void(0);">Terms of Use</a>
+      </li>
+      <li>
+        <a href="javascript: void(0);">Compliance</a>
+      </li>
+      <li>
+        <a href="javascript: void(0);">Support</a>
+      </li>
+      <li>
+        <a href="javascript: void(0);">Contacts</a>
+      </li>
+    </ul>
+    <div class="text-gray-4 text-center">© 2019 Mediatec. All rights reserved.</div>
+  </div>
+</div>

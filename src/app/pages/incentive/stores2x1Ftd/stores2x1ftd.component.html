@@ -1,0 +1,63 @@
+<div class="w-100">
+  <div style="display: flex; flex-direction: row; gap: 41px;  margin: 10px 0;">
+    <input #searchText placeholder="Buscar tiendas excluidas"  type="text" nz-input (input)="search(searchText.value , 'left')" />
+    <input #searchText2 placeholder="Buscar tiendas incluidas" type="text" nz-input (input)="search(searchText2.value,'right')" />
+  </div>
+ 
+
+  <nz-transfer
+    [nzDataSource]="filteredItems" 
+    [nzDisabled]="disabled"
+    [nzShowSearch]="showSearch"
+    [nzShowSelectAll]="false"
+    [nzTitles]="labels"
+    [nzRenderList]="[renderList, renderList]">
+    <ng-template
+      #renderList
+      let-items
+      let-direction="direction"
+      let-stat="stat"
+      let-disabled="disabled"
+      let-onItemSelectAll="onItemSelectAll"
+      let-onItemSelect="onItemSelect">
+      <nz-table #t [nzData]="$asTransferItems(items)" nzSize="small" [nzLoading]="loadingData">
+        <thead>
+          <tr>
+            <th scope="row"
+              [nzDisabled]="disabled"
+              [nzChecked]="stat.checkAll"
+              [nzIndeterminate]="stat.checkHalf"
+              (nzCheckedChange)="onItemSelectAll($event)">
+            </th>
+            <th scope="row">Tienda</th>
+            <th class="align-center" scope="row" nzWidth="120px">Tp. Incentivo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of t.data" >
+            <td
+              [nzChecked]="!!data.checked"
+              [nzDisabled]="disabled || data.disabled"
+              (nzCheckedChange)="onItemSelect(data)">
+            </td>
+            <td>{{ data.title }}</td>
+            <td class="align-center">
+              <nz-select [(ngModel)]="data.typeIncentive" (ngModelChange)="changeIncentive(data)">
+                <nz-option *ngFor="let incentiveType of incentivesType"
+                  [nzValue]="incentiveType.id"
+                  [nzLabel]="incentiveType.incentiveName"></nz-option>
+              </nz-select>
+            </td>
+            <!-- <td class="align-center" *ngIf="direction === 'right'">
+              {{ getIncentiveTypeLabel(data.typeIncentive) }}
+            </td>  -->
+          </tr>
+        </tbody>
+      </nz-table>
+    </ng-template>
+  </nz-transfer>
+</div>
+<div class="flex mt-3">
+  <button nz-button [nzType]="'primay'" class="btn btn-secondary btn-sm" (click)="reset()">Reiniciar</button>
+  <button nz-button [nzType]="'primay'" class="btn btn-success btn-sm ml-2" nz-popconfirm nzPopconfirmTitle="¿Seguro de guardar los cambios?" (nzOnConfirm)="save()">Guardar</button>
+</div>

@@ -1,0 +1,94 @@
+<nz-spin nzTip="Cargando información..." [nzSpinning]="loadingData">
+    <div class="search-head">
+        <h6 class="font-resalt text-body font-size-16" style="font-size: 15px;">Selecciona ciudad y tienda</h6>
+        <div class="row m-0 align-items-center">
+            <div class="col-lg-4">
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="Por favor selecciona la ciudad">
+                        <nz-select class="selec-param" nzPlaceHolder="Ciudad" [nzSize]="'large'" 
+                            (ngModelChange)="updateCity($event)"
+                            [(ngModel)]="selectedCity">
+                            <nz-option *ngFor="let courier of citiesList" [nzLabel]="courier.name | titlecase" [nzValue]="courier.value"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div class="col-lg-4">
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="Por favor selecciona la tienda">
+                        <nz-select class="selec-param" nzPlaceHolder="Tienda"
+                            [nzDisabled]="!selectedCity"
+                            (ngModelChange)="updateStore($event)"
+                            [(ngModel)]="selectedStore">
+                            <nz-option *ngFor="let store of storesList" [nzLabel]="store.name" [nzValue]="store.id"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            
+        </div>
+    </div>
+    <nz-table [nzData]="listOfData" [nzFrontPagination]="false" [nzShowPagination]="false">
+        <thead>
+            <tr>
+                <th scope="row" nzWidth="270px">Courier</th>
+                <th scope="row" nzWidth="270px" nzAlign="center">Shipping Order</th>
+                <th scope="row" nzWidth="270px" nzAlign="center">Delay</th>
+                <th scope="row" nzWidth="80px" nzAlign="center">Activo</th>
+                <th scope="row" nzWidth="40px" nzAlign="center">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody cdkDropList (cdkDropListDropped)="drop($event)">
+            <tr *ngFor="let data of listOfData; let ndx = index" cdkDrag>
+                <td>{{ data.currierName }}</td>
+                <td nzAlign="center">{{ndx+1}}</td>
+                <td nzAlign="center">               
+                    <nz-select [(ngModel)]="data.delay" class="selec-param select-delay" (ngModelChange)="update(data)">
+                        <nz-option *ngFor="let dly of data.optionsDelay" [nzValue]="dly" [nzLabel]="dly"></nz-option>
+                    </nz-select>
+                </td>
+                <td nzAlign="center">
+                    <nz-switch 
+                        [(ngModel)]="data.active"
+                        (ngModelChange)="update(data)"
+                        title="Activar/Desactivar">
+                    </nz-switch>
+                </td>
+                <td nzAlign="center" *ngIf="data.pending">
+                    <button nz-button nzType="default" nzShape="circle" title="Guardar"
+                        nzDanger [nzLoading]="isLoading">
+                        <span nz-icon nzType="exclamation"(click)="update(data)"></span>
+                    </button>
+                </td>
+                <td *ngIf="!data.pending">&nbsp;</td>
+            </tr>
+        </tbody>
+        <tfoot *ngIf="this.selectedStore >= 0">
+            <tr>
+                <td>
+                    <nz-select class="selec-param w-100" [(ngModel)]="ndata.courierId" nzPlaceHolder="Seleccione Courier">
+                        <nz-option *ngFor="let courier of currierList" [nzValue]="courier.value" [nzLabel]="courier.label"></nz-option>
+                    </nz-select>
+                </td>
+                <td nzAlign="center">1</td>
+                <td nzAlign="center">
+                    <nz-select [(ngModel)]="ndata.delay" class="selec-param select-delay">
+                        <nz-option *ngFor="let dly of delayList" [nzValue]="dly" [nzLabel]="dly"></nz-option>
+                    </nz-select>
+                </td>
+                <td nzAlign="center">
+                    <nz-switch [(ngModel)]="ndata.active" title="Activar/Desactivar"></nz-switch>
+                </td>
+                <td nzAlign="center">
+                    <button nz-button
+                        nzType="primary"
+                        nzShape="circle"
+                        title="Agregar">
+                        <span nz-icon nzType="plus"(click)="addReg()"></span>
+                    </button>
+                </td>
+            </tr>
+        </tfoot>
+    </nz-table>
+
+</nz-spin>

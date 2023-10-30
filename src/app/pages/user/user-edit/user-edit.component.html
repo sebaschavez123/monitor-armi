@@ -1,0 +1,406 @@
+<div class="modal fade" [ngClass]="{'show': user, 'page-mode': pageMode}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-custom modal-sm">
+        <div class="modal-content" *ngIf="user">
+            <div class="head">
+                <div class="close" (click)="close.emit()"><em class="fe fe-x-circle"></em></div>
+                <div class="title">
+                    <h4>{{editMode ? 'Editar': 'Registrar'}} Usuario <span *ngIf="messengers">Mensajero</span></h4>
+                </div>
+            </div>
+            <div class="content pl-5 pr-5">
+                <nz-alert *ngIf="!isBloqued && user.agentUnlock"
+                    nzShowIcon
+                    nzType="warning"
+                    nzMessage="Usuario desbloqueado por: {{user.agentUnlock}}">
+                </nz-alert>
+                <nz-alert *ngIf="hasBlocked()"
+                    nzShowIcon
+                    nzType="error"
+                    nzMessage="Usuario bloqueado por: {{user.blockDescription}}">
+                </nz-alert>
+                <form nz-form [nzLayout]="form.get('formLayout')?.value" [formGroup]="form">
+
+                    <nz-form-item class="w-100 justify-content-center" *ngIf="messengers && countryConfig.isColombia">
+                        <nz-form-label class="w-100 text-left">Foto mensajero</nz-form-label>
+                        <nz-form-control nzSpan [nzErrorTip]="supportRifErrorTpl">
+                            <img class="img-avatar" *ngIf="user?.urlPhoto !== '' && user?.urlPhoto && user.isValidImage===1" [src]="user?.urlPhoto" alt="Photo messager">
+                            <nz-upload
+                                class="avatar-uploader"
+                                [nzLimit]="1"
+                                nzName="image"
+                                nzListType="picture"
+                                [(nzFileList)]="filesPhoto"
+                                [nzDisabled]="filesPhoto?.length>0"
+                                [nzShowUploadList]="nzShowUploadListPhoto"
+                                [nzHeaders]="headers"
+                                nzAction="{{getUploadFileUrl()}}" 
+                                (nzChange)="handleChange($event, 'urlPhoto')">
+                                <button nz-button *ngIf="filesPhoto?.length <= 0 && user?.urlPhoto !== ''">
+                                    <span nz-icon nzType="upload"></span>
+                                    Arrastre o seleccione foto del mensajero
+                                </button>
+                                <input type="hidden" formControlName="urlPhoto">
+                            </nz-upload>
+                            <ng-template #supportPhotoErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">Debe selecionar una foto</ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <div class="row">
+                        <div class="col-lg-8" [ngClass]="{'col-lg-12': !countryConfig.isVenezuela || !messengers}">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Perfil</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes seleccionar el perfil del empleado">
+                                    <nz-select formControlName="rolUser" nzPlaceHolder="Selecciona perfil de usuario" (ngModelChange)="rolChange($event)">
+                                        <nz-option *ngFor="let rol of rols" [nzValue]="rol.id" [nzLabel]="rol.name"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div *ngIf="countryConfig.isVenezuela && messengers" class="col-lg-4 active-item">
+                            <label nz-checkbox formControlName="active"><strong class="text-body font-weight-bold">Activo</strong></label>
+                        </div>
+                    </div>
+
+
+                    <nz-form-item class="mb-2" *ngIf="isShowStore() && !messengers">
+                        <nz-form-label class="w-100 text-left">Tienda por defecto</nz-form-label>
+                        <nz-form-control nzSpan nzErrorTip="Debes seleccionar el tienda del empleado">
+                            <nz-select formControlName="storeId" (ngModelChange)="changeStoreId($event)" nzPlaceHolder="Selecciona perfil de usuario">
+                                <nz-option *ngFor="let store of _dS.stores" [nzValue]="store.id" [nzLabel]="store.name"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item class="mb-2" *ngIf="showExtraStores()">
+                        <nz-form-control nzSpan nzErrorTip="Debes seleccionar el tienda del empleado">
+                            <nz-form-label class="w-100 text-left">Tiendas</nz-form-label>
+                            <nz-tag nzMode="default">{{ getDefaultStoreName(formControls.storeId.value) }}</nz-tag>
+                            <nz-tag nzMode="closeable" 
+                                *ngFor="let stag of storesTags; let i = index"
+                                (nzOnClose)="handleClose(stag)">
+                                {{ stag }}
+                            </nz-tag>
+                            <nz-tag *ngIf="!inputVisible && canAddStore()" class="editable-tag" nzNoAnimation (click)="showInput()">
+                                <em nz-icon nzType="plus"></em> Agregar
+                            </nz-tag>
+                            <input #inputElement
+                                nz-input
+                                nzSize="small"
+                                *ngIf="inputVisible"
+                                type="text"
+                                style="width: 78px;"
+                                (blur)="handleInputConfirm(inputElement)"
+                                (change)="handleInputConfirm(inputElement)"
+                                (keydown.enter)="handleInputConfirm(inputElement)"
+                                list="stores-list"
+                            />
+                            <datalist id="stores-list" (click)="handleInputConfirm(store)">
+                                <option *ngFor="let store of getStoresList(_dS.stores)" [value]="store"></option>
+                            </datalist>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item class="mb-2" *ngIf="messengers">
+                        <nz-form-label class="w-100 text-left">Courier</nz-form-label>
+                        <nz-form-control nzSpan nzErrorTip="Debes seleccionar courier del mensajero">
+                            <nz-select formControlName="courierId" nzPlaceHolder="Selecciona courier de mensajero">
+                                <nz-option *ngFor="let courier of _dS.couriers" [nzValue]="courier.id" [nzLabel]="courier.name"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <ng-container *ngIf="messengers">
+                        
+                        <ng-container *ngIf="form?.value?.courierId == 13 || countryConfig.isVenezuela">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Provedor</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes seleccionar provedor del mensajero">
+                                    <nz-select formControlName="providerName" (ngModelChange)="setIsArmirene()" nzPlaceHolder="Selecciona provedor de mensajero">
+                                        <nz-option *ngFor="let provider of _dS.providers" [nzValue]="provider.value" [nzLabel]="provider.label"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </ng-container>
+                        
+                        <ng-container>
+                            <nz-form-item class="mb-2"> 
+                                <nz-form-label class="w-100 text-left">Tipo de vehículo</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes seleccionar vehiculo del mensajero">
+                                    <nz-select formControlName="vehicleName" nzPlaceHolder="Selecciona vehiculo de mensajero">
+                                        <nz-option *ngFor="let vehicle of _dS.vehiclesType" [nzValue]="vehicle.value" 
+                                        [nzLabel]="vehicle.label"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </ng-container>
+                        
+                        <nz-form-item class="mb-2">
+                            <nz-form-label class="w-100 text-left">Ciudad</nz-form-label>
+                            <nz-form-control nzSpan nzErrorTip="Debes seleccionar ciudad del mensajero">
+                                <nz-select formControlName="cityName" nzPlaceHolder="Selecciona ciudad de mensajero">
+                                    <nz-option *ngFor="let city of _dS.cities" [nzValue]="city.value" [nzLabel]="city.label | titlecase"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="mb-2" *ngIf="isArmirene">
+                            <nz-form-label class="w-100 text-left">Estado</nz-form-label>
+                            <nz-form-control nzSpan nzErrorTip="Debes seleccionar el estado donde reside el mensajero">
+                                <nz-select formControlName="state" nzPlaceHolder="Selecciona estado donde reside el mensajero">
+                                    <nz-option *ngFor="let state of states" [nzValue]="state.name" [nzLabel]="state.name"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="mb-2" *ngIf="messengers && isArmirene">
+                        <nz-form-label class="w-100 text-left">Municipio</nz-form-label>
+                        <nz-form-control nzSpan nzErrorTip="Debes seleccionar el municipio donde reside el mensajero">
+                            <nz-select formControlName="municipality" nzPlaceHolder="Selecciona el municipio donde reside el mensajero">
+                                <nz-option 
+                                *ngFor="let municipality of municipalities" 
+                                [nzValue]="municipality.name" 
+                                [nzHide]="form.value.state != municipality.state" 
+                                [nzLabel]="municipality.name">
+                            </nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    </ng-container>
+
+                    <nz-form-item class="mb-2">
+                        <nz-form-label class="w-100 text-left">Código empleado</nz-form-label>
+                        <nz-form-control nzSpan nzErrorTip="Debes ingresar el número del empleado">
+                            <input nz-input [nzSize]="'small'" type="number" formControlName="employeeNumber" placeholder="Escribe aquí…" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item class="mb-2" *ngIf="!messengers">
+                        <nz-form-label class="w-100 text-left">Cédula empleado</nz-form-label>
+                        <nz-form-control nzSpan nzErrorTip="Debes ingresar la cédula del empleado">
+                            <input nz-input [nzSize]="'small'" type="number" formControlName="documentNumber" placeholder="Escribe aquí…" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item class="mb-2">
+                        <nz-form-label class="w-100 text-left">Nombre empleado</nz-form-label>
+                        <nz-form-control nzSpan nzErrorTip="Debes ingresar el nombre del empleado">
+                            <input nz-input [nzSize]="'small'" type="text" formControlName="employeeName" placeholder="Escribe aquí…" />
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item class="mb-2" *ngIf="showMessengerVzla()">
+                        <nz-form-label class="w-100 text-left">Segundo Apellido empleado</nz-form-label>
+                        <nz-form-control nzSpan nzErrorTip="Debes ingresar el segundo del empleado">
+                            <input nz-input [nzSize]="'small'" type="text" formControlName="secondLastName" placeholder="Escribe aquí…" />
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item class="mb-2">
+                        <nz-form-label nzFor="phoneNumber" class="w-100 text-left">Télefono</nz-form-label>
+                        <nz-form-control [nzValidateStatus]="formControls['employeePhone']" [nzErrorTip]="phoneErrorTpl" >
+                            <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+                                <ng-template #addOnBeforeTemplate>
+                                    <nz-select formControlName="phonePrefix" class="phone-select">
+                                        <nz-option nzLabel="+57" nzValue="57"></nz-option>
+                                        <nz-option nzLabel="+58" nzValue="58"></nz-option>
+                                    </nz-select>
+                                </ng-template>
+                                <input formControlName="employeePhone" id="'phoneNumber'" nz-input input-phone placeholder="Escribe aquí..." />
+                            </nz-input-group>
+                            <ng-template #phoneErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">Debe ingresar el télefono del cliente</ng-container>
+                                <ng-container *ngIf="control.hasError('minlength')">Ingrese un télefono válido</ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item class="mb-2">
+                        <nz-form-label class="w-100 text-left">Correo electrónico</nz-form-label>
+                        <nz-form-control nzSpan [nzErrorTip]="emailErrorTpl">
+                            <input nz-input [nzSize]="'small'" type="email" input-mail formControlName="email" placeholder="Escribe aquí…" />
+                            <ng-template #emailErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">Debe ingresar el email del usuario</ng-container>
+                                <ng-container *ngIf="control.hasError('email')">Ingrese un email válido</ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item *ngIf="!editMode" class="mb-2">
+                        <nz-form-label class="w-100 text-left">Contraseña</nz-form-label>
+                        <nz-form-control nzSpan [nzErrorTip]="passwordErrorTpl">
+                            <input nz-input [nzSize]="'small'" type="password" formControlName="password" placeholder="Escribe aquí…" />
+                            <ng-template #passwordErrorTpl let-control>
+                                <ng-container *ngIf="control.hasError('required')">Debe ingresar el passwrod del usuario</ng-container>
+                                <ng-container *ngIf="control.hasError('minlength')">Debe ingresar mínimo 6 caracteres</ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item class="mb-2" *ngIf="messengers">
+                        <nz-form-label class="w-100 text-left">Referido</nz-form-label>
+                        <nz-form-control nzSpan [nzErrorTip]="passwordErrorTpl">
+                            <nz-select nzShowSearch nzAllowClear
+                                formControlName="referredMessenger" 
+                                nzPlaceHolder="Mensajero quien refirió">
+                                <nz-option
+                                    *ngFor="let msg of messengerList"
+                                    [nzLabel]="msg.employeeName"
+                                    [nzValue]="msg.employeeNumber">
+                                </nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <!-- Información armirene -->
+                    <ng-container *ngIf="isArmirene">
+                        <nz-form-item class="mb-2" *ngIf="countryConfig.isVenezuela">
+                            <nz-form-label class="w-100 text-left">Genero</nz-form-label>
+                            <nz-form-control>
+                                <nz-select
+                                    formControlName="gender" 
+                                    nzPlaceHolder="Selecciona genero del mensajero">
+                                    <nz-option
+                                        *ngFor="let gender of genderList"
+                                        [nzLabel]="gender"
+                                        [nzValue]="gender">
+                                    </nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="mb-2" *ngIf="countryConfig.isVenezuela">
+                            <nz-form-label class="w-100 text-left">Fecha de nacimiento</nz-form-label>
+                            <nz-form-control [nzErrorTip]="legalAgeErrorTpl">
+                                <nz-date-picker class="w-100" formControlName="birthDate" 
+                                    [nzDefaultPickerValue]="defaultBirthDate"
+                                    [nzDisabledDate]="disabledDate"
+                                    nzPlaceHolder="Fecha de nacimiento del mensajero">
+                                </nz-date-picker>
+                                <ng-template #legalAgeErrorTpl let-control>
+                                    <ng-container *ngIf="control.hasError('legalAge')">
+                                        Por favor verifique la fecha. (<18)
+                                    </ng-container>
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="mb-2">
+                            <nz-form-label class="w-100 text-left">Dirección</nz-form-label>
+                            <nz-form-control nzSpan [nzErrorTip]="addressErrorTpl">
+                                <input nz-input [nzSize]="'small'" type="text" formControlName="address" placeholder="Escribe aquí…" />
+                                <ng-template #addressErrorTpl let-control>
+                                    <ng-container *ngIf="control.hasError('required')">La dirección es requerida</ng-container>
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="mb-2">
+                            <nz-form-label class="w-100 text-left">Tipo de Cuenta</nz-form-label>
+                            <nz-form-control nzSpan nzErrorTip="Debes seleccionar el tipo de cuenta del mensajero">
+                                <nz-select formControlName="bankAccountType" nzPlaceHolder="Selecciona el tipo de cuenta del mensajero">
+                                    <nz-option nzValue="ahorros" nzLabel="Ahorros"></nz-option>
+                                    <nz-option nzValue="corriente" nzLabel="Corriente"></nz-option>
+                                </nz-select>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="mb-2">
+                            <nz-form-label class="w-100 text-left">Cuenta Bancaria</nz-form-label>
+                            <nz-form-control nzSpan [nzErrorTip]="bnkAccountErrorTpl">
+                                <input nz-input
+                                    [nzSize]="'small'"
+                                    type="text" 
+                                    input-phone
+                                    maxlength="20"
+                                    formControlName="bankAccount"
+                                    placeholder="Escribe aquí…" />
+                                <ng-template #bnkAccountErrorTpl let-control>
+                                    <ng-container *ngIf="control.hasError('required')">Debes ingresar el número de cuente</ng-container>
+                                    <ng-container *ngIf="control.hasError('minlength')">Verifique el número de cuenta</ng-container>
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="mb-2">
+                            <nz-form-label class="text-left">Tiene talonario</nz-form-label>
+                            <nz-form-control nzSpan>
+                                <label nz-checkbox [nzSize]="'small'" formControlName="hasTicketBook"></label>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="mb-2">
+                            <nz-form-label class="text-left">¿Es contribuyente?</nz-form-label>
+                            <nz-form-control nzSpan>
+                                <label nz-checkbox (change)="checkboxContributor($event)" [nzSize]="'small'" formControlName="contributor"></label>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="mb-2">
+                            <nz-form-label class="w-100 text-left">Número RIF</nz-form-label>
+                            <nz-form-control nzSpan [nzErrorTip]="rifErrorTpl">
+                                <input nz-input [nzSize]="'small'" type="text" 
+                                    input-phone maxlength="9"
+                                    formControlName="rif"
+                                    placeholder="Escribe aquí…" />
+                                <ng-template #rifErrorTpl let-control>
+                                    <ng-container *ngIf="control.hasError('required')">Debes ingresar el rif del empleado</ng-container>
+                                    <ng-container *ngIf="control.hasError('minlength')">Debe ser mínimo de 8 digitos</ng-container>
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="mb-2">
+                            <nz-form-label class="w-100 text-left">Soporte RIF</nz-form-label>
+                            <nz-form-control nzSpan [nzErrorTip]="supportRifErrorTpl">
+                                <nz-upload
+                                    [nzLimit]="1"
+                                    nzName="image"
+                                    nzListType="picture"
+                                    [(nzFileList)]="filesRif"
+                                    [nzDisabled]="filesRif?.length>0"
+                                    [nzShowUploadList]="nzShowUploadList"
+                                    nzAction="{{getUploadFileUrl()}}"
+                                    [nzHeaders]="headers"
+                                    (nzChange)="handleChange($event, 'urlRif')">
+                                    <button nz-button>
+                                        <span nz-icon nzType="upload"></span>
+                                        Arrastre o seleccione para cargar soporte
+                                    </button>
+                                    <input type="hidden" formControlName="urlRif">
+                                </nz-upload>
+                                <ng-template #supportRifErrorTpl let-control>
+                                    <ng-container *ngIf="control.hasError('required')">Debe selecionar un soporte</ng-container>
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                        <nz-form-item class="mb-2">
+                            <nz-form-label class="w-100 text-left">Soporte Identificación</nz-form-label>
+                            <nz-form-control nzSpan [nzErrorTip]="supportIdErrorTpl">
+                                <nz-upload
+                                    [nzLimit]="1"
+                                    nzName="image"
+                                    nzListType="picture"
+                                    [(nzFileList)]="filesIds"
+                                    [nzDisabled]="filesIds?.length==1"
+                                    [nzShowUploadList]="nzShowUploadList"
+                                    nzAction="{{getUploadFileUrl()}}"
+                                    [nzHeaders]="headers"
+                                    (nzChange)="handleChange($event, 'urlDocument')">
+                                    <button nz-button>
+                                        <span nz-icon nzType="upload"></span>
+                                        Arrastre o seleccione para cargar soporte
+                                    </button>
+                                </nz-upload>
+                                <input type="hidden" formControlName="urlDocument">
+                                <ng-template #supportIdErrorTpl let-control>
+                                    <ng-container *ngIf="control.hasError('required')">Debe selecionar un soporte</ng-container>
+                                </ng-template>
+                            </nz-form-control>
+                        </nz-form-item>
+                    </ng-container>
+                
+                    <div *ngIf="form_error && form_error.length > 0" class="text-danger font-size-12">*{{form_error}}*</div>
+                    <span *ngIf="messageFormMessengerError" class="error"> *Debes completar los campos proveedor, ciudad y tipo de vehículo*</span>
+                    <nz-form-control class="mt-4 mb-4 text-center">
+                        <button *ngIf="editMode && canBlockCouriers && messengers && permissions.edit"nz-button nzType="primary" class="btn btn-sm pl-5 pr-5 w-100 mb-2" [ngClass]="{'btn-danger': !isBloqued, 'btn-secondary': isBloqued}" [nzLoading]="loadingForm" (click)="blockReason(form.value.employeeName, form.value.employeeNumber)">{{isBloqued ? 'Desbloquear' : 'Bloquear'}}</button>
+                        <button
+                            *ngIf="permissions.create || permissions.edit" 
+                            class="btn btn-sm pl-5 pr-5 btn-success w-100"
+                            nz-button nzType="primary"
+                            [ngClass]="{'w-50': countryConfig.isVenezuela && messengers}"
+                            [nzLoading]="loadingForm"
+                            [disabled]="form.invalid" (click)="action()">
+                            Guardar
+                        </button>
+                    </nz-form-control>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

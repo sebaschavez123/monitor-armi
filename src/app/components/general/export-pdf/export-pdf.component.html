@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="es-Es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
+</head>
+	<body>
+		<div class="address">
+		  <div class="for">
+		    <p class="title-envio">
+		    	{{reportType}}
+		    </p>
+		    <p class="title-detail">
+		      Detalle de envío
+		    </p>
+		  </div>
+		</div>
+
+		<div class="items">  
+			<table width="100%">
+			  <tr>
+			    <th scope="col">Orden</th>
+			    <th scope="row">{{selectedOrder.orderId}}</th>
+			  </tr>
+			  <tr>
+			    <th scope="col">Método de Pago</th>
+			    <th scope="row">{{selectedOrder.paymentMethod}}</th>
+			  </tr>
+			  <tr>
+			    <td scope="col">Fecha de creación</td>
+			    <td scope="row">{{selectedOrder.createDate | date:'yy-MM-dd HH:mm'}}</td>
+			  </tr>
+			  <tr>
+			    <td scope="col">Cliente</td>
+			    <td scope="row">{{selectedOrder.customerName}}</td>
+			  </tr>
+			  <tr>
+			    <td scope="col">Documento</td>
+			    <td scope="row">{{selectedOrder.customerDocument}}</td>
+			  </tr>
+			  <tr>
+			    <td scope="col">Tel&eacute;fono</td>
+			    <td scope="row">{{selectedOrder.customerPhone}}</td>
+			  </tr>
+			  <tr>
+			    <td scope="col">Correo el&eacute;ctrónico</td>
+			    <td scope="row">{{selectedOrder.customerEmail}}</td>
+			  </tr>
+			  <tr>
+			    <td scope="col">Ciudad</td>
+			    <td scope="row">{{selectedOrder.city}}</td>
+			  </tr>
+			  <tr>
+			    <td scope="col">Código DANE</td>
+			    <td scope="row">{{selectedOrder.orderId}}</td>
+			  </tr>
+			  <tr>
+			  	<td scope="col">Direcci&oacute;n / Detalle del domicilio</td>
+			    <td scope="row"> {{selectedOrder.customerAddress}}</td>
+			  </tr>
+			  <tr>
+			    <td scope="col">Comentarios del cliente</td>
+			    <td scope="row">{{selectedOrder.observations}}</td>
+			  </tr>
+			</table>
+			 <div>
+				 <p class="message-cuf">
+				 	* No olvide ingresar el CUF para envíos nacionales
+				 </p>
+			 </div>
+
+			 <div class="text-center">
+			 	<p class="title-detail">
+			      PRODUCTOS
+			    </p>
+			 </div>
+			 <table width="100%">
+			  <tr>
+			    <th scope="col">CUF</th>
+			    <th scope="col">Nombre</th>
+			    <th scope="col">Cantidad</th>
+			    <th scope="col">Precio Unitario</th>
+			  </tr>
+			  <tr *ngFor="let item of lstProducts; index as i">
+			    <td scope="row">{{item.id}}</td>
+			    <td scope="row">{{item.itemName}}</td>
+			    <td scope="row">{{item.units}}</td>
+			    <td scope="row">{{item.price}}</td>
+			  </tr>
+			</table>
+
+			<table width="100%" style="margin-top: 15px;">
+			  <tr>
+			    <th scope="col">Subtotal:</th>
+			    <td scope="row">{{subTotalPrice}}</td>
+			  </tr>
+			  <tr>
+			    <th scope="col">Domicilio:</th>
+			    <td scope="row">{{totalDomicilio}}</td>
+			  </tr>
+			  <tr>
+			    <th scope="col">Total:</th>
+			    <td scope="row">{{totalPrice}}</td>
+			  </tr>
+			</table>
+		</div>
+	</body>
+</html>
+

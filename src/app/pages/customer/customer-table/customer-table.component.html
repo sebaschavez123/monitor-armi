@@ -1,0 +1,45 @@
+<nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="customers" [ngClass]="{'empty-table': customers.length == 0}" [nzLoading]="valuesTable.loading" [nzTotal]="valuesTable.total" [nzPageSize]="valuesTable.paginate" [nzPageIndex]="valuesTable.pageIndex"
+    [nzFrontPagination]="valuesTable.total ? false : true" (nzQueryParams)="onQueryParamsChange($event)">
+    <thead>
+        <tr>
+            <th *ngFor="let col of cols; let i = index" [nzColumnKey]="col.key ? col.key : col.label" [nzSortOrder]="col.sortOrder" [nzSortFn]="col.sortFn" [nzFilters]="col.listOfFilter" [nzFilterFn]="col.filterFn">
+                <div style="font-size: 15px;" class="font-resalt text-body">{{col.label}}</div>
+            </th>
+            <th *ngIf="options"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of rowSelectionTable.data; let i = index" class="option-border-color" (click)="customerSelected = data">
+            <td *ngFor="let col of cols; let i = index">
+                <span [ngSwitch]=" col.label ">
+                    <div *ngSwitchCase=" 'Id'" class="font-resalt">
+                        {{ data[col.name] ? data[col.name] : 'No data' }}
+                    </div>
+                    <div *ngSwitchCase=" 'Cédula'" class="font-resalt">
+                        {{ data[col.name] ? data[col.name] : 'No data' }}
+                    </div>
+                    <div *ngSwitchCase=" 'Télefono'" class="font-resalt">
+                        {{ data[col.name] ? data[col.name] : 'No data' }}
+                    </div>
+                    <div *ngSwitchCase=" 'Fecha de creación'">
+                        {{ data[col.name]  | date }}
+                    </div>
+                    <div *ngSwitchCase=" 'Bloqueado'">
+                        {{ data[col.name] ? 'Si' : 'No' }}
+                    </div>
+                    <div *ngSwitchCase=" 'Prime'">
+                        {{ data[col.name] ? 'Si' : 'No' }}
+                    </div>
+                    <div *ngSwitchDefault>
+                        {{ data[col.name] ? data[col.name] : 'No data' }}
+                    </div>
+                </span>
+            </td>
+            <td *ngIf="options">
+                <button class="btn btn-sm btn-opc btn-primary" (click)="customerSelected = data">Ver</button>
+                <button class="btn btn-sm btn-opc btn-danger" *ngIf="canRemove()" (click)="delete(data, i, $event)">Eliminar</button>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+<customer-edit [customer]="customerSelected" (close)="updateInfo($event)"></customer-edit>

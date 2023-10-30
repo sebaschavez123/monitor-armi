@@ -1,0 +1,917 @@
+<div class="modal fade" [ngClass]="{'show': order, 'page-mode': pageMode}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-custom">
+        <div class="modal-content" *ngIf="order">
+            <div class="head">
+                <div class="close" (click)="close.emit()"><i class="fe fe-x-circle"></i></div>
+                <div class="title">
+                    <h4>Orden #{{order.orderId}}</h4>
+                    <img class="logoPrime" *ngIf="order.isPrime=='TRUE'" src="/assets/svg/logo_prime.svg" alt="Logo Prime">
+                </div>
+            </div>
+            <div class="content">
+                <div class="row m-0 justify-content-center">
+                    <div class="col-lg-4">
+
+                        <div class="card mr-1 mb-0">
+                            <div class="card-body p-2">
+                                <div *ngIf="orderDetail.employeeCanceledOrder" class="alert alert-danger text-center font-size-12 d-flex align-items-center">
+                                    <i class="fa fa-2x fa-exclamation mr-2"></i> 
+                                    <p class="m-0"> El usuario <strong class="ml-1 mr-1">{{orderDetail.employeeCanceledOrder}}</strong> ha cancelado esta orden</p>
+                                </div>
+                                <div *ngIf="orderDetail.nameUpdateAddress" class="alert alert-warning text-center font-size-12 d-flex align-items-center">
+                                    <i class="fa fa-2x fa-warning mr-2"></i> 
+                                    <p class="m-0"> El usuario <strong class="ml-1 mr-1">{{orderDetail.nameUpdateAddress}}</strong> ha modificado La dirección de esta orden</p>
+                                </div>
+                                <div *ngIf="orderDetail.employeeFinishedOrder" class="alert alert-primary text-center font-size-12 d-flex align-items-center">
+                                    <i class="fa fa-2x fa-exclamation mr-2"></i> 
+                                    <p class="m-0"> El usuario <strong class="ml-1 mr-1">{{orderDetail.employeeFinishedOrder}}</strong> ha finalizado esta orden</p>
+                                </div>
+                                <div *ngIf="order.hasAuction=='TRUE'" class="alert alert-warning text-center font-size-12 d-flex align-items-center">
+                                    <i class="fa fa-2x fa-warning mr-2"></i>
+                                    <p class="m-0">Esta orden ha sido subastada</p>
+                                </div>
+                                <div *ngIf="orderDetail.isAssociated" class="alert alert-warning text-center font-size-12 d-flex align-items-center">
+                                    <i class="fa fa-2x fa-warning mr-2"></i> 
+                                    <p *ngIf="orderDetail.associatedIdExpress" class="m-0"> Orden express asociada: <strong class="ml-1 mr-1">{{orderDetail.associatedIdExpress}}</strong></p>
+                                    <p *ngIf="orderDetail.associatedIdProvider" class="m-0"> Orden de provedor asociada: <strong class="ml-1 mr-1">{{orderDetail.associatedIdProvider}}</strong></p>
+                                </div>
+                                <div *ngIf="orderDetail.idCanceled && order.IdCanceled != '' && orderDetail.idCanceled != null" class="alert alert-warning text-center font-size-12 d-flex align-items-center">
+                                    <i class="fa fa-2x fa-exclamation mr-2"></i>
+                                    <p class="m-0">
+                                        Orden cancelada asociada
+                                        <span *ngIf="order.userCanceled"> por <strong class="ml-2">{{orderDetail.userCanceled.employeeName}}</strong> con id</span>
+                                        <strong class="ml-2">{{orderDetail.idCanceled}}</strong>
+                                    </p>
+                                </div>
+                                <div *ngIf="orderDetail.idActivated && orderDetail.idActivated != '' && orderDetail.idActivated != null" class="alert alert-warning text-center font-size-12 d-flex align-items-center">
+                                    <i class="fa fa-2x fa-exclamation mr-2"></i>
+                                    <p class="m-0">
+                                        Orden activa asociada 
+                                        <span *ngIf="order.userActivated"> por <strong class="ml-2">{{orderDetail.userActivated.employeeName}}</strong> con id</span>
+                                        <strong class="ml-2">{{orderDetail.idActivated}}</strong>
+                                    </p>
+                                </div>
+                                <div *ngIf="orderDetail.fraudDescription" class="alert alert-warning text-center font-size-12 d-flex align-items-center">
+                                    <i class="fa fa-2x fa-warning mr-2"></i>
+                                    <div class="font-size-10 text-left"><strong>Posible fraude detectado</strong> <br>{{orderDetail.fraudDescription}}</div>
+                                </div>
+                                <div *ngIf="orderDetail.pickingDate" class="alert alert-warning text-center font-size-12 d-flex align-items-center">
+                                    <i class="fa fa-2x fa-warning mr-2"></i>
+                                    <div class="font-size-10 text-left"><strong>Orden programada para el día</strong> <br>{{orderDetail.pickingDate}}</div>
+                                </div>
+                                <div *ngIf="orderDetail.couponDetail" class="alert alert-warning text-center font-size-12 d-flex align-items-center">
+                                    <i class="fa fa-2x fa-ticket mr-2"></i>
+                                    <div class="font-size-10 text-left">Cupón <strong>{{orderDetail.couponDetail.coupon}}</strong> 
+                                        <br>Descuento de <strong>${{orderDetail.couponDetail.discountAmount | number}}</strong>
+                                        <br>Válido en compras mayor a <strong>${{orderDetail.couponDetail.minAmount | number}}</strong>
+                                    </div>
+                                </div>
+                                <div *ngIf="orderDetail.ticketZendesk && orderDetail.ticketZendesk.length > 0" class="card-title-o font-bold">Casos Zendesk</div>
+                                <div *ngIf="orderDetail.ticketZendesk && orderDetail.ticketZendesk.length > 0" class="row m-0 box-ticket">
+                                    <div *ngFor="let ticket of orderDetail.ticketZendesk" class="ticket card card-solid" [ngClass]="{'max': ticketNumberSelected == ticket.ticketId}" (click)="ticketNumberSelected = ticket.ticketId">
+                                        <div class="number"> <i class="fa fa-ticket mr-2"></i>{{ticket.ticketId}}</div>
+                                        <i class="fa fa-close" (click)="$event.stopPropagation();ticketNumberSelected = undefined"></i>
+                                        <div class="body-ticket">
+                                            <h6>{{ticket.json.name}}</h6>
+                                            <p>{{ticket.json?.forma?.comment}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="orderDetail.isReassingments" class="card-title-o font-bold">Reasignaciones</div>
+                                <div class="reassings-timeline mt-3 ml-2">
+                                    <nz-timeline>
+                                        <nz-timeline-item *ngFor="let reassing of orderDetail.reassignments">
+                                          <p><strong *ngIf="reassing?.courier" class="mr-3">{{reassing?.courier}}</strong>
+                                             <small *ngIf="reassing?.createDate">{{reassing?.createDate}}</small>
+                                             <small *ngIf="reassing.date">{{reassing.date}}</small></p>
+                                          <div> <p *ngIf="reassing?.user?.employeeName">{{reassing?.user?.employeeName}}</p>
+                                              <p *ngIf="reassing?.userName">{{reassing?.userName}}</p>
+                                              <p *ngIf="reassing?.user?.rolName">({{reassing?.user?.rolName}})</p></div>
+                                        </nz-timeline-item> 
+                                      </nz-timeline>
+                                </div>
+                                <div class="card-title-o font-bold">Pedido</div>
+                                <div class="table-responsive" class="table-data">
+                                    <table>
+                                        <tr>
+                                            <td scope="col">Número de pedido</td>
+                                            <td scope="row" class="text-right">{{orderDetail.orderId}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Fecha de creación</td>
+                                            <td scope="row" class="text-right">{{orderDetail.createDate | date:'yy-MM-dd HH:mm'}}</td>
+                                        </tr>
+                                        <!-- tr *ngIf="orderDetail.oldOrderDate()">
+                                            <td>Fecha de creación primera orden</td>
+                                            <td class="text-right">{{orderDetail.oldOrderDate() | date:'yy-MM-dd HH:mm'}}</td>
+                                        </tr -->
+                                        <tr>
+                                            <td scope="col">Estado</td>
+                                            <td scope="row" class="text-right">{{orderDetail.status}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Redirecciones</td>
+                                            <td scope="row" class="text-right">{{orderDetail.countRelaunched}}</td>
+                                        </tr>
+                                        <tr *ngIf="showFinalChannel()">
+                                            <td scope="col">Canal de Finalización</td>
+                                            <td scope="row" class="text-right finalize-channel">{{orderDetail?.channelName}}</td>
+                                        </tr>
+                                        <tr *ngIf="showBillingChannel()">
+                                        <!-- tr -->
+                                            <td scope="col">Canal de Facturación</td>
+                                            <td scope="row" class="text-right finalize-channel">{{orderDetail?.billingChannel}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Metodo de pago</td>
+                                            <td scope="row" class="text-right">{{orderDetail.paymentMethod}}</td>
+                                        </tr>
+                                        <tr>
+                                          <td scope="col">Valor orden</td>
+                                          <td scope="row" class="text-right">{{orderDetail.totalPrice ? orderDetail.totalPrice : 'Cargando...'}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Número de factura</td>
+                                            <td scope="row" class="text-right">{{orderDetail.billingNumber ? orderDetail.billingNumber : 'Cargando...'}}</td>
+                                        </tr>
+                                        <tr *ngIf="orderdetail?.exceedWeight">
+                                            <td scope="col">Peso:</td>
+                                            <td scope="row" class="text-right text-danger">Excedido</td>
+                                        </tr>
+                                        <tr *ngIf="orderdetail?.exceedVolume">
+                                            <td scope="col">Volumen:</td>
+                                            <td scope="row" class="text-right text-danger">Excedido</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Distancia total de recorrido</td>
+                                            <td scope="row" class="text-right">{{orderDetail.distanceKM ? orderDetail.distanceKM : 'Cargando...'}}</td>
+                                        </tr>
+                                        <!-- <tr *ngIf="permission.token">
+                                            <td>Token</td>
+                                            <td class="text-right">{{orderDetail.token ? orderDetail.token : 'Cargando...'}}</td>
+                                        </tr> -->
+                                        <tr *ngIf="permission.token">
+                                            <td scope="col">Token</td>
+                                            <td scope="row" class="text-right">
+                                                <a *ngIf="!openToken" style="text-decoration: underline;" (click)="viewToken()">Ver token</a>
+                                                <span *ngIf="openToken">{{orderDetail.token ? orderDetail.token : 'Cargando...'}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Canal</td>
+                                            <td scope="row" class="text-right">{{orderDetail.source}}</td>
+                                        </tr>
+                                        <tr *ngIf="incentives">
+                                            <td scope="col">Incentivo por relanzamiento</td>
+                                            <td scope="row" class="text-right">{{incentives.relaunchIncentive}}</td>
+                                        </tr>
+                                        <tr *ngIf="incentives">
+                                            <td scope="col">Total Incentivos</td>
+                                            <td scope="row" class="text-right">{{incentives.totalIncentives}}</td>
+                                        </tr>
+                                        <tr *ngIf="orderDetail.observations" class="border-0">
+                                            <td colspan="2">
+                                                <div class="alert alert-underline">
+                                                    <div class="font-weight-bold font-size-14">Comentarios</div>
+                                                    <div class="font-size-14">{{orderDetail.observations}}</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="exportPdf != undefined || medicalFormula != undefined" class="border-0">
+                                            <td *ngIf="exportPdf != undefined" class="text-center" [attr.colspan]="medicalFormula != undefined ? 1 : 2">
+                                                <button (click)="exportPdf = true" class="btn btn-info small btn-rounded-md"><i class="fa fa-file-pdf-o mr-1"></i> Exportar PDF</button>
+                                            </td>
+                                            <td *ngIf="medicalFormula != undefined" [attr.colspan]="exportPdf != undefined ? 1 : 2">
+                                                <button (click)="medicalFormula = true" class="btn btn-purple small btn-rounded-md" [disabled]="photoRX == undefined"><i class="fa fa-file-image-o mr-1"></i>{{ photoRX != undefined ? 'Formula Médica' : 'Cargando...'}}</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="card-title-o font-bold">Cliente</div>
+                                <div class="table-responsive ">
+                                    <table class="table-data">
+                                        <tr>
+                                            <td scope="col">Nombre</td>
+                                            <td scope="row"class="text-right">{{orderDetail.customerName}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Cédula</td>
+                                            <td scope="row" class="text-right">{{orderDetail.customerDocument}}</td>
+                                        </tr>
+                                        <tr *ngIf="permission.customer_phone">
+                                            <td scope="col">Teléfono</td>
+                                            <td scope="row" class="text-right text-primary phone-link" *ngIf="orderDetail.customerPhone">
+                                                <span (click)="showPhone(orderDetail.customerPhone)" *ngIf="!showCustomerPhone">Mostrar</span>
+                                                <a *ngIf="showCustomerPhone" (click)="openWapp(orderDetail.customerPhone, orderDetail.orderId)">
+                                                    <button title="Escribir a WhatsApp" class="btn-wp"></button> {{orderDetail.customerPhone}}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Correo electrónico</td>
+                                            <td scope="row" class="text-right" style="max-width: 100px;">{{orderDetail.customerEmail}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Dirección /<br>Detalle del domicilio</td>
+                                            <td scope="row" class="text-right" class="item-address text-right">{{orderDetail.customerAddress}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Ciudad/Municipio</td>
+                                            <td scope="row" class="text-right">{{orderDetail.city}}</td>
+                                        </tr>
+                                        <tr *ngIf="countryConfig.isColombia && orderDetail.entryDate">
+                                            <td scope="col">Fecha de entrada</td>
+                                            <td scope="row" class="text-right" class="item-address text-right">{{orderDetail.entryDate}}</td>
+                                        </tr>
+                                        <tr *ngIf="countryConfig.isColombia && orderDetail.billedOrders">
+                                            <td scope="col">Ordenes facturadas</td>
+                                            <td scope="row" class="text-right">{{orderDetail.billedOrders}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Tienda por defecto</td>
+                                            <td scope="row" class="text-right">{{!orderDetail.closerStoreName ? 'Cargando...' : orderDetail.closerStoreName}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <button nz-button *ngIf="orderDetail.fraudDescription" (click)="addCustomerWhiteList()" class="w-100 btn btn-info mb-3 font-size-10 p-1">Desmarcar como fraude</button>
+                                                <button nz-button *ngIf="permission.blockUser && !orderDetail.stateCustomer" (click)="blockUser()" class="w-100 btn btn-danger font-size-10 p-1">Bloquear usuario</button>
+                                                <button nz-button *ngIf="permission.blockUser && orderDetail.stateCustomer" (click)="unblockUser()" class="w-100 btn btn-secondary font-size-10 p-1">Desbloquear usuario</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div *ngIf="orderDetail.billingNumber" class="card-title-o font-bold">Pago en tienda</div>
+                                <div *ngIf="orderDetail.billingNumber" class="table-responsive">
+                                    <table>
+                                        <tr>
+                                            <td colspan="2" class="text-center text-capitalize">{{orderDetail.billingNumber}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div class="card-title-o font-bold">Pago
+                                    <div class="actions">
+                                        <a *ngIf="orderDetail.paymentMethod == 'Pago Movil'" class="btn icon" title="Ver más" (click)="orderIdpayment = orderDetail.orderId">Ver más</a>
+                                        <a class="btn icon" title="Cambiar" routerLink="/dashboard/payment-change/{{orderDetail.orderId}}">Cambiar</a>
+                                    </div>
+                                </div>
+                                <div *ngIf="orderDetail.orderPayment || orderDetail.isDataphone; else otherPay" class="item-pay">
+                                    <div class="icon-pay" [ngClass]="iconPay"> 
+                                    </div>
+                                    <div class="mr-2" width="240px">
+                                        <div>
+                                            <strong class="text-dark font-italic">
+                                                <span *ngIf="orderDetail.orderPayment">{{orderDetail.providerNameTrxLine}}</span>
+                                                <span *ngIf="orderDetail.isDataphone">Datafono</span>
+                                            </strong>
+                                        </div>                              
+                                        <div class="text-muted small payinfo">
+                                            <div *ngIf="orderDetail.orderPayment?.creditCardOwner">
+                                                <strong>Titular</strong>
+                                                <div>{{ orderDetail.orderPayment.creditCardOwner | lowercase }}</div>
+                                            </div>
+                                            <div *ngIf="orderDetail.orderPayment">
+                                                <strong>BIN</strong>
+                                                <div>{{ orderDetail.orderPayment.BIN }}</div>
+                                            </div>
+                                            <div *ngIf="orderDetail.isDataphone">
+                                                <strong>Número</strong>
+                                                <div>{{orderDetail.POSNumber}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ml-auto font-size-12 text-right text-nowrap">
+                                        <div *ngIf="orderDetail.orderPayment" class="text font-weight-bold">{{orderDetail.orderPayment.bankName}}</div>
+                                        <div>
+                                            <span *ngIf="orderDetail.orderPayment && orderDetail.orderPayment.transactionValuePayU != ''">{{orderDetail.orderPayment.transactionValuePayU}}</span>
+                                            <span *ngIf="orderDetail.isDataphone"></span>
+                                        </div>
+                                        <div *ngIf="orderDetail.orderPayment" class="small text" [ngClass]="getStatusColor(orderDetail.orderPayment.transactionStatusPayU)">{{orderDetail.orderPayment.transactionStatusPayU}}</div>
+                                    </div>
+                                </div>
+                                <div class="border-top" *ngIf="orderDetail.orderPayment">
+                                    <div *ngIf="orderDetail.orderPayment.reponseErrorMessage" class="text-danger font-size-12"><strong class="mr-2">Error PayU: </strong> {{orderDetail.orderPayment.reponseErrorMessage}}</div>
+                                    <div *ngIf="orderDetail.orderPayment.status" class="text-muted small text-black-50"><strong>Estado de tarjeta: </strong> <span class="ml-2">{{orderDetail.orderPayment.status}}</span></div>
+                                </div>
+                                <div class="border-top" *ngIf="orderDetail.paymentMethod == 'Seguros Bolivar'">
+                                    <div class="text-muted small text-black-50"><strong>Token: </strong> <span class="ml-2">{{orderDetail.token}}</span></div>
+                                </div>
+
+                                <ng-template #otherPay>
+                                    <div class="item-pay">
+                                        <div class="icon-pay other" [ngClass]="{'efecty': orderDetail.paymentMethod == 'Efectivo','other': orderDetail.paymentMethod != 'Efectivo'}">
+                                            <i *ngIf="orderDetail.paymentMethod != 'Efectivo'">{{orderDetail.paymentMethod[0]}}</i>
+                                        </div>
+                                        <div class="mr-2 d-flex align-items-center">
+                                            <div><strong class="text-dark font-italic">{{orderDetail.paymentMethod}}</strong></div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+
+                                <div class="table-responsive table-payment-movil" *ngIf="orderDetail.pagoMovilDetail">
+                                    <table class="table-data" *ngFor="let pm of orderDetail.pagoMovilDetail">
+                                        <tr>
+                                            <td>
+                                                <div  scope="col" class="text-primary"><small>Transferencia #1</small> </div>
+                                                Referencia
+                                            </td>
+                                            <td scope="row" class="text-right">
+                                                <div style="height: 20px;"></div>
+                                                {{pm.reference}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col" >Monto</td>
+                                            <td scope="row" class="text-right">{{pm.amount}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col" >Banco</td>
+                                            <td scope="row" class="text-right">{{pm.name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col" >Cédula de identidad</td>
+                                            <td scope="row" class="text-right">{{pm.documentNumber}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col" >Teléfono</td>
+                                            <td scope="row" class="text-right">{{pm.phone}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div class="alert alert-info p-1" *ngIf="orderDetail.paymentChanges">
+                                    <ul class="m-0">
+                                        <li *ngFor="let item of orderDetail.paymentChanges" [innerHTML]="item" style="font-size: 12px;"></li>
+                                    </ul>
+                                </div>
+
+                                <div *ngIf="orderDetail.isCreditNote" class="card-title-o font-bold">Nota Crédito</div>
+                                <div *ngIf="orderDetail.isCreditNote" class="table-responsive">
+                                    <table>
+                                        <tr>
+                                            <td scope="col">Número</td>
+                                            <td scope="row" class="text-right">{{orderDetail.creditNoteTicket}}</td>
+                                        </tr>
+                                        <tr *ngIf="orderDetail.creditNoteTotal">
+                                            <td scope="col">Total</td>
+                                            <td scope="row" class="text-right">${{orderDetail.creditNoteTotal}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div *ngIf="reverseOrderStatus">
+                                    <div class="card-title-o font-bold">Reverso</div>
+                                    <div class="table-responsive">
+                                        <table>
+                                            <tr>
+                                                <td scope="col">Estado</td>
+                                                <td scope="row" class="text-right">{{ reverseOrderStatus }}</td>
+                                            </tr>
+                                            <tr *ngIf="countryConfig.isVenezuela">
+                                                <td scope="col">Código de reembolso</td>
+                                                <td scope="row" class="text-right">{{!orderPaymentReference ? 'Cargando...' : orderPaymentReference}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                                <ng-container *ngIf="RefundPaymentMobileStatuses?.length > 0">
+                                    <div class="card-title-o font-bold">
+                                        Devoluciones
+                                        <small>(Pago Movíl / P2C)</small>
+                                    </div>
+                                    <div class="table-responsive table-payment-movil">
+                                        <table class="table-data">
+                                            <tr *ngFor="let rpms of RefundPaymentMobileStatuses; let rpmsi = index">
+                                                <td scope="col">
+                                                    <div class="text-primary"><small>Referencia #{{rpmsi+1}}</small> </div>
+                                                    {{ rpms.paymentReference }}
+                                                </td>
+                                                <td scope="row" class="text-right">
+                                                    {{ rpms.transactionStatus }}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </ng-container>
+
+                                <div class="card-title-o font-bold">Call center <span class="small">({{orderDetail.orderObservations ? orderDetail.orderObservations.length : 0}})</span></div>
+
+                                <div class="list-custom">
+                                    <ul class="list-unstyled">
+                                        <li class="item" *ngFor="let item of orderDetail.orderObservations">
+                                            <div class="itemHead mb-3">
+                                                <div class="mr-2">
+                                                    <div>{{item.employeeName}}</div>
+                                                    <div class="text-muted text-lowercase">{{item.rolName}}</div>
+                                                    <div class="text-primary small">{{item.creationDate | date:'yyyy-MM-dd hh:mm a'}}</div>
+                                                </div>
+                                            </div>
+                                            <div class="alert alert-underline p-2">
+                                                <div class="font-weight-bold font-size-14">Comentario</div>
+                                                <div class="font-size-14" *ngIf="item.observationId" [innerHTML]="item.observation"></div>
+                                            </div>
+                                        </li>
+                                        <li *ngIf="permission.observations" class="item item-input">
+                                            <div class="font-weight-bold font-size-14 mb-2 color-blue-dark">Agregar nuevo comentario:</div>
+                                            <p class="m-0"> <textarea class="w-100 font-size-14" [(ngModel)]="newCommnet" name="newCommnet" placeholder="Ingresa un nuevo comentario..."></textarea></p>
+                                            <div class="small text-danger" *ngIf="errNewComment.length > 0">* {{errNewComment}}</div>
+                                            <div class="btns w-100 text-right">
+                                                <button class="btn btn-danger small font-weight-bold p-1" (click)="addComment = false">Cancelar</button>
+                                                <button class="btn btn-purple small font-weight-bold p-1 ml-2" [ngClass]="{'disable': this.newCommnet.length == 0}" (click)="submitComment()">Agregar</button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-8">
+
+                        <div class="card-title-o font-bold">Estado</div>
+
+                        <div *ngIf="orderDetail.stateDate else loadStates">
+                            <div class="col-lg-12 mb-flex-auto" style="margin-bottom: 25px;">
+                                <div id="trackinc-timeline">
+                                    <div *ngFor="let state of orderDetail.stateDate; let i = index" class="ttl-item" [ngClass]="{'active': state.active}">
+                                        <div class="d-center" *ngIf="state?.orderStatusId !== 54 || (state?.orderStatusId === 54 && state?.orderStatusDate) ">
+                                            <div class="icon {{state.orderStatusName.replace(' ', '_').toLowerCase()}}"></div>
+                                            <div class="text">{{state.orderStatusName}}</div>
+                                            <div class="small text-center">{{state.orderStatusDate | date:'yyyy-MM-dd HH:mm'}}</div>
+                                            <div class="minutes" *ngIf="i < orderDetail?.stateDate?.length -1 && orderDetail?.stateDate[i+1]?.active && state?.orderStatusId !== 54">{{orderDetail?.stateDateMinutes[i]?.m}} <span *ngIf="orderDetail?.stateDateMinutes[i]?.m">min</span> </div>
+                                            <div class="minutes" *ngIf="state?.orderStatusId === 54">{{orderDetail?.stateDateMinutesReset}} min</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timers" [ngClass]="{'timers--transfer': getShowTransferModal()}">
+                                <div class="text-center w-100 font-size-14 alert alert-time p-2" [ngClass]="{'alert-underline-success': orderDetail.time.text == 'Tiempo total', 'alert-underline': orderDetail.time.text != 'Tiempo total'}">
+                                    <em class="fa fa-2x fa-clock-o mr-2"></em>
+                                    {{orderDetail.time.text}} 
+                                    <strong class="ml-2">{{orderDetail.time.value}} {{orderDetail.time.value == 0 || orderDetail.time.value > 1 ? "Minutos": "Minuto" }}</strong>
+                                </div>
+                                <button
+                                    class="button-transfer"
+                                    *ngIf="getShowTransferModal()"
+                                    (click)="showTransferModal = true"
+                                >
+                                    {{ numberOfStores | i18nPlural:numberOfStoresMapping }}
+                                    <span *ngIf="numberOfStores > 1">{{ numberOfStores - 1 }}</span>
+                                </button>
+                            </div>    
+                            <div class="m-auto text-center mt-3">
+                                <picking [permission]="permission" [disabledActiveButton]="activeButton" [invoice]="invoiceManually" [typeReport]="typeReport" [order]="orderDetail" (action)="actionEvents($event)"></picking>  
+                            </div>
+                        </div>
+
+                        <ng-template #loadStates>
+                            <div class="text-center mt-5">
+                                <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+                                <p class="ant-upload-text text-width">Cargando estado de la orden</p>
+                            </div>
+                        </ng-template>
+
+                        <div class="card-title-o font-bold mb-2 mt-1">Mensajero</div>
+                        <div class="mt-2 mb-2" *ngIf="permission.edit && orderDetail.idTracking == null && formCourier">
+                            <div class="product-search">
+                                <div class="font-size-12 font-bold mr-2 mb-0">
+                                    <h6 style="color: #001e62" class="m-0 font-weight-bold">Información Courier:</h6>
+                                </div>
+                                <div class="input-selection-action">
+                                    <input type="text" [(ngModel)]="formCourier.value" placeholder="Número de guía">
+                                    <select *ngIf="formCourier.courier != null" [(ngModel)]="formCourier.courier">
+                                            <option value="" selected disabled>Courier</option>
+                                            <option *ngFor="let type of typesCouriers" [value]="type.value">{{type.label}}</option>
+                                        </select>
+                                    <button class="btn" (click)="updateOrderGuide()" [disabled]="!verifyUpdateCourier()">Actualizar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row m-0 align-items-center">
+                            <div class="col-lg-5">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div *ngIf="orderDetail.courierName" [ngClass]="{'not-messenger': !orderDetail.messenger}">
+                                            <div class="d-flex flex-wrap align-items-center justify-content-center mb-2 justify-content-center" style="overflow: auto;">
+                                                <div class="flex-shrink-0 mr-2 mb-2">
+                                                    <img [alt]="orderDetail.messenger" height="65px" width="65px" [src]="orderDetail.messengerPhoto ? 'http://stage.tumotorizado.com/'+orderDetail.messengerPhoto : 'assets/images/delivery-man.png'">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <div class="text-dark font-size-18 font-weight-bold text-nowrap messenger-name"> {{orderDetail.messenger}}</div>
+                                                    <div *ngIf="!orderDetail.isTrackingUrl" class="font-14">Tracking: <strong>{{orderDetail.idTracking}}</strong></div> 
+                                                    <div class="text-uppercase font-14 courier-name">{{orderDetail.courierName}}</div> 
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 messenger-contact"> 
+                                                <a class="btn btn-outline-success mr-2 w-100 small" href="https://api.whatsapp.com/send?phone={{countryConfig.phoneCode+orderDetail.messengerPhone}}" target="blank"> <i class="fa fa-whatsapp"></i> WhatsApp </a>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-borderless">
+                                                    <tbody>
+                                                        <tr *ngIf="orderDetail.isTrackingUrl">
+                                                            <td scope="col" class="text-gray-6 pl-0">Url tracking</td>
+                                                            <td scope="row" *ngIf="orderDetail.idTracking" class="pr-0 text-right text-primary"><a [href]="orderDetail.idTracking" target="blank">Seguir</a></td>
+                                                            <td scope="row" *ngIf="!orderDetail.idTracking" class="pr-0 text-right text-dark">No asignado</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td scope="col" class="text-gray-6 pl-0">Teléfono</td>
+                                                            <td scope="row" class="pr-0 text-right text-dark">{{orderDetail.messengerPhone}}</td>
+                                                        </tr>
+                                                        <tr *ngIf="!!orderDetail.urlArmIrene">
+                                                            <td scope="col" class="text-gray-6 pl-0">Link Armirene</td>
+                                                            <td scope="row" class="pr-0 text-right text-dark armirene-link">
+                                                                <span *ngIf="!armireneLink" (click)="armireneLink=true">Ver Link</span>
+                                                                <span *ngIf="armireneLink && !onMobile" (click)="copyLink(orderDetail.urlArmIrene)">Copiar</span>
+                                                                <a *ngIf="armireneLink && onMobile" [href]="orderDetail.urlArmIrene">abrir</a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td scope="col" class="text-gray-6 pl-0">Proveedor</td>
+                                                            <td scope="row" class="pr-0 text-right text-dark">
+                                                                {{ !!orderDetail.providerMessengerName ? orderDetail.providerMessengerName : 'No disponible'}}
+                                                            </td>
+                                                        </tr>
+                                                        <tr *ngIf="orderDetail.messengerId">
+                                                            <td scope="col" class="text-gray-6 pl-0">Identificación</td>
+                                                            <td scope="row" class="pr-0 text-right text-dark">{{orderDetail.messengerId}}</td>
+                                                        </tr>
+                                                        <tr *ngIf="orderDetail.messengerEmail">
+                                                            <td scope="col" class="text-gray-6 pl-0">Email</td>
+                                                            <td scope="row" class="pr-0 text-right text-dark" style="max-width: 100px;">{{orderDetail.messengerEmail}}</td>
+                                                        </tr>
+                                                        <tr *ngIf="orderDetail.messengerProvider">
+                                                            <td scope="col" class="text-gray-6 pl-0">Proveedor</td>
+                                                            <td scope="row" class="pr-0 text-right text-dark">{{orderDetail.messengerProvider}}</td>
+                                                        </tr>
+                                                        <tr *ngIf="orderDetail.messengerVehicleType">
+                                                            <td scope="col" class="text-gray-6 pl-0">Vehículo</td>
+                                                            <td scope="row" class="pr-0 text-right text-dark">{{orderDetail.messengerVehicleType}}</td>
+                                                        </tr>
+                                                        <tr *ngIf="orderDetail.messengerEvidences">
+                                                            <td scope="col" colspan="2" class="p-0">
+                                                                <div class="text-gray-6 pl-0">Evidencias</div>
+                                                                <div class="messenger-evidences">
+                                                                    <img *ngFor="let url of orderDetail.messengerEvidences" [src]="url" alt="evidence" (click)="messengerEvidences = true; messengerEvidenceSelected = url">
+                                                                </div>
+                                                                <!-- <button (click)="messengerEvidences = true" class="btn btn-primary small btn-rounded-md"><i class="fa fa-file-image-o mr-1"></i>Ver evidencias</button> -->
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="!orderDetail.courierName" class="not-courier">
+                                            No se ha asinago ningún courier hasta el momento
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7 position-relative">
+                                <open-street-map #orderMap
+                                    [store]="orderDetail.store"
+                                    [coordinates]="coordinatesMap"
+                                    [home]="getHome()"
+                                    [active]="isMapActive">
+                                </open-street-map>
+                                <button *ngIf="(countryConfig.isVenezuela || countryConfig.isColombia )&& orderDetail.customerAddressDelivery"
+                                    class="btn btn-primary small btn-rounded-md btn-address-edit"
+                                    (click)="setEditAddress(orderDetail.customerAddressDelivery)">
+                                    Editar dirección
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="countryConfig?.isColombia && typification.length > 0">
+                            <div class="col-12 card-title-o font-bold mb-2 mt-1">Administración Contacto</div>   
+                                <div class="my-3 px-4 d-flex m-width">
+                                    <div class="btn-option" *ngFor="let type of typification" (click)="typeUser = type?.id">
+                                        <span class="icon-aware" id="icon-{{type?.id}}" [ngClass]="{'active-aware': type?.id === this.typeUser}"></span>
+                                         <spam [ngClass]="{'active-text': type?.id === this.typeUser}"> {{type?.typification}}</spam>
+                                        </div>
+                                        <button class="btn btn-primary default btn-rounded-md" [disabled]="typeUser === undefined || callActive" (click)="call(typeUser)">Enviar</button>  
+                                    </div>
+                                    <span class="color-red">{{messageCall}}</span>
+                            </div>
+
+                            <nz-modal [(nzVisible)]="isVisible" nzTitle='<h4 class="text-center fw-bold">Información adicional</h4>' (nzOnCancel)="handleCancel()" [nzMaskClosable]="false">
+                                <div *nzModalContent>
+                                    <app-form-aware [dataOrder]="orderSelect" [dial_id]="dial_id" [message]="messageCall" [typeUser]="typeUser" [send]="sendForm" (closeModal)="handleOk()">  </app-form-aware>
+                                </div>
+                                <div *nzModalFooter>
+                                  <button  class="btn btn-success btn-large" nz-button  (click)="sendForm = true" [nzLoading]="isConfirmLoading">Guardar</button>
+                                </div>
+                              </nz-modal>
+
+                        <div class="expand" [ngClass]="{'active': expands.products_real}">
+                            <div class="card-title-o font-bold mb-2 mt-1">
+                                Productos
+                                <span class="small">({{!orderDetail.products?'Cargando...': orderDetail.products?.length == 0 ? 'Sin productos' : orderDetail.productsTheoretical?.length ?  orderDetail.productsTheoretical?.length : orderDetail.products?.length }})</span>
+                                <div *ngIf="orderDetail.products" class="icons">
+                                    <div class="icon" title="Expandir" (click)="expand('real')"><i class="fa fa-expand"></i></div>
+                                    <div *ngIf="!expands.products_real" (click)="opn.products_real = !opn.products_real" class="icon" title="Abrir"><i class="fa" [ngClass]="{'fa-chevron-up': opn.products_real, 'fa-chevron-down': !opn.products_real}"></i></div>
+                                </div>
+                            </div>
+                            <div *ngIf="orderDetail.products" id="responsive-real" class="table-responsive" [ngClass]="{'open': opn.products_real}" [ngStyle]="{'max-height': heightTable+'px'}">
+                                <table id="table-products-real" class="table table-products">
+                                    <thead>
+                                        <tr>
+                                            <th *ngFor="let col of colsProduct" class="text-{{col.align}}" scope="col">{{col.label}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let product of productosVisual">
+                                            <td 
+                                                *ngFor="let col of colsProduct"
+                                                valign="center"
+                                                class="product" 
+                                                [ngClass]="{'row-space': !product, 'sending': product?.sending, 'n-sending': product?.nsending}">
+                                                <div *ngIf="product" [ngSwitch]="col.label">
+                                                    <div *ngSwitchCase="'Item'" class="text-{{col.align}}" style="padding: 3px;">
+                                                        <i class="fa fa-2x edition" [ngClass]="getColorCheckIcon(product)"> </i> {{product[col.key]}}
+                                                    </div>
+                                                    <div *ngSwitchCase="'Imagen'" class="text-{{col.align}}" style="padding: 3px;">
+                                                        <img [src]="product[col.key]" onerror="this.src='/assets/images/not-product.png'" style="height: 50px; width: 50px">
+                                                    </div>
+                                                    <div *ngSwitchCase="'Stock'" class="text-{{col.align}}" style="padding: 3px;">
+                                                        <small *ngIf="!product[col.key]">
+                                                            <span *ngIf="countryConfig.isColombia">No data</span>
+                                                            <span *ngIf="!countryConfig.isColombia && product[col.key] != 0">Cargando...</span>
+                                                        </small>
+                                                        <span *ngIf="product[col.key] || product[col.key] == 0">{{product[col.key]}}</span>
+                                                    </div>
+                                                    <div *ngSwitchCase="'Precio unitario'" class="text-{{col.align}}" style="position: relative;">
+                                                        {{getFormatPrice(product[col.key])}}
+                                                        <div class="promotions">
+                                                            <div *ngIf="product.offerComponentDetail" class="notify-buble-white buble-offer" title="Oferta - {{product.offerComponentDetail.offerDescription}}"><i class="fa fa-money"></i></div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- <div *ngSwitchCase="'Unidades'" class="text-{{col.align}}">
+                                                        <table>
+                                                            <tr>
+                                                                <td class="text-center" style="border: none;">
+                                                                    <button type="button" class="btn btn-primary btn-sm btn-action-table" (click)="lessUnit(product)" *ngIf="permission.edit">-</button>
+                                                                </td>
+                                                                <td class="text-center" style="border: none;">
+                                                                    {{product[col.key]}}
+                                                                </td>
+                                                                <td class="text-center" style="border: none;">
+                                                                    <button type="button" class="btn btn-primary btn-sm btn-action-table" (click)="addUnit(product)" *ngIf="permission.edit">+</button>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div> -->
+                                                    <!-- <div *ngSwitchCase="'Acciones'" class="text-center font-size-12">
+                                                        <button *ngIf="permission.edit" (click)="deleteProduct(product)" title="Eliminar Producto" class="btn btn-danger" [disabled]="!permission.edit"><i class="fa fa-trash"></i></button>
+                                                    </div> -->
+                                                    <div *ngSwitchCase="'Sustitutos'" class="text-center">
+                                                        {{product[col.key] ? 'Si': 'No'}}
+                                                    </div>
+                                                    <div *ngSwitchDefault class="min-cell text-{{col.align}}">
+                                                        {{product[col.key]}}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td [attr.colspan]="colsProduct.length - 1" class="text-right font-weight-bold">SUBTOTAL</td>
+                                            <td class="text-right font-weight-bold">{{orderDetail.subTotalPrice}}
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="countryConfig.isColombia">
+                                            <td [attr.colspan]="colsProduct.length - 1" class="text-right font-weight-bold">DESCUENTOS PRIME</td>
+                                            <td class="text-right font-weight-bold">-{{orderDetail?.primeDiscount}}
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="countryConfig.isColombia">
+                                            <td [attr.colspan]="colsProduct.length - 1" class="text-right font-weight-bold">DESCUENTO OFERTAS</td>
+                                            <td class="text-right font-weight-bold">-{{orderDetail?.offerDiscount}}
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="countryConfig.isColombia">
+                                            <td [attr.colspan]="colsProduct.length - 1" class="text-right font-weight-bold">DESCUENTO COUPON</td>
+                                            <td class="text-right font-weight-bold">-{{orderDetail?.couponDiscount}}
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="countryConfig.isColombia">
+                                            <td [attr.colspan]="colsProduct.length - 1" class="text-right font-weight-bold">DESCUENTO CUPON TALON</td>
+                                            <td class="text-right font-weight-bold">-{{ orderDetail?.talonCouponDiscount  }}
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="countryConfig.isColombia">
+                                            <td [attr.colspan]="colsProduct.length - 1" class="text-right font-weight-bold">DESCUENTO OFERTAS TALON</td>
+                                            <td class="text-right font-weight-bold">-{{ orderDetail?.talonOfferDiscount }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td [attr.colspan]="colsProduct.length - 1" class="text-right font-weight-bold">DESCUENTO TOTAL</td>
+                                            <td class="text-right font-weight-bold">- {{orderDetail.discount}}
+                                            </td>
+                                        </tr>
+                                        <tr class="domicilio_tr">
+                                            <td [attr.colspan]="colsProduct.length - 1" class="text-right font-weight-bold">DOMICILIO</td>
+                                            <td class="text-right font-weight-bold">{{orderDetail.totalDomicilio}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td [attr.colspan]="colsProduct.length - 1" class="text-right font-weight-bold">TOTAL</td>
+                                            <td class="text-right font-weight-bold text-success">{{orderDetail.totalPrice}}
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="permission.edit">
+                                            <td [attr.colspan]="colsProduct.length" class="border-0">
+
+                                                <div class="product-search" *ngIf="permission.edit">
+                                                    <div class="font-size-12 font-bold mr-2 mb-0">
+                                                        <h6 style="color: #001e62" class="m-0 font-weight-bold">Buscar por</h6>
+                                                    </div>
+                                                    <div class="input-selection-action">
+                                                        <general-switch-buttom class="m-0" [(ngModel)]="formSearchProd.type" [options]="types" [output]="'value'" [text]="'label'"></general-switch-buttom>
+                                                        <input type="text" [(ngModel)]="formSearchProd.value" placeholder="Ingrese {{formSearchProd.type}} del producto">
+                                                        <button class="btn" (click)="searchProduct()" [disabled]="!formSearchProd.type || !formSearchProd.value">Buscar</button>
+                                                    </div>
+                                                </div>
+
+
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="expand" *ngIf="orderDetail.evidenceCanceled?.length > 0" [ngClass]="{'active': expands.cancel_evidences}">
+                            <div class="card-title-o font-bold mb-2 mt-1">Evidencias de Cancelación</div>
+                            <div class="cancelEvidencesList body">
+                                <img nz-image
+                                    *ngFor="let evidence of orderDetail.evidenceCanceled"
+                                    width="200px" height="200px"
+                                    [nzSrc]="evidence" 
+                                    alt="Evidencia de cancelación (orden:{{orderDetail.orderId}})" />
+                            </div>
+                        </div>
+                        
+
+                        <div *ngIf="missings" class="expand" [ngClass]="{'active': expands.products_missing}">
+                            <div class="card-title-o font-bold mb-2 mt-1">Productos Faltantes <span class="small">({{!orderDetail.productsMissing?'Cargando...':orderDetail.productsMissing?.length == 0 ? 'Sin productos' : orderDetail.productsMissing?.length}})</span>
+                                <div class="icons">
+                                    <div class="icon" title="Expandir" (click)="expand('missing')"><i class="fa fa-expand"></i></div>
+                                    <div *ngIf="!expands.products_missing" (click)="pn.products_missing = !pn.products_missing" class="icon" title="Abrir"><i class="fa" [ngClass]="{'fa-chevron-up': opn.products_missing, 'fa-chevron-down': !opn.products_missing}"></i></div>
+                                </div>
+                            </div>
+                            <div *ngIf="orderDetail.productsMissing" id="responsive-missing" class="table-responsive" [ngClass]="{'open': opn.products_missing}">
+                                <table id="table-products-missing" class="table table-products">
+                                    <thead *ngIf="orderDetail.productsMissing.length > 0">
+                                        <tr>
+                                            <th *ngFor="let col of colsProductMissing" class="text-{{col.align}}" scope="col">{{col.label}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let product of orderDetail.productsMissing"> 
+                                            <td *ngFor="let col of colsProductMissing" valign="center">
+                                                <div [ngSwitch]="col.label">
+                                                    <div *ngSwitchCase="'Item'" class="text-{{col.align}}" style="padding: 3px;">
+                                                        <i class="text-success fa" [ngClass]="getIconSustitute(product)"></i> {{product[col.key]}}
+                                                    </div>
+                                                    <div *ngSwitchCase="'Imagen'" class="text-{{col.align}}" style="padding: 3px;">
+                                                        <img [src]="product[col.key]" onerror="this.src='/assets/images/not-product.png'" style="height: 50px; width: 50px">
+                                                    </div>
+                                                    <div *ngSwitchCase="'Precio unitario'" class="text-{{col.align}}">
+                                                        {{getFormatPrice(product[col.key])}}
+                                                    </div>
+                                                    <div *ngSwitchCase="'Unidades'" class="text-{{col.align}}">
+                                                        <table>
+                                                            <tr>
+                                                                <td class="text-center" style="border: none;">
+                                                                    <button type="button" class="btn btn-primary btn-sm" (click)="lessUnitMessing(product)" *ngIf="permission.edit">-</button>
+                                                                </td>
+                                                                <td class="text-center" style="border: none;">
+                                                                    {{product[col.key]}}
+                                                                </td>
+                                                                <td class="text-center" style="border: none;">
+                                                                    <button type="button" class="btn btn-primary btn-sm" (click)="addUnitMissing(product)" *ngIf="permission.edit">+</button>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div *ngSwitchCase="'Acciones'" class="text-center font-size-12">
+                                                        <button *ngIf="permission.edit" (click)="deleteProductMissing(product)" title="Eliminar Producto" class="btn btn-danger" [disabled]="!permission.edit"><i class="fa fa-trash"></i></button>
+                                                    </div>
+                                                    <div *ngSwitchDefault class="min-cell text-{{col.align}}">
+                                                        {{product[col.key]}}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="permission.edit">
+                                            <td [attr.colspan]="colsProductMissing.length">
+
+                                                <div class="product-search" *ngIf="permission.edit">
+                                                    <div class="font-size-12 font-bold mr-2 mb-0">
+                                                        <h6 style="color: #001e62" class="m-0 font-weight-bold">Buscar por</h6>
+                                                    </div>
+                                                    <div class="input-selection-action">
+                                                        <general-switch-buttom [(ngModel)]="formSearchProdMissing.type" [options]="types" [output]="'value'" [text]="'label'"></general-switch-buttom>
+                                                        <input type="text" [(ngModel)]="formSearchProdMissing.value" placeholder="Ingrese {{formSearchProdMissing.type}} del producto">
+                                                        <button class="btn" (click)="searchProduct(true)" [disabled]="!formSearchProdMissing.type || !formSearchProdMissing.value">Buscar</button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="permission.edit">
+                                            <td [attr.colspan]="colsProductMissing.length">
+                                                <div class="w-100 text-right">
+                                                    <button nz-button [disabled]="orderDetail.productsMissing.length == 0" (click)="saveMissings()" class="btn btn-primary small p-1">Guardar faltantes</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nz-modal
+    *ngIf="orderDetail && exportPdf != undefined"
+    [(nzVisible)]="exportPdf"
+    nzTitle="Vista PDF"
+    [nzFooter]="modalFooterExportPdf"
+    (nzOnCancel)="exportPdf = false">
+    <ng-container *nzModalContent>
+        <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
+            <app-export-pdf [selectedOrder]="order" [lstProducts]="orderDetail.products" [subTotalPrice]="orderDetail.subTotalPrice" [totalDomicilio]="orderDetail.totalDomicilio" [totalPrice]="orderDetail.totalPrice"></app-export-pdf>
+        </kendo-pdf-export>
+    </ng-container>
+    <ng-template #modalFooterExportPdf>
+        <button nz-button nzType="default" (click)="exportPdf = false">Cancelar</button>
+        <button nz-button nzType="primary" (click)="pdf.saveAs('deatailOrder_'+typeReport+'_'+orderDetail.orderId+'.pdf')">Exportar</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal *ngIf="orderDetail && medicalFormula != undefined" [nzStyle]="{ 'width': 'auto'}" [(nzVisible)]="medicalFormula" nzTitle="Fórmula Medica" [nzFooter]="modalFooter" (nzOnCancel)="medicalFormula = false">
+    <ng-container *nzModalContent>
+        <div class="text-center">
+            <img [src]="photoRX" style="max-width: 900px; max-height: 1000px;" alt="">
+        </div>
+    </ng-container>
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="medicalFormula = false">Ok</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal *ngIf="orderDetail && messengerEvidences != undefined" [nzStyle]="{ 'width': 'auto'}" [(nzVisible)]="messengerEvidences" nzTitle="Evidencias de mensajero" [nzFooter]="modalFooter" (nzOnCancel)="messengerEvidences = false; messengerEvidenceSelected = undefined">
+    <ng-container *nzModalContent>
+        <div class="text-center">
+            <img *ngIf="messengerEvidenceSelected" [src]="messengerEvidenceSelected" alt="" height="400px">
+        </div>
+    </ng-container>
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="messengerEvidences = false; messengerEvidenceSelected = undefined">Ok</button>
+    </ng-template>
+</nz-modal>
+
+<app-support-target 
+    *ngIf="orderDetail" 
+    [ticket]="ticketSelected"
+    [order]="orderDetail"
+    [productsTheoretical]="localProductsTheoretical"
+    (closeEvent)="ticketSelected = undefined" 
+    (refresh)="actionEvents({type: 'ticket-ok', order: orderDetail.orderId})">
+</app-support-target>
+
+<app-payment-detail *ngIf="countryConfig.isVenezuela"
+    [orderId]="orderIdpayment"
+    [paymnetType]="orderDetail?.paymentMethod"
+    (close)="orderIdpayment = undefined"
+    (refresh)="actionEvents({type: 'payment-action', order: orderDetail.orderId})">
+</app-payment-detail>
+
+<customer-address-edit 
+    *ngIf="customerAddressSelected"
+    [address]="customerAddressSelected" 
+    [coordinates]="coordinatesMap"
+    [home]="getHome()" 
+    [store]="orderDetail?.store" 
+    [orderId]="orderDetail?.orderId"
+    (close)="customerAddressSelected = undefined" 
+    (refresh)="updateAddress($event)"> 
+</customer-address-edit>
+
+<app-transfer 
+    *ngIf="getShowTransferModal()" 
+    [orderId]="order?.orderId"
+    [showTransferModal]="showTransferModal"
+    (setShowTransferModal)="setShowTransferModal($event)"
+    (onUpdateOrder)="onUpdateOrder($event)"
+></app-transfer>

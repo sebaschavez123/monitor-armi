@@ -1,0 +1,28 @@
+<div class="header">
+    <div class="filters">
+        <a>
+            <div class="filter-color color-cyan"></div>
+            COMPRA EN PROCESO
+        </a>
+        <a>
+            <div class="filter-color color-yellow"></div>
+            REVISIÓN
+        </a>
+    </div>
+</div>
+
+<div class="shopping">
+    <div *ngIf="dataUnaproved">
+        <purchase *ngFor="let order of dataUnaproved; let i = index" [customer]="order.customer" [deliveryOrder]="order.deliveryOrder" [listOrderItem]="order.listOrderItem" [status]="order.status" (eventManagement)="managementOrder($event)"></purchase>
+
+        <div *ngIf="dataUnaproved.length == 0">
+            <div class="text-not-found">No hay compras en proceso en este momento.</div>
+        </div>
+    </div>
+
+    <div *ngIf="!dataUnaproved" class="text-center mt-5">
+        <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+        <p class="ant-upload-text text-width">Cargando compras en proceso</p>
+    </div>
+
+</div>

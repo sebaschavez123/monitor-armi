@@ -1,0 +1,11 @@
+<div class="w-100">
+    <nz-transfer [nzDataSource]="stores" [nzTitles]="['Tiendas Incluidas', 'Tiendas Excluidas']" [nzListStyle]="{ 'width.px': 400, 'height.px': 400 }" [nzRender]="render"></nz-transfer>
+</div>
+
+<div class="flex mt-3">
+    <button nz-button [nzType]="'primay'" class="btn btn-secondary btn-sm" (click)="reset()">Reiniciar</button>
+    <button nz-button [nzType]="'primay'" class="btn btn-success btn-sm ml-2" nz-popconfirm nzPopconfirmTitle="¿Seguro de guardar los cambios?" (nzOnConfirm)="save()">Guardar</button>
+</div>
+
+
+<ng-template #render let-item> <i nz-icon nzType="{{ item.icon }}"></i> {{ item.title }} </ng-template>

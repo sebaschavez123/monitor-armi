@@ -1,0 +1,62 @@
+#map {
+    height: var(--heigth);
+
+    &.message-edting{
+        &::after {
+            content: "Mueve el pin en las coordenadas exactas y guarda los cambios";
+            position: absolute;
+            top: 2%;
+            text-align: center;
+            padding: 5px 3rem;
+            background-color: #0ca68b;
+            color: white;
+            z-index: 999;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 1rem;
+            left: 0;
+            right: 0;
+            margin: auto;
+            width: 76%;
+        }
+    }
+}
+
+.not-tracking {
+    background-color: white;
+    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.not-tracking::after {
+    content: 'Actualmente no hay seguimiento activo de este pedido';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    margin: 0 0px;
+    padding: 10px;
+    background-color: #ffffffa6;
+    color: black;
+    font-style: italic;
+}
+
+.tracking {
+    overflow: hidden;
+}
+
+.tracking.search::after {
+    content: 'Buscando úbicación de mensajero...';
+    position: absolute;
+    left: 0;
+    top: 45.5555555555555%;
+    width: 100%;
+    text-align: center;
+    margin: 0 0px;
+    padding: 10px;
+    background-color: #ffffffc2;
+    color: black;
+    font-style: italic;
+}

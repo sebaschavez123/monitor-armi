@@ -1,0 +1,72 @@
+<div class="card">
+    <div class="card-header card-header-flex align-items-center">
+        <div class="d-flex flex-column justify-content-center mr-auto">
+            <h6 class="mb-0">{{ cdtitle }}</h6>
+        </div>
+        <div>
+            <a class="btn btn-sm btn-light mr-2" (click)="fireModal()" nz-tooltip="" nzplacement="top" nztitle="Unlock Account">
+                <i class="fa fa-plus"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <ul class="card-container-list scrollable" [ngStyle]="{'height': chargebacks ? '100%' : '200px', 'min-height': chargebacks ? '500px' : 'auto'}">
+            <li class="card-item-list" *ngIf="datalist?.data.length < 1">
+                <div class="text-item text-truncate">
+                    No hay datos para mostrar.
+                </div>
+            </li>
+            <li class="card-item-list" *ngFor="let card of datalist?.data">
+                <div class="text-item text-truncate" title="{{ this.tpText }} {{ card.data }},&#10;esta bloqueado desde {{ card.lockDate | date }}">
+                    {{ card.data }}
+                </div>
+                <!-- <div class="text-item bdate text-truncate">08-04-2020</div> -->
+                <div class="btn-item" (click)="rmButton(card)">
+                    <i class="fa fa-trash"></i>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <ul class="btn-container-list" *ngIf="plite">
+        <li class="btn-item" title="inicio" (click)="goPage(1)" *ngIf="plite.showHome">
+            <i class="fa fa-angle-double-left"></i>
+        </li>
+        <li class="btn-item" title="Anterior" (click)="goPage(plite.page-1)" *ngIf="plite.hasPrevious">
+            <i class="fa fa-angle-left"></i>
+        </li>
+        <li *ngFor="let p of plite.getPages" [ngClass]="{'active': p == plite.page}" (click)="goPage(p)">
+            <div class="btn-item">{{p}}</div>
+        </li>
+        <li class="btn-item" title="Siguiente" (click)="goPage(plite.page+1)" *ngIf="plite.hasNext">
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li class="btn-item" title="Final" (click)="goPage(plite.totalPages)" *ngIf="plite.showEnd">
+            <i class="fa fa-angle-double-right"></i>
+        </li>
+    </ul>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" [ngClass]="{'show': modal}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-custom modal-sm">
+        <div class="modal-content" *ngIf="modal">
+            <div class="head mb-4">
+                <div class="close" (click)="closeModal()"><i class="fa fa-times"></i></div>
+            </div>
+            <div class="content">
+                <form (ngSubmit)="dataSend(forma)" #forma="ngForm" novalidate>
+                    <div class="modal-body">
+                        <div class="form-group" [ngClass]="{'has-danger': swForma && _newData.errors}">
+                            <input class="form-control frmNewData" name="newData" [type]="inputType" [placeholder]="addText" [pattern]="tp == 1 ? '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' : null" style="font-size:12pt" [(ngModel)]="newData" #_newData="ngModel" required>
+                        </div>
+                        <small class="text-danger" *ngIf="swForma && _newData.errors?.required">{{ this.tpText }} es requerido.</small>
+                        <small class="text-danger" *ngIf="swForma && _newData.errors?.pattern">El correo electrónico es invalido.</small>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" (click)="closeModal()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

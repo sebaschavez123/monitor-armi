@@ -1,0 +1,91 @@
+
+.observation-container {
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 25vh;
+    max-height: calc(80vh - 200px);
+    display: block;
+    position: relative;
+
+    .observation-card {
+        width: 100%;
+        position: relative;
+        flex-direction: row;
+        display: inline-flex;
+        justify-content: space-evenly;
+        align-items: flex-start;
+
+        .obs-time {
+            max-width: 90px;
+            font-weight: 500;
+            font-size: 1.1rem;
+            line-height: 17px;
+            text-align: center;
+            padding: 0.3rem 0;
+            small { margin: 0 5px;}
+        }
+
+        .obs-desc {
+            min-height: 90px;
+            padding: 0 0.8rem 1rem 0.8rem;
+            position: relative;
+            display: inline-flex;
+            flex-direction: column;
+            width: calc(100% - 100px);
+            
+            .obs-header {
+                font-weight: 600;
+                font-size: 1.3rem;
+            }
+            
+            .obs-info {
+                align-items: center;
+                display: inline-flex;
+                justify-content: space-between;
+            
+                .obs-icon {
+                    width: 1.5rem;
+                    height: 1.5rem;
+                    background-image: url('/assets/svg/observations/user.svg');
+
+                    &.agent{
+                        background-image: url('/assets/svg/observations/headphones.svg') !important;
+                    }
+                    &.messenger{
+                        background-image: url('/assets/svg/observations/motorcycle.svg') !important;
+                    }
+                }
+                .obs-user {
+                    width: 100%;
+                    max-width: calc(100% - 2rem);
+                    line-height: 15px;
+                    font-weight: bold;
+                }
+            }
+
+            &::before{
+                content: '';
+                left: 0;
+                top: 5px;
+                width: 1px;
+                height: calc(100% + 5px);
+                position: absolute;
+                background-color: #888;
+            }
+            &::after {
+                content: '';
+                left: -8px; top: 5px;
+                position: absolute;
+                height: 16px;
+                width: 16px;
+                border-radius: 50%;
+            }
+            &.green::after { background-color: rgb(7, 242, 250); }
+            &.red::after { background-color: red; }
+            &.yellow::after { background-color: #f7b500; }
+            &.blue::after { background-color: #418fde; }
+            &.orange::after { background-color: #ff802c; }
+        }
+    }
+    
+}

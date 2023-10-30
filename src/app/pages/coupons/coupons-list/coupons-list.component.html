@@ -1,0 +1,34 @@
+<div *ngIf="coupons == undefined" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando cupones</p>
+</div>
+
+<nz-table *ngIf="coupons" #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="coupons" [ngClass]="{'empty-table': coupons.length == 0}">
+    <thead>
+        <tr>
+            <th *ngFor="let col of cols; let i = index" [nzColumnKey]="col.key ? col.key : col.label" [nzSortOrder]="col.sortOrder" [nzSortFn]="col.sortFn" [nzFilters]="col.listOfFilter" [nzFilterFn]="col.filterFn">
+                <div style="font-size: 15px;" class="font-resalt text-body">{{col.label}}</div>
+            </th>
+            <th>
+                <div style="font-size: 15px;" class="font-resalt text-body text-center">Opción</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of rowSelectionTable.data; let i = index" class="option-border-color">
+            <td *ngFor="let col of cols; let i = index">
+                <span [ngSwitch]=" col.label ">
+                    <div *ngSwitchDefault>
+                        {{ data[col.name] ? data[col.name] : 'No data' }}
+                    </div>
+                </span>
+            </td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-opc btn-primary mr-xl-2 mr-md-0" (click)="edit(data, 'FIJO')">Cupon fijo</button>
+                <button class="btn btn-sm btn-opc btn-purple" (click)="edit(data, 'PORCENTAJE')">Cupon porcentaje</button>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+<coupons-edit [coupon]="couponSelected" (close)="couponSelected = undefined" [couponType]="couponType"></coupons-edit>

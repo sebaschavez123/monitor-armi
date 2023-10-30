@@ -1,0 +1,56 @@
+.h-55 { height: 55px; }
+
+.hasError {
+    border-color: red;
+    background-color: #fff9f9;
+}
+
+.text-capitalize {
+    text-transform: capitalize;
+}
+
+.profit-list {
+
+
+    .ant-list-header {
+        display: inline-flex;
+        justify-content: space-between;
+        width: 100%;
+        color: rgba(0,0,0,0.85);
+        background-color: #f2f4f8;
+
+        &.header-center {
+            justify-content: center !important;   
+        }
+    }
+
+    .ant-list-footer {
+        display: inline-flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    
+    nz-list-item {
+        position: relative;
+        padding-right: 1.6rem;
+        
+        em {
+            position: absolute;
+            right: 0;
+            top: 7px;
+            font-size: 1.6rem;
+        }
+        
+        &:hover {
+            background-color: rgba(27, 85, 227, .1);
+            cursor: pointer;
+        }
+    }
+
+    .selected {
+        color: white;
+        background-color: #1b55e3 !important;
+        
+    }
+}

@@ -1,0 +1,15 @@
+<div class="header">
+    <div class="filters">
+        <a>
+            <div class="filter-color color-red"></div>
+            Compra cancelada
+        </a>
+    </div>
+</div>
+
+<div class="shopping">
+    <purchase *ngFor="let order of data; let i = index" [customer]="order.customer" [deliveryOrder]="order.deliveryOrder" [listOrderItem]="order.listOrderItem" [status]="order.status"></purchase>
+    <div *ngIf="data.length == 0">
+        <div class="text-not-found">No hay compras canceladas en este momento.</div>
+    </div>
+</div>

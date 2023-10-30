@@ -1,0 +1,26 @@
+<div class="search-head text-left w-50 col-sm-6 w-100 d-flex align-items-center">
+    <nz-form-item>
+        <h6 class="font-resalt text-body font-size-16" style="font-size: 15px;">Selecciona empresa de mensajeria</h6>
+        <nz-form-control nzErrorTip="Por favor ingresa los parametros de busqueda" style="min-width: 200px;">
+            <nz-select [(ngModel)]="courierSelected" class="selec-param" nzPlaceHolder="Empresa de mensajeria" [nzSize]="'large'">
+                <nz-option *ngFor="let courier of _dS.couriers" [nzLabel]="courier.name" [nzValue]="courier"></nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+    <button (click)="search()" [disabled]="!courierSelected" nz-button [nzType]="'primary'" class="btn btn-success btn-lg font-weight-bold ml-2">Buscar</button>
+</div>
+
+<div *ngIf="loadingSearch" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando tiendas</p>
+</div>
+
+<div *ngIf="!loadingSearch" class="w-100">
+    <nz-transfer [nzDataSource]="stores" [nzTitles]="['Tiendas Disponiles', 'Tiendas Asignadas']" [nzListStyle]="{ 'width.px': 400, 'height.px': 400 }" [nzRender]="render"></nz-transfer>
+    <div class="flex mt-3">
+        <button nz-button [disabled]="!stores" [nzType]="'primay'" class="btn btn-outline-success btn-lg font-weight-bold" (click)="reset()">Reiniciar</button>
+        <button nz-button [disabled]="!stores" [nzType]="'primay'" class="btn btn-success btn-lg font-weight-bold ml-2" nz-popconfirm nzPopconfirmTitle="¿Seguro de guardar los cambios?" (nzOnConfirm)="save()">Guardar</button>
+    </div>
+</div>
+
+<ng-template #render let-item> <i nz-icon nzType="{{ item.icon }}"></i> {{ item.title }} </ng-template>

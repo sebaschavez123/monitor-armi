@@ -1,0 +1,35 @@
+<nz-spin nzTip="Loading..." [nzSpinning]="isLoading" *ngIf="orderType">
+    <nz-table #gluedTable
+        [nzData]="alldata"        
+        nzOuterBordered
+        [nzPageSize]="!this.fullsize ? 5 : 50"
+        [nzShowPagination]="false"
+        class="tbl-glued"
+        [ngClass]="{'fullsize': fullsize, 'filterMode': filterMode}">
+        <thead>
+            <th *ngFor="let hdr of hdrs"
+            [nzSortFn]="hdr.sortFn"
+            [ngClass]="{'only-desktop': !fullsize && hdr.fullsize, 'd-none': hdr.hdrStore && !filterMode }">
+            {{hdr.header}} 
+            </th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let c of gluedTable.data">
+                <td class="city truncate" *ngIf="c.store">{{ c.store | lowercase }}</td>
+                <td class="city truncate">{{ c.city | lowercase }}</td>
+                <td>{{c.sentOrders}}</td>
+                <td>{{c.assignedOrders}}</td>
+                <td [ngClass]="{'only-desktop': !fullsize}">{{c.pickingOrders}}</td>
+                <td [ngClass]="{'only-desktop': !fullsize}">{{c.billedOrders}}</td>
+                <td [ngClass]="{'only-desktop': !fullsize}">{{c.deliveredOrders}}</td>
+                <td>{{c.total}}</td>
+                <td class="percentage">
+                    <div class="{{getColorGb(c.percentage)}}">
+                        {{c.percentage}}%
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+    <button nz-button class="ml-auto btn btn-info" *ngIf="showButton()" (click)="changeToFullsize()">Mostrar todo</button>
+</nz-spin>

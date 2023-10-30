@@ -1,0 +1,65 @@
+<nz-spin nzTip="Cargando datos ..." [nzSpinning]="loadingData">
+  <div class="row">
+    <div class="col-12">
+      <div class="toolbox">
+        <div class="filters">
+          <label for=""> Busqueda por filtros:</label>
+          <nz-select ngDefaultControl [(ngModel)]="filterType" (ngModelChange)="changeType()">
+            <nz-option *ngFor="let tp of incentiveTypes" [nzValue]="tp" [nzLabel]="tp.pluralLabel"></nz-option>
+          </nz-select>
+          <general-filter class="ml-2" [asControl]="true"
+            [name]="filterType.pluralLabelAll" [keyLocal]="filterType.value" [key]="filterType.key"
+            [function]="filterType.filterFn"
+            [filters]="[]" (filterEvent)="changeList($event)"
+            [options]="selectList">
+        </general-filter>
+          <!-- button nz-button nzType="primary" (click)="edit(null)">Refrescar</button -->
+        </div>
+        <div class="buttons">
+          <button nz-button nzType="primary" (click)="edit(null)">Crear Incentivo</button> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- [nzLoading]="loadingData" -->
+  <nz-table 
+    #basicTable 
+    [nzData]="listOfData">
+      <thead>
+        <tr>
+          <th>Tipo de incentivo</th>
+          <th scope="col" *ngIf="filterType.value !== 'incentiveByCourier' && filterType.value !== 'incentiveByKm'">Ciudad</th>
+          <th scope="col" *ngIf="filterType.value === 'incentiveByKm'">Kilometros</th>
+          <th scope="col" *ngIf="filterType.value === 'incentiveByStore'">Tienda</th>
+          <th scope="col" *ngIf="filterType.value === 'incentiveByCourier'">Proveedor</th>
+          <th scope="col">Valor</th>
+          <th scope="col">Fecha inicial</th>
+          <th scope="col">Fecha final</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td scope="row">{{filterType.label}}</td>
+          <td  scope="row" class="text-capitalize" *ngIf="data.cityName">{{data.cityName}}</td>
+          <td  scope="row" class="text-capitalize" *ngIf="data.storeName">{{data.storeName}}</td>
+          <td  scope="row" class="text-capitalize" *ngIf="data.courierName">{{data.courierName}}</td>
+          <td  scope="row" class="text-capitalize" *ngIf="data?.km">{{data?.km}}</td>
+          <td scope="row" >{{getFormatPrice(data.value)}}</td>
+          <td scope="row" >{{data.incentiveStartDate | date:'MMM d, y, h:mm:ss a'}}</td>
+          <td scope="row" >{{data.incentiveEndDate | date:'MMM d, y, h:mm:ss a'}}</td>
+          <td scope="row" >
+            <button nz-button nzType="primary" [nzSize]="size" nzShape="round" (click)="edit(data)">Editar</button> 
+            &nbsp;
+            <button nz-button nzType="primary" [nzSize]="size" nzShape="round" nzDanger (click)="remove(data)">Eliminar</button> 
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-spin>
+    <app-incentive-form 
+      *ngIf="defaultValues"
+      [defaultValues]="defaultValues"
+      (updateData)="update($event)">
+    </app-incentive-form>

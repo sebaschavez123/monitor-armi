@@ -1,0 +1,172 @@
+<form [formGroup]="dataAware" (ngSubmit)="sendForm()">
+  <h2 class="color-text">{{messageCall}}</h2>
+  <div class="row">
+    <div class="col-lg-6">
+      <nz-form-item class="mb-2">
+        <nz-form-label class="w-100 text-left" nzFor="orderId">Orden*</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="orderId" id="orderId" readonly/>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-lg-6">
+      <nz-form-item class="mb-2">
+        <nz-form-label class="w-100 text-left" nzFor="documentNumber">Cédula*</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="documentNumber" id="documentNumber"  readonly/>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+ <div class="row">
+  <div class="col-lg-6">
+    <nz-form-item class="mb-2">
+      <nz-form-label class="w-100 text-left" nzFor="orderStatus">Estado de orden*</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="orderStatus" id="orderStatus" readonly />
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <div class="col-lg-6">
+    <nz-form-item class="mb-2">
+      <nz-form-label class="w-100 text-left" nzFor="city">Ciudad*</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="city" id="city" readonly />
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+</div>
+
+ <div class="row">
+  <div class="col-lg-6">
+    <nz-form-item class="mb-2">
+      <nz-form-label class="w-100 text-left" nzFor="operator">Operador*</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="operator" id="operator"  readonly/>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  
+    <div class="col-lg-6">
+      <nz-form-item class="mb-2">
+        <nz-form-label class="w-100 text-left" nzFor="shop">Tienda*</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="shop" id="shop" readonly />
+        </nz-form-control>
+      </nz-form-item>
+  </div>
+</div>
+
+<div class="row">
+
+  <div class="col-lg-12">
+    <nz-form-item>
+      <nz-form-label class="w-100 text-left" nzFor="managementArea">Areá de gestión*</nz-form-label>
+      <nz-form-control>
+      <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate1">
+        <ng-template #addOnBeforeTemplate1>
+          <nz-select formControlName="managementArea" (ngModelChange)="sendId('managementArea')">
+            <nz-option *ngFor="let value of dataArea" [nzLabel]="value?.description
+            " [nzValue]="value?.description"></nz-option>
+          </nz-select>
+        </ng-template>
+      </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  </div>  
+
+  <div class="col-lg-12">
+    <nz-form-item>
+      <nz-form-label class="w-100 text-left" nzFor="typification">Tipificación*</nz-form-label>
+      <nz-form-control>
+      <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+        <ng-template #addOnBeforeTemplate>
+          <nz-select formControlName="typification" (ngModelChange)="sendId('typification', typificationOptions,'typificationOptions')">
+            <nz-option *ngFor="let value of typificationOptions" [nzLabel]="value?.typification
+            " [nzValue]="value?.typification" (change)="valueOption =  value?.id " ></nz-option>
+          </nz-select>
+        </ng-template>
+      </nz-input-group>
+      </nz-form-control>
+     </nz-form-item>
+  </div>
+
+
+  <div class="col-lg-12">
+    <nz-form-item *ngIf="typificationOptionTwo.length > 0">
+        <nz-form-label class="w-100 text-left text-capitalize" nzFor="newField">{{ dataAware.controls['typification'].value | lowercase}}*</nz-form-label>
+        <nz-form-control >
+        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate" >
+          <ng-template #addOnBeforeTemplate>
+            <nz-select formControlName="newField" (ngModelChange)="sendId('newField', typificationOptionTwo, 'typificationOptionTwo')">
+              <nz-option *ngFor="let value of typificationOptionTwo" [nzLabel]="value?.typification
+              " [nzValue]="value?.typification"></nz-option>
+            </nz-select>
+          </ng-template>
+        </nz-input-group>
+        </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <div class="col-lg-12">
+    <nz-form-item *ngIf="typificationOptionThree.length > 0">
+      <nz-form-label class="w-100 text-left text-capitalize" nzFor="newTwoField">{{dataAware.controls['newField'].value | lowercase}}*</nz-form-label>
+      <nz-form-control>
+      <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate" >
+        <ng-template #addOnBeforeTemplate>
+          <nz-select formControlName="newTwoField" (ngModelChange)="sendId('newTwoField', typificationOptionThree, 'typificationOptionThree')">
+            <nz-option *ngFor="let value of typificationOptionThree" [nzLabel]="value?.typification
+            " [nzValue]="value?.typification"></nz-option>
+          </nz-select>
+        </ng-template>
+      </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  
+  <div class="col-lg-12">
+    <nz-form-item *ngIf="typificationOptionFour.length > 0" > 
+      <nz-form-label class="w-100 text-left text-capitalize" nzFor="newThreeField">{{dataAware.controls['newTwoField'].value | lowercase}}*</nz-form-label>
+      <nz-form-control>
+      <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate" >
+        <ng-template #addOnBeforeTemplate>
+          <nz-select formControlName="newThreeField" (ngModelChange)="sendId('newThreeField', typificationOptionFour, 'typificationOptionFour')">
+            <nz-option *ngFor="let value of typificationOptionFour" [nzLabel]="value?.typification
+            " [nzValue]="value?.typification"></nz-option>
+          </nz-select>
+        </ng-template>
+      </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  
+  <div class="col-lg-12">
+    <nz-form-item *ngIf="typificationOptionFive.length > 1" > 
+      <nz-form-label class="w-100 text-left text-capitalize" nzFor="newFoutField">{{dataAware.controls['newThreeField'].value | lowercase}}*</nz-form-label>
+      <nz-form-control>
+      <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate" >
+        <ng-template #addOnBeforeTemplate>
+          <nz-select formControlName="newFoutField" (ngModelChange)="sendId('newFoutField', typificationOptionFive, 'typificationOptionFive')">
+            <nz-option *ngFor="let value of typificationOptionFive" [nzLabel]="value?.typification
+            " [nzValue]="value?.typification"></nz-option>
+          </nz-select>
+        </ng-template>
+      </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <div class="col-lg-12">
+    <nz-form-item>
+      <nz-form-label class="w-100 text-left" >Observaciones*</nz-form-label>
+      <nz-form-control nzHasFeedback nzErrorTip="Campo obligatorio">
+        <nz-textarea-count [nzMaxCharacterCount]="2000">
+          <textarea formControlName="observation" nz-input rows="2" placeholder="Escriba sus comentarios"></textarea>
+        </nz-textarea-count>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+</div>
+</form>

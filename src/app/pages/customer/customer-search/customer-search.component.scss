@@ -1,0 +1,24 @@
+.card-boby {
+    min-height: 200px;
+}
+
+.row-subscribe {
+    cursor: pointer;
+    font-size: 8pt;
+}
+
+.row-subscribe:hover td {
+    background-color: #f3f4f8;
+}
+
+.select-type {
+    max-width: 170px;
+    border-radius: 5px;
+    height: 50px;
+    align-items: center;
+    font-weight: 600;
+    color: black;
+    padding: 13px;
+    -webkit-appearance: auto;
+    border-color: #e4e9f0;
+}

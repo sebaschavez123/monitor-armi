@@ -1,0 +1,45 @@
+<div class="head w-1">
+    <div class="row m-0">
+        <div class="col-lg-8">
+            <div class="filter-container">
+                <nz-range-picker style="height: 55px;" [nzShowTime]="{ nzFormat: 'HH:mm' }" nzFormat="yyyy-MM-dd HH:mm" [nzPlaceHolder]="['Fecha de inicio', 'Fecha final']" [(ngModel)]="dateRange" (ngModelChange)="changeRange()"></nz-range-picker>
+                <nz-select
+                    nzMode="multiple"
+                    [(ngModel)]="filters"
+                    nzPlaceHolder="Estado"
+                    class="filter-status-order"
+                    (ngModelChange)="updateFilterInfo()">
+                    <nz-option
+                        *ngFor="let option of filterOrderStatus"
+                        [nzLabel]="option"
+                        [nzValue]="option">
+                    </nz-option>
+                  </nz-select>
+            </div>
+        </div>
+        <div class="col-lg-4 d-flex">
+            <button (click)="search()" nz-button [nzType]="'primary'" class="btn btn-success btn-lg font-weight-bold mr-2 ml-auto" [disabled]="!dateRange || dateRange.length == 0">Buscar</button>
+            <general-data-options class="m-0 mt-2 ml-auto" [export]="dataExport" [disabled]="!dateRange || dateRange.length == 0" [dataSearch]="dataSearch" [btnLg]="true"></general-data-options>
+        </div>
+    </div>
+</div>
+
+<nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="report" [ngClass]="{'empty-table': report.length == 0}" [nzLoading]="valuesTable.loading" [nzTotal]="valuesTable.total" [nzPageSize]="valuesTable.paginate" [nzPageIndex]="valuesTable.pageIndex"
+    [nzFrontPagination]="valuesTable.total ? false : true" (nzQueryParams)="onQueryParamsChange($event)">
+    <thead>
+        <tr>
+            <th *ngFor="let col of cols; let i = index" [nzColumnKey]="col.key ? col.key : col.label" [nzSortOrder]="col.sortOrder" [nzSortFn]="col.sortFn" [nzFilters]="col.listOfFilter" [nzFilterFn]="col.filterFn">
+                <div style="font-size: 15px;" class="font-resalt text-body">{{col.label}}</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of rowSelectionTable.data; let i = index" class="option-border-color" (click)="customerSelected = data">
+            <td *ngFor="let col of cols; let i = index">
+                <span [ngSwitch]=" col.label ">
+                    <div *ngSwitchDefault>{{ extractValue(data[col.name]) }}</div>
+                </span>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>

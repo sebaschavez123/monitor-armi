@@ -1,0 +1,23 @@
+<nz-spin  nzTip="Actualizando ..." [nzSpinning]="isLoading" >
+    <div class="row credit-cards">
+        <div 
+            class="credit-card"
+            (click)="alertCreditCard(card)"
+            *ngFor="let card of cards; let i = index">
+            <div class="d-flex">
+                <div class="status" [ngClass]="{'status-active': !card.blocked, 'status-inactive': card.blocked}">
+                    <div class="text">{{card.blocked ? 'Bloqueada' : 'Activa'}}</div>
+                </div>
+                <div class="ml-4">
+                    <div class="client">{{card.customerName}}</div>
+                    <div class="itemcard">{{card.creditCardNumber}}</div>
+                    <div class="itemcard">{{card.creditCardId}}</div>
+                    <img class="card-logo" [src]="getCardLogo(card)" />
+                </div>
+            </div>
+        </div>
+        <div *ngIf="cards.length == 0" class="no-credit-cards ml-2">
+            No hay tarjetas registradas.
+        </div>
+    </div>
+</nz-spin>

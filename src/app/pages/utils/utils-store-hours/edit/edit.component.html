@@ -1,0 +1,37 @@
+<div class="modal fade" [ngClass]="{'show': hours, 'page-mode': pageMode}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-custom modal-sm">
+        <div class="modal-content" *ngIf="hours">
+            <div class="head">
+                <div class="close" (click)="close.emit()"><i class="fe fe-x-circle"></i></div>
+                <div class="title">
+                    <h4>Editar Horario</h4>
+                </div>
+            </div>
+            <div class="content">
+                <form nz-form [nzLayout]="forma.get('formLayout')?.value" [formGroup]="forma">
+                    <div class="row m-0">
+                        <div class="col-lg-6">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Apertura</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes ingresar la hora de incio">
+                                    <input nz-input [nzSize]="'small'" type="number" formControlName="open" placeholder="Escribe aquí…" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div class="col-lg-6">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Cierre</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes ingresar la hora de cierre">
+                                    <input nz-input [nzSize]="'small'" type="number" formControlName="close" placeholder="Escribe aquí…" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+                </form>
+                <nz-form-control class="mt-4 mb-4 ml-3 text-center">
+                    <button nz-button nzType="primary" class="btn btn-sm btn-success pl-5 pr-5 w-50" [nzLoading]="loadingForm" [disabled]="forma.invalid" (click)="save()">Guardar</button>
+                </nz-form-control>
+            </div>
+        </div>
+    </div>
+</div>

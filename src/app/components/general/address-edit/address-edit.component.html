@@ -1,0 +1,123 @@
+<div class="modal fade" [ngClass]="{'show': address, 'page-mode': pageMode}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-custom">
+        <div class="modal-content p-0" *ngIf="address">
+
+            <div class="row m-0">
+                <div class="col-lg-8 p-0">
+                    <open-street-map
+                        [coordinates]="coordinates"
+                        [coordinatesEdit]="coordinatesMap"
+                        [store]="store"
+                        [home]="address"
+                        [active]="coordinatesMap != undefined"
+                        [edit]="true"
+                        [sizeGl]="true"
+                        [style]="{'border-radius': '8px 0 0 8px'}"
+                        (change)="updateCoordinates($event)">
+                    </open-street-map>
+                </div>
+
+                
+                <div class="col-lg-4">       
+                              
+            <div class="head">
+                <div class="close" (click)="close.emit()"><i class="fe fe-x-circle"></i></div>
+                <div class="title">
+                    <h4>Editar Dirección</h4>
+                </div>
+            </div>
+
+            <div class="content form-address">         
+                <form nz-form [nzLayout]="form.get('formLayout')?.value" [formGroup]="form">
+                    <div class="row m-0">
+                        <div class="col-lg-12">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Ciudad *</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes ingresar la ciudad">
+                                    <nz-select formControlName="city" nzSize="large">
+                                        <nz-option *ngFor="let city of _dS.cities" [nzValue]="city.value" [nzLabel]="city.label"></nz-option>
+                                    </nz-select>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        
+                        <div class="col-lg-12" *ngIf="isVenezuela">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Municipio *</nz-form-label>
+                                <nz-select formControlName="municipality" nzSize="large" class="w-100">
+                                    <ng-container *ngIf="citySelected?.municipalities">
+                                        <nz-option *ngFor="let mun of citySelected.municipalities" [nzValue]="mun" [nzLabel]="mun"></nz-option>
+                                    </ng-container>
+                                </nz-select>
+                            </nz-form-item>
+                        </div>
+                        
+                        <div class="col-lg-12">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Dirección * (Ubicación actual)</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes ingresar el municipio">
+                                    <input nz-input [nzSize]="'small'" type="text" formControlName="address" placeholder="Escribe aquí…" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div class="col-lg-12">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Indicaciones de dirección *</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes ingresar los comentarios">
+                                    <textarea rows="4" nz-input formControlName="comments" placeholder="Escribe aquí..." style="height: 80px"></textarea>
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div class="col-lg-6">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Latitude *</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes ingresar latiude">
+                                    <input nz-input [nzSize]="'small'" type="text" formControlName="latitude" placeholder="Escribe aquí…" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div class="col-lg-6">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Longitude *</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes ingresar longitude">
+                                    <input nz-input [nzSize]="'small'" type="text" formControlName="longitude" placeholder="Escribe aquí…" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div class="col-lg-6" *ngIf="isVenezuela">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Piso/Oficina/Apto</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes ingresar punto de referencia">
+                                    <input nz-input [nzSize]="'small'" type="text" formControlName="detail" placeholder="Escribe aquí…" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div class="col-lg-6">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Nombre</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes ingresar nombre">
+                                    <input nz-input [nzSize]="'small'" type="text" formControlName="nickname" placeholder="Escribe aquí…" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+
+                    <div class="w-100 text-left small mt-2 ml-3">
+                        *Campos obligatorios
+                    </div>
+            
+            
+                    <div class="mt-4 text-center">
+                        <button nz-button nzType="primary" class="btn btn-rounded-md btn-success pl-5 pr-5 ml-3" [nzLoading]="loadingForm" [disabled]="form.invalid" (click)="action()">Guardar cambios</button>
+                    </div>
+                </form>
+                </div>
+                </div>
+                
+            </div>  
+
+            
+        </div>
+    </div>
+</div>
+

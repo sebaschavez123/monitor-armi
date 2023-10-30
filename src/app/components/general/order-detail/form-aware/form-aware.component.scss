@@ -1,0 +1,24 @@
+:host ::ng-deep .ant-form-item-label > label{
+    color: rgb(106, 102, 102)  !important;
+}
+
+form{
+    height: 28rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+:host ::ng-deep .ant-row {
+    display: flex;
+    flex-flow: column !important;
+}
+
+:host ::ng-deep .ant-input-group-addon{
+    font-size: 1.5rem;
+    padding: 0rem 13px !important;
+    text-align: start !important;
+}
+
+.color-text{
+ color: #3aabf0;
+}

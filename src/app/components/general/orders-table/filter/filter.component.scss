@@ -1,0 +1,47 @@
+.filter {
+    padding: 5px 10px;
+    border-radius: 50px;
+    border: solid 1px #e4e9f1;
+    color: #616161;
+}
+
+.filter:hover {
+    cursor: pointer;
+}
+
+.filter i {
+    color: #616161;
+}
+
+.filter-active {
+    background: #1b55e3;
+    color: white;
+    border-color: white;
+}
+
+.filter-active i {
+    color: white;
+}
+
+.search-box ul {
+    list-style: none;
+    margin: 0;
+    padding: 7px;
+    max-height: 70vh;
+    overflow: auto;
+}
+
+.filter.disabled {
+    opacity: 0.5;
+    background: #6161611a;
+}
+
+.as-control {
+    width: 100%;
+    border-radius: .3rem;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: space-between;
+    justify-content: space-between;
+}

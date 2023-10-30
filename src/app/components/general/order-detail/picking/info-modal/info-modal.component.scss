@@ -1,0 +1,18 @@
+.mdl-header {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+    width: 100%;
+    
+    h3 { font-weight: bold; }
+    
+    .icon {
+        width: 5rem;
+        height: 5rem;
+        background-image: url(/assets/images/mdlIcon.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+}

@@ -1,0 +1,7 @@
+<div class="input-search">
+    <input type="text" [placeholder]="placeholder" name="strkey" [(ngModel)]="strkey" (keyup)="search($event)">
+    <button type="button">
+        <i class="fa fa-{{ strkey.length > 0 ? 'times' : 'search '}}"
+            [ngClass]="{'cursor-pointer': strkey.length > 0}"></i>
+    </button>
+</div>

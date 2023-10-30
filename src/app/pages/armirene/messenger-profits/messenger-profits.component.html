@@ -1,0 +1,102 @@
+<form #forma="ngForm" [noValidate]="true">
+    <div class="head w-1">
+        <div class="row m-0">
+            <div class="col-lg-4">
+                <div class="filter-container">
+                    <nz-range-picker
+                        class="h-55" nzFormat="yyyy-MM-dd"
+                        [class.hasError]="frmtouch && dateRangeInput.errors"
+                        [nzPlaceHolder]="['Fecha de inicio', 'Fecha final']"
+                        #dateRangeInput="ngModel" name="dateRange" required
+                        [(ngModel)]="dateRange" (ngModelChange)="changeRange()">
+                    </nz-range-picker>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <input nz-input class="h-55"
+                    [class.hasError]="frmtouch && messengerInput.errors"
+                    [(ngModel)]="messengerId" #messengerInput="ngModel"
+                    placeholder="ID Mensajero" name="messengerId" required />
+            </div>
+            <div class="col-lg-4 d-flex">
+                <button (click)="search(forma)" nz-button [nzType]="'primary'"
+                class="btn btn-success btn-lg font-weight-bold mr-2 ml-auto"
+                [disabled]="isFormValid()">Búscar</button>
+            </div>
+        </div>
+    </div>
+</form>
+<hr />
+<nz-spin nzTip="Un momento por favor..." [nzSpinning]="isLoading">
+    <div class="row">
+        <div class="col">
+            <nz-list class="profit-list" nzBordered nzSize="small" *ngIf="days">
+                <nz-list-header>
+                    <strong>Resultado:</strong>
+                    <span class="text-capitalize">
+                        {{ dateRange[0] | date:'MMMM/dd/y' }} a {{ dateRange[1] | date:'MMMM/dd/y' }}
+                    </span>
+                </nz-list-header>
+                <nz-list-item *ngFor="let day of days"
+                    [class.selected]="day.day == selectedDay"
+                    (click)="setDay(day.day)">
+                    <div>{{ day.day }}</div>
+                    <div>{{ day.earning }}</div>
+                    <div>{{ day.earning | currencyFormat }}</div>
+                    <em class="fe fe-chevron-right"></em>
+                </nz-list-item>
+                <nz-list-footer>
+                    <strong>Ganancia periodo </strong>
+                    <strong>{{ Profitday | currencyFormat }}</strong>
+                    
+                </nz-list-footer>
+            </nz-list>
+        </div>
+        <div class="col">
+            <nz-list class="profit-list" nzBordered nzSize="small" *ngIf="orders">
+                <nz-list-header>
+                    <strong>{{ selectedDay | date }}</strong>
+                    <strong>Ordenes: {{orders.length}}</strong>
+                </nz-list-header>
+                <nz-list-item 
+                    *ngFor="let order of orders"
+                    [class.selected]="order.orderId == this.selectedOrder?.orderId"
+                    (click)="setOrder(order)">
+                    <div>
+                        <span>Orden #{{order.orderId}}</span>
+                        <small>{{ earningTime }}</small>
+                    </div>
+                    <div>{{ order.earning | currencyFormat }}</div>
+                    <em class="fe fe-chevron-right"></em>
+                </nz-list-item>
+                <nz-list-footer *ngIf="orders.length">
+                    <strong>Ganancia del dia</strong>
+                    <strong>{{ totalday | currencyFormat }}</strong>
+                </nz-list-footer>
+            </nz-list>
+        </div>
+        <div class="col">
+            <nz-list class="profit-list" nzBordered nzSize="small" *ngIf="selectedOrder">
+                <nz-list-header class="header-center">
+                    <strong>Orden #{{selectedOrder.orderId}}</strong>
+                </nz-list-header>
+                <nz-list-item>
+                    <span>Ganacia orden</span>
+                    <span>{{ selectedOrder.baseEarning | currencyFormat }}</span>
+                </nz-list-item>
+                <nz-list-item>
+                    <span>Propina</span>
+                    <span>{{ selectedOrder.messengerTip | currencyFormat }}</span>
+                </nz-list-item>
+                <nz-list-item>
+                    <span>Incentivo</span>
+                    <span>{{ selectedOrder.messengerIncentive | currencyFormat }}</span>
+                </nz-list-item>
+                <nz-list-footer>
+                    <strong>Total</strong>
+                    <strong>{{ selectedOrder.earning | currencyFormat}}</strong>
+                </nz-list-footer>
+            </nz-list>
+        </div>
+    </div>
+</nz-spin>

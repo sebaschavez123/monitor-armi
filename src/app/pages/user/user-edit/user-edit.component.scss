@@ -1,0 +1,38 @@
+input {
+    height: 33px;
+}
+
+nz-form-label {
+    height: 30px;
+}
+
+.page-mode {
+    .title {
+        display: none;
+    }
+}
+
+.active-item {
+    align-items: center;
+    display: flex;
+    text-align: center;
+    margin-top: 16px;
+}
+
+.editable-tag {
+    background: rgb(255, 255, 255);
+    border-style: dashed;
+}
+
+.img-avatar{
+    width: 128px;
+    height: 128px;
+}
+
+.avatar-uploader{
+    display: flex !important;
+}
+
+.error{
+    color: #fb434a;
+}

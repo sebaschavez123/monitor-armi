@@ -1,0 +1,41 @@
+.head{
+    background: rgb(195,190,220);
+    background: linear-gradient(90deg, rgba(195,190,220,1) 15%, rgba(207,199,246,1) 78%);
+    .title{
+        h4{
+            color: white;
+        }
+    }
+}
+
+.actions{
+    border-top: 4px solid rgb(195,190,220);
+}
+
+nz-form-label {
+    height: 30px;
+}
+
+nz-select-top-control {
+    height: 46px;
+    padding-top: 7px;
+}
+
+.table-responsive{
+    text-align: center;
+    table {
+        width: 86%;
+        margin: 0 2rem;
+    
+        td {
+            padding: 8px 8px;
+        }
+    
+        tr td:first-child {
+            color: #5f5496;
+            font-weight: bold;
+            text-align: left;
+        }
+        
+    }
+}

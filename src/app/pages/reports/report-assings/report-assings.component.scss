@@ -1,0 +1,15 @@
+.indicators {
+    min-height: 70px;
+    .item {
+        display: flex;
+        font-size: 10px;
+        .color {
+            background: rgb(27, 85, 227);
+            display: block;
+            width: 19px;
+            height: 11px;
+            margin-right: 10px;
+            margin-top: 2px;
+        }
+    }
+}

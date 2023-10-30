@@ -1,0 +1,9 @@
+// Import mixins
+@import '/src/assets/styles/mixins.scss';
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/*  ANT DESIGN MODAL */
+
+.ant-modal-close {
+  outline: none !important;
+}

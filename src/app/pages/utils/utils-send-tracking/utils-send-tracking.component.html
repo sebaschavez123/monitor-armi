@@ -1,0 +1,41 @@
+<div class="row">
+    <div class="col-sm-3 p-0">
+        <h5>Mensajes</h5>
+        <div class="list-sms">
+            <div *ngFor="let option of optionSms; let i = index" (click)="selectedOption(i)" class="item-list-sms" [ngClass]="{'selected': smsActive == i}">
+                <div class="name">{{option.title}}</div>
+                <div class="desc">{{option.description}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9 overflow-auto">
+
+        <div class="row">
+            <div class="col-lg-6 border-right">
+                <div class="phone">
+                    <div class="screen">
+                        <div class="sms">
+                            {{textUpdate != '' ? textUpdate : optionSms[smsActive].description}} <span class="tracking">Id Tracking</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="buttons text-right p-4">
+                    <label for="">Cambia o actualiza el mensaje que le llegará al usuario.</label>
+                    <!-- <div class="vars">
+                        Variables en texto:
+                        <span>Id Tracking</span>
+                    </div> -->
+
+                    <textarea [(ngModel)]="textUpdate" placeholder="Ingrese el texto del mensaje."></textarea>
+                    <label class="text-characteres" [ngClass]="{'text-danger': textUpdate.length > 160}">{{160 - textUpdate.length}} caracteréres restantes</label>
+                    <button class="btn btn-primary btn-sm ml-1" [ngClass]="{'disabled': textUpdate.length > 160}" (click)="updateMessage()">Actualizar</button>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

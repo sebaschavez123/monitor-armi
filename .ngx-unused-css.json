@@ -1,0 +1,7 @@
+{
+  "path": "src/app",
+  "ignore": [],
+  "cli": true,
+  "globalStyles": "src/styles.scss",
+  "styleExt": ".scss"
+}

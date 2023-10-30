@@ -1,0 +1,71 @@
+input {
+    height: 33px;
+}
+
+nz-form-label {
+    height: 30px;
+}
+
+.page-mode {
+    .title {
+        display: none;
+    }
+}
+
+.no-addresses {
+    font-size: 9pt;
+    width: 100%;
+    text-align: center;
+}
+
+.blocked-inf {
+    color: white;
+    text-align: center;
+    position: absolute;
+    width: 300px;
+    top: 0;
+    left: calc(50% - 150px);
+    border-radius: 0 0 5px 5px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    &.active {
+        background-color: #35a835;
+    }
+    &.inactive {
+        background-color: #ff0200;
+    }
+}
+
+.prime-item {
+    width: 100%;
+    display: inline-flex;
+    justify-content: space-between;
+    margin: 0;
+    align-content: center;
+    align-items: center;
+    height: 2rem;
+    padding: 0 0.6rem;
+
+    * {
+        font-size: 0.9rem;
+        display: inline-block;
+    }
+
+    .title {
+        font-weight: 600;
+        color: #404040;
+        margin: 0;
+    }
+}
+.alertBlocked{
+  margin: 0rem .5rem;
+  background-color: antiquewhite;
+  padding: .5rem 1rem;
+}
+
+.justify-content{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+    align-items: center;
+}

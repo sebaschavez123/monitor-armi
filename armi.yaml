@@ -1,0 +1,29 @@
+service: monitor-armi
+runtime: php55
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+  secure: always
+
+- url: /(.+\.php)$
+  script: \1
+  secure: always
+
+- url: /manifest\.webmanifest
+  static_files: manifest.webmanifest
+  upload: manifest\.webmanifest
+  secure: always
+
+- url: /(.+\.(gif|png|jpg|html|css|js|ttf|mp4|eot|svg|woff|woff2|json|ico|mp3|xlsx|txt))$
+  static_files: \1
+  upload: .+\.(gif|png|jpg|html|css|js|ttf|mp4|eot|svg|woff|woff2|json|ico|mp3|xlsx|txt)$
+  application_readable: true
+  secure: always
+
+- url: .*
+  script: index.html
+  secure: always

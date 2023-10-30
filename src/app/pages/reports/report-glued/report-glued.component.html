@@ -1,0 +1,119 @@
+<!-- <iframe src="https://webview-dot-monitor-dot-web-farmatodo.uc.r.appspot.com/encolados" title="W3Schools Free Online Web Tutorials">
+</iframe> -->
+
+<nz-tabset class="mb-2">
+    <nz-tab nzTitle="Encolados en el día">
+        <div *ngIf="loading_search" class="text-center mt-5">
+            <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+            <p class="ant-upload-text text-width">Cargando información</p>
+        </div>
+        <div *ngIf="dataHistoricos.length > 0">
+            <nz-table #colSpanTable [nzData]="dataHistoricos" nzBordered>
+                <thead>
+                    <tr>
+                        <th class="text-center font-resalt font-weight-bold">Ciudades</th>
+                        <th class="text-center font-resalt font-weight-bold">Horas</th>
+                        <th class="text-center font-resalt font-weight-bold" *ngFor="let data of dataHistoricos[0]; let i = index">{{data.key}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let dataCity of colSpanTable.data; index as i">
+                        <td class="text-center">{{dataCity[1].name}}</td>
+                        <td class="text-center">
+                            <div class="sub-table" style="width:100%; min-width: 149px;">
+                                <div class="col-sm-12">%</div>
+                                <div class="col-sm-12" style=" border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc;"><small>Sin asignar</small></div>
+                                <div class="col-sm-12"><small>Total pedidos activos</small></div>
+                            </div>
+                        </td>
+                        <td class="text-center" *ngFor="let data of dataCity">
+                            <div class="" *ngIf="data">
+                                <div class="col-sm-12 text-center" *ngIf="data.ordersAssigned > 0">
+                                    <div class="col-sm-12 text-center"><b>{{( 100 * ((data.ordersNoAssigned/data.sum) / (data.ordersAssigned/data.sum))) | number:'1.2-2' }}%</b></div>
+                                </div>
+                                <div class="col-sm-12 text-center" *ngIf="data.ordersAssigned == 0">
+                                    <div class="col-sm-12 text-center"><b>0%</b></div>
+                                </div>
+                                <div class="col-sm-12 text-center" style="border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc;"><small> {{data.ordersNoAssigned/data.sum  | number:'1.2-2' }}</small></div>
+                                <div class="col-sm-12 text-center"><small> {{data.ordersAssigned/data.sum | number:'1.2-2' }}</small></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+
+            <div class="row m-0">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title-o font-bold">Totales</div>
+                            <div class="table-responsive w-100">
+                                <table class="table-data w-100">
+                                    <tr>
+                                        <td class="font-bold text-prom">Encolados total última hora:</td>
+                                        <td class="text-right">{{totalStuckLastHour | number}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold text-prom">Encolados total del día:</td>
+                                        <td class="text-right">{{totalStuck | number}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nz-tab>
+    <nz-tab nzTitle="Encolados general">
+
+        <div class="controls-header text-left w-50 col-lg-12 w-100 d-flex flex-wrap align-items-center">
+            <nz-form-item>
+                <h6 class="w-100" style="font-size: 15px;">Fecha</h6>
+                <nz-date-picker [(ngModel)]="fechaFinal" [nzSize]="'large'"></nz-date-picker>
+            </nz-form-item>
+
+            <nz-form-item>
+                <h6 class="w-100" style="font-size: 15px;">Fecha</h6>
+                <nz-date-picker [(ngModel)]="fechaFinal" [nzSize]="'large'"></nz-date-picker>
+            </nz-form-item>
+
+
+            <button (click)="generarReporte()" nz-button class="btn btn-success btn-lg font-weight-bold ml-auto">Generar reporte</button>
+        </div>
+
+        <div *ngIf="areaData">
+            <h4 class="mb-4 w-100 text-center"><strong>Encolados General</strong></h4>
+
+            <!-- <x-chartist [data]="areaData" [type]="'Line'" [options]="areaOptions" class="height-300">
+            </x-chartist>
+
+            <div class="indicators mb-5">
+                <div class="item"><span style="background: blue;" class="color"></span>Encolados</div>
+            </div> -->
+
+            <div class="row m-0">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title-o font-bold">Totales</div>
+                            <div class="table-responsive w-100">
+                                <table class="table-data w-100">
+                                    <tr>
+                                        <td class="font-bold text-prom">Encolados total última hora:</td>
+                                        <td class="text-right">{{totalStuckLastHour | number}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold text-prom">Encolados total del día:</td>
+                                        <td class="text-right">{{totalStuck | number}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </nz-tab>
+</nz-tabset>

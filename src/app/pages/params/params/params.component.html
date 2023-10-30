@@ -1,0 +1,99 @@
+<nz-tabset class="mb-2">
+    <nz-tab nzTitle="General">
+        <nz-table #rowSelectionTable [nzData]="paramsGeneral">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Valor Actual</th>
+                    <th>Edición</th>
+                    <th></th>
+                    <th class="text-right">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of rowSelectionTable.data; let i = index" class="option-border-color" class="editable-row">
+                    <ng-container [ngTemplateOutlet]="row" [ngTemplateOutletContext]="{data:data, index: i}"></ng-container>
+                </tr>
+            </tbody>
+
+        </nz-table>
+    </nz-tab>
+    <nz-tab nzTitle="App mensajeros">
+        <nz-table #rowSelectionTableApp [nzData]="paramsMessengers">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Valor Actual</th>
+                    <th>Edición</th>
+                    <th></th>
+                    <th class="text-right">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of rowSelectionTableApp.data; let i = index"
+                    class="option-border-color editable-row" [ngStyle]="{ 'background-color': !canChangeStoreSchedule}">
+                    <ng-container [ngTemplateOutlet]="row" [ngTemplateOutletContext]="{data:data, index: i}"></ng-container>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-tab>
+</nz-tabset>
+
+<ng-template #row let-data='data'>
+    <ng-container *ngIf="!(data.hide || false)">
+        <td>
+            {{data.name}}
+            <span *ngIf="data.optionsSelect">
+                <nz-select [(ngModel)]="data.optionSelected" (ngModelChange)="changeModelSelect(data)" style="min-width: 10rem;">
+                    <nz-option *ngFor="let opt of data.optionsSelect" [nzLabel]="opt.name" [nzValue]="opt.key"></nz-option>
+                </nz-select>
+            </span>
+        </td>
+        <td>
+            <div *ngIf="!data.currentValue">
+                <p class="ant-upload-drag-icon m-0 ml-2"><i nz-icon nzType="loading" style="font-size: 17px; color: #1b55e3;"></i></p>
+            </div>
+            <div *ngIf="data.currentValue">{{data.currentValue}}</div>
+        </td>
+        <ng-container [ngTemplateOutlet]="data.optionsValue ? optionsValue : !data.multiInput ? input : multiInput" [ngTemplateOutletContext]="{data:data}"></ng-container>
+        <td class="text-right">
+            <button 
+                nz-button
+                [nzType]="'dashed'"
+                class="btn btn-info btn-sm"
+                nz-popconfirm
+                nzPopconfirmTitle="¿Seguro de realizar esta acción?"
+                [disabled]="verifyAction(data)"
+                (nzOnConfirm)="data.action(data)">
+                Actualizar
+            </button>
+        </td>
+    </ng-container>
+</ng-template>
+
+<ng-template #multiInput let-data='data'>
+    <td *ngFor="let input of data.multiInput">
+        <div class="editable-cell" [hidden]="actionEdit === input" (click)="actionEdit = input">
+            {{ input.value }} <span *ngIf="!input.value || input.value == ''" class="placeholder">{{input.inputPlaceholder}}</span>
+        </div>
+        <input [hidden]="actionEdit !== input" [type]="input.inputType" nz-input [(ngModel)]="input.value" (blur)="actionEdit = undefined" />
+    </td>
+</ng-template>
+
+<ng-template #input let-data='data'>
+    <td colspan="2">
+        <div class="editable-cell" [hidden]="actionEdit === data" (click)="actionEdit = data">
+            {{ data.value }} <span *ngIf="!data.value || data.value == ''" class="placeholder">{{data.inputPlaceholder}}</span>
+        </div>
+        <input [hidden]="actionEdit !== data" [type]="data.inputType" nz-input [(ngModel)]="data.value" (blur)="actionEdit = undefined" />
+    </td>
+</ng-template>
+
+<ng-template #optionsValue let-data='data'>
+    <td colspan="2">
+        <nz-select [(ngModel)]="data.value" style="min-width: 10rem;">
+            <nz-option nzDisabled [nzLabel]="data.inputPlaceholder" nzValue=""></nz-option>
+            <nz-option *ngFor="let opt of data.optionsValue" [nzLabel]="opt.name" [nzValue]="opt.key"></nz-option>
+        </nz-select>
+    </td>
+</ng-template>

@@ -1,0 +1,43 @@
+<div>
+    <div nz-dropdown class="dropdown" [nzDropdownMenu]="menu">
+        <nz-badge [nzCount]="badgeCount">
+            <!-- (nzVisibleChange)="badgeCountIncrease()" -->
+            <nz-avatar nzIcon="user" [nzShape]="'square'" [nzSize]="'large'" class="avatar"></nz-avatar>
+        </nz-badge>
+    </div>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+            <li nz-menu-item>
+                <strong>Hola, {{user.employeeName}}</strong>
+                <div>
+                    <strong>
+            Rol:
+          </strong> {{user.rolUser}}
+                </div>
+            </li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item>
+                <div>
+                    <strong>Email: </strong> {{user.email}}
+                    <br/>
+                    <strong>Número: </strong> {{user.employeeNumber}}
+                    <br/>
+                    <strong>Id Tienda asignada: </strong> {{user.storeId}}
+                </div>
+            </li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item>
+                <a href="javascript: void(0);" routerLink="/user/profile/{{user.employeeNumber}}">
+                    <i class="menuIcon fe fe-user"></i> Editar Perfil
+                </a>
+            </li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item>
+
+                <a href="javascript: void(0);" (click)="logout()">
+                    <i class="menuIcon fe fe-log-out"></i> Cerrar Sesión
+                </a>
+            </li>
+        </ul>
+    </nz-dropdown-menu>
+</div>

@@ -1,0 +1,54 @@
+<div *ngIf="users == undefined" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando usuarios</p>
+</div>
+
+<div class="operate mb-3" *ngIf="users != undefined">
+    <div class="row m-0">
+        <div class="col-lg-3 col-sm-6 pb-2">
+            <button (click)="register()" class="btn btn-info small btn-rounded-md"><i class="fe fe-user-plus r-1"></i> Registrar usuario</button>
+        </div>
+        <div class="col-lg-6 col-sm-6 ml-auto">
+            <nz-input-group [nzPrefix]="suffixIconSearch">
+                <input type="text" [(ngModel)]="searchText" (ngModelChange)="searchData()" nz-input placeholder="Busca por Código, perfil o nombre" />
+            </nz-input-group>
+            <ng-template #suffixIconSearch>
+                <i nz-icon nzType="search"></i>
+            </ng-template>
+        </div>
+    </div>
+</div>
+
+<nz-table *ngIf="users != undefined" #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="users" [ngClass]="{'empty-table': users.length == 0}">
+    <thead>
+        <tr>
+            <th *ngFor="let col of cols; let i = index" [nzColumnKey]="col.key ? col.key : col.label" [nzSortOrder]="col.sortOrder" [nzSortFn]="col.sortFn" [nzFilters]="col.listOfFilter" [nzFilterFn]="col.filterFn">
+                <div style="font-size: 15px;" class="font-resalt text-body">{{col.label}}</div>
+            </th>
+            <th>
+                <div style="font-size: 15px;" class="font-resalt text-body text-center">Opción</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of rowSelectionTable.data; let i = index" class="option-border-color" (click)="userSelected = data">
+            <td *ngFor="let col of cols; let i = index">
+                <span [ngSwitch]=" col.label ">
+                    <div *ngSwitchCase=" 'Código'" class="font-resalt">
+                        {{ data[col.name] ? data[col.name] : 'No data' }}
+                    </div>
+                    <div *ngSwitchDefault>
+                        {{ data[col.name] ? data[col.name] : 'No data' }}
+                    </div>
+                </span>
+            </td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-opc btn-primary mr-xl-2 mr-md-0" (click)="userSelected = data">Editar</button>
+                <button class="btn btn-sm btn-opc btn-danger" [disabled]="data?.rolId === 10" (click)="delete(data, i, $event)">Eliminar</button>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+<user-edit [user]="userSelected" (close)="userSelected = undefined" (refresh)="refresh($event)">
+</user-edit>

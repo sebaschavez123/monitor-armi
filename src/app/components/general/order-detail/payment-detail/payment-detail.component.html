@@ -1,0 +1,161 @@
+
+
+<div class="modal fade" [ngClass]="{'show': orderId}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-taget">
+        <div class="modal-content" *ngIf="orderId">
+            <div class="head">
+                <div class="close" (click)="close.emit()"><i class="fe fe-x-circle"></i></div>
+                <div class="title">
+                    <h4>Información de pago</h4>
+                </div>
+            </div>
+
+            <div class="content">
+                <ng-container *ngIf="loading">
+                    <div class="text-center mt-5">
+                        <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #c3bedc;"></i></p>
+                        <p class="ant-upload-text text-width">Cargando...</p>
+                    </div>
+                </ng-container>
+
+                <div *ngIf="err" class="text-center">
+                    <small class="text-danger p-2">
+                        {{err}}
+                    </small>
+                </div>
+
+                <div *ngIf="paymentFinished" class="text-center">
+                    <small class="text-success p-2">
+                        Se ha finalizado el pago exitosamente
+                    </small>
+                </div>
+
+                <ng-container *ngIf="!loading && editInfo">
+
+                    <form nz-form [nzLayout]="formPaymentInfo.get('formLayout')?.value" [formGroup]="formPaymentInfo">
+                        <div class="row m-0">
+                            <div class="col-lg-12">
+                                <nz-form-item class="mb-2">
+                                    <nz-form-label class="w-100 text-left">Banco</nz-form-label>
+                                    <nz-select formControlName="bankId" [nzSize]="'large'">
+                                        <nz-option *ngFor="let bank of banks" [nzValue]="bank.id" [nzLabel]="bank.name"></nz-option>
+                                    </nz-select>
+                                </nz-form-item>
+                            </div>
+                        </div>
+                        <div class="row m-0">
+                            <div class="col-lg-6">
+                                <nz-form-item class="mb-2">
+                                    <nz-form-label class="w-100 text-left">Tipo de documento</nz-form-label>
+                                    <nz-select formControlName="customerDocumentType" [nzSize]="'large'">
+                                        <nz-option *ngFor="let type of typesId" [nzValue]="type.id" [nzLabel]="type.name"></nz-option>
+                                    </nz-select>
+                                </nz-form-item>
+                            </div>  
+                            <div class="col-lg-6">
+                                <nz-form-item class="mb-2">
+                                    <nz-form-label class="w-100 text-left">Documento</nz-form-label>
+                                    <nz-form-control nzSpan nzErrorTip="Debes ingresar el monto del pago">
+                                        <input nz-input [nzSize]="'small'" type="number" formControlName="customerDocumentNumber" placeholder="Escribe aquí…" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                        </div>
+                        <div class="row m-0">
+                            <div class="col-lg-12">
+                                <nz-form-item class="mb-2">
+                                    <nz-form-label class="w-100 text-left">Télefono</nz-form-label>
+                                    <nz-form-control nzSpan nzErrorTip="Debes ingresar el telefono del pago">
+                                        <input nz-input [nzSize]="'small'" type="text" input-phone formControlName="customerPhone" placeholder="Escribe aquí…" />
+                                    </nz-form-control>
+                                </nz-form-item>
+                            </div>
+                        </div>
+                    </form>
+
+                </ng-container>
+                
+
+                <ng-container *ngIf="!loading && payment && !editInfo">
+
+                    <ng-container *ngIf="step == 1" [ngTemplateOutlet]="info"></ng-container>
+
+                    <ng-container *ngIf="step == 2" [ngTemplateOutlet]="info">
+                            <form nz-form [nzLayout]="form.get('formLayout')?.value" [formGroup]="form">
+                                <div class="row m-0">
+                                    <div class="col-lg-12 d-none">
+                                        <nz-form-item class="mb-2">
+                                            <nz-form-label class="w-100 text-left">Referencia</nz-form-label>
+                                            <nz-form-control nzSpan nzErrorTip="Debes ingresar referencia del pago">
+                                                <input nz-input [nzSize]="'small'" type="text" formControlName="reference" placeholder="Escribe aquí…"/>
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <nz-form-item class="mb-2">
+                                            <nz-form-label class="w-100 text-left">Monto</nz-form-label>
+                                            <nz-form-control nzSpan nzErrorTip="Debes ingresar el monto del pago">
+                                                <input nz-input [nzSize]="'small'" type="number" formControlName="amount" placeholder="Escribe aquí…" />
+                                            </nz-form-control>
+                                        </nz-form-item>
+                                    </div>
+                                </div>
+                            </form>
+                    </ng-container>
+                    
+                </ng-container>
+                
+            </div>
+
+            <!--pre>{{ step == 2 | json }} - {{form.invalid | json}}</pre>
+            <pre>{{ !loading | json }} - {{ !err | json}} - {{ !paymentFinished || json }}</pre -->
+            <div class="actions">
+                <button (click)="actionLeft()" class="action">{{textLeft}}</button>
+                <button
+                    class="action"
+                    *ngIf="!loading || !err || !paymentFinished" (click)="actionRigth()"
+                    [disabled]="step == 2 && form.invalid">
+                    {{textRigth}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #info>
+    <div class="table-responsive" class="table-data {{class}}">
+        <table>
+            <tr>
+                <td>Id</td>
+                <td class="text-right">{{payment.idPagoMovil}}</td>
+            </tr>
+            <tr>
+                <td>Tipo</td>
+                <td class="text-right">{{payment.pagoMovilType}}</td>
+            </tr>
+            <tr>
+                <td>Banco</td>
+                <td class="text-right">{{payment.bankNameFarmatodo}}</td>
+            </tr>
+            <tr>
+                <td>Referencia</td>
+                <td class="text-right">{{payment.reference ? payment.reference : 'no registra'}}</td>
+            </tr>
+            <tr>
+                <td>RIF Farmatodo</td>
+                <td class="text-right">{{payment.RIFFarmatodo}}</td>
+            </tr>
+            <tr>
+              <td>Saldo deuda</td>
+              <td class="text-right">Bs. {{payment.outstandingBalance  | number}}</td>
+            </tr>
+            <tr>
+              <td>Valor pago</td>
+              <td class="text-right">Bs. {{payment.orderValue | number}}</td>
+            </tr>
+        </table>
+
+        <button class="btn btn-sm btn-success" (click)="actionEdit()">Editar información de pago</button>
+    </div>
+</ng-template>
+

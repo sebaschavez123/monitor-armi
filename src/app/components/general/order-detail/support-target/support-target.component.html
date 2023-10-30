@@ -1,0 +1,150 @@
+<div class="modal fade" [ngClass]="{'show': ticket}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-taget">
+        <div class="modal-content" *ngIf="ticket">
+            <div class="head">
+                <div class="close" (click)="closeEvent.emit()"><i class="fe fe-x-circle"></i></div>
+                <div class="title">
+                    <h4>Crear nuevo caso</h4>
+                </div>
+            </div>
+
+            <div class="content">
+                <ng-container *ngIf="loading">
+                    <div class="text-center mt-5">
+                        <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+                        <p class="ant-upload-text text-width">Cargando...</p>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="step == 1">
+                    <div class="options-container">
+                        <ul class="options-list">
+                          <li class="options-item" *ngFor="let op of optionsSupport; let ndx = index" (click)="selectOptionSupport(op)">
+                            <div class="options-icon" [ngStyle]="getIconStyle(op.icon)"></div> {{ op.name }}
+                          </li>
+                        </ul>
+                      </div>
+                </ng-container>   
+
+
+                <ng-container *ngIf="step == 2">
+                    <form (ngSubmit)="dataSend(forma)" #forma="ngForm" novalidate [ngStyle]="{'display': loading ? 'none':'block'}">
+                        <div class="support-frame">
+                            <div class="incident-header">
+                              <div class="icon-header" [ngStyle]="getIcon(optionSupportSelected.icon)"></div>
+                              <div class="title">{{ optionSupportSelected.name }}</div>
+                              <p class="subtitle" [innerHTML]="optionSupportSelected.desc"></p>
+                            </div>
+                            <hr>
+                            <div class="incident-invoice" *ngIf="optionSupportSelected?.invoice">
+                              <div class="incident-info w-100">
+                                <div class="widgets-support">
+                                  <div *ngFor="let wgt of optionSupportSelected.widgets" class="widgets-support">
+                                    <div class="widget-list" *ngIf="wgt.wtype == 'list'">
+                                        <ul>
+                                            <li *ngFor="let option of wgt.options; let inx = index" (click)="wgt.checked = option">
+                                              <div class="ocheck" [attr.data-ocvalue]="option" [ngClass]="{'checked': wgt.checked?.id == option.id}">
+                                                {{ option.desc }}
+                                              </div>
+                                            </li>
+                                            <label>
+                                                <input type="hidden" name="list" #wlistm="ngModel" required [(ngModel)]="wgt.checked">
+                                            </label>
+                                          </ul>
+                                          <span class="text-danger ml-45" *ngIf="frmTouch && wlistm.errors">
+                                            * Debe seleccionar una opción.
+                                        </span>
+                                    </div>
+                                    <br>
+                                    <div class="wgt-textblock" *ngIf="wgt.wtype == 'textblock'" [ngClass]="{'has-danger': frmTouch && wcomment.errors}">
+                                        <div class="title">Escríbenos tus comentarios:</div>
+                                        <textarea name="comment" rows="5" required [(ngModel)]="wgt.comment" #wcomment="ngModel" placeholder="Escribe tus comentarios aquí…"></textarea>
+                                        <span class="text-danger" *ngIf="frmTouch && wcomment.errors">
+                                          * El comentario es requerido.
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                            </div>
+                                <!-- button class="button-def btn300" type="submit">Enviar</button -->
+                                <button type="submit" *ngIf="ticketOnOption(forma.value.list)" class="button-def btn300">Enviar</button>
+                                <button type="button" *ngIf="chatOnOption(forma.value.list)" (click)="openChat()" class="button-def btn300">Contactar a un asesor</button>
+                            </div>
+                            <div class="incident-info w-100" *ngIf="!optionSupportSelected.invoice">
+                              <div *ngFor="let wgt of optionSupportSelected.widgets" class="widgets-support">
+                                <div *ngIf="wgt.wtype == 'products-list'">
+                                    <app-products-list [products]="productsTheoretical" (hasChanged)="wgt.values = $event"></app-products-list>
+                                    <label>
+                                        <input type="hidden" #wproducts="ngModel" [(ngModel)]="wgt.values" name="products" required>
+                                    </label>
+                                </div>
+                                <div class="widget-list" *ngIf="wgt.wtype == 'list'">
+                                  <ul>
+                                    <li *ngFor="let option of wgt.options; let inx = index">
+                                      <div class="ocheck" [attr.data-ocvalue]="JsonStringify(option)" (click)="chkToggle($event.target, wgt)">{{ option.desc }}</div>
+                                    </li>
+                                  </ul>
+                                  <label>
+                                      <input type="hidden" name="list" #wlist="ngModel" [(ngModel)]="wgt.values" required value="oculto">
+                                  </label>
+                                  <span class="text-danger ml-30" *ngIf="frmTouch && wlist.errors">
+                                    * Debe seleccionar una opción.
+                                </span>
+                                </div>
+                                <div class="wgt-messenger" *ngIf="wgt.wtype == 'messenger' && messenger">
+                                  <div class="icon"></div>
+                                  <div class="info">
+                                    <div class="name text-truncate" [title]="messenger.name">{{ messenger.name }}</div>
+                                    <div class="phone text-truncate" [title]="messenger.phone">{{ messenger.phone }}</div>
+                                  </div>
+                                  <div class="actions">
+                                    <a class="whatapps" href="https://wa.me/{{messenger.phone}}" target="_blank"></a>
+                                    <a class="call" href="tel:{{messenger.phone}}"></a>
+                                  </div>
+                                </div>
+                                <div class="wgt-textfield" *ngIf="wgt.wtype == 'textfield'" [ngClass]="{'has-danger': frmTouch && wfield.errors}">
+                                  <div class="title">{{ wgt.title }}</div>
+                                  <label>
+                                                  <input type="text" required
+                                                      [(ngModel)]="wgt.value"
+                                                      #wfield="ngModel" [name]="wgt.name"
+                                                      [placeholder]="wgt.placeholder">
+                                              </label>
+                                  <span class="text-danger" *ngIf="frmTouch && wfield.errors">El {{wgt.name}} es requerido.</span>
+                                </div>
+                                <div class="wgt-textblock" *ngIf="wgt.wtype == 'textblock'" [ngClass]="{ 'has-danger': frmTouch && wcomment.errors }">
+                                  <div class="title">{{ wgt.title }}</div>
+                                  <textarea name="comment" rows="5" required [(ngModel)]="wgt.comment" #wcomment="ngModel" placeholder="Escribe tus comentarios aquí…"></textarea>
+                                  <span class="text-danger" *ngIf="frmTouch && wcomment.errors">
+                                                  * El comentario es requerido.
+                                              </span>
+                                </div>
+                                <div class="wgt-imgupload" *ngIf="wgt.wtype == 'image-unload'">
+                                  <div class="title">{{ wgt.title }}</div>
+                                  <label for="upload-file" class="image-div default" *ngIf="!optionSupportSelected.file"></label>
+                                  <label for="upload-file" class="image-div" id="upload-file-lbl" *ngIf="optionSupportSelected.file"></label>
+                                  <input type="file" id="upload-file" accept="image/*" class="d-none" (change)="select_image($event.target.files[0])">
+                                </div>
+                              </div>
+                              <button class="button-def btn300" type="submit">Enviar</button>
+                            </div>
+                          </div>
+                    </form>
+                </ng-container>
+
+                <ng-container *ngIf="step == 3">
+                  <div class="result-ticket">
+                    <i nz-icon [nzType]="'check-circle'" [nzTheme]="'twotone'"></i>
+                    <p>El ticket se ha creado exitosamente con la referencia </p> <p class="ref">{{idTicketResult}}</p>
+                  </div>
+                </ng-container>
+            </div>
+
+            <div class="actions">
+                <button class="action" (click)="actionLeft()">{{textLeft}}</button>
+                <!-- <button *ngIf="step > 1" class="action" type="submit">{{textRight}}</button> -->
+            </div>
+
+        </div>
+    </div>
+</div>

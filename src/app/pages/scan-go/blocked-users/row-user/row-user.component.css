@@ -1,0 +1,49 @@
+.user {
+    width: 100%;
+    margin-top: 20px;
+    object-fit: contain;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 0 4px 0 rgba(180, 178, 178, 0.19);
+    -moz-box-shadow: 0 0 4px 0 rgba(180, 178, 178, 0.19);
+    box-shadow: 0 0 4px 0 rgba(180, 178, 178, 0.19);
+    border: solid 1px #f0f0f0;
+    background-color: #ffffff;
+}
+
+.text-title {
+    color: #717171;
+    font-size: 12pt;
+}
+
+.line-rigth {
+    border-right: 1px solid #e1e2e4;
+}
+
+.comment>* {
+    display: block;
+}
+
+.comment>b {
+    font-size: 9pt;
+}
+
+.comment>label {
+    font-size: 8pt;
+    font-weight: 300;
+    font-style: oblique;
+}
+
+.row {
+    padding: 6px;
+}
+
+.row-button {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.row-button>* {
+    display: block;
+}

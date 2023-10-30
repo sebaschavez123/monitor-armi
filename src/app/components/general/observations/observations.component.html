@@ -1,0 +1,37 @@
+<nz-modal 
+  [(nzVisible)]="isVisible"
+  [nzTitle]="'Orden: '+this.orderId"
+  [nzFooter]="null"
+  (nzOnCancel)="hideModal()"
+  nzClassName="modal-observations">
+  <ng-container *nzModalContent>
+    <p *ngIf="observations?.length < 1">No se encontraron observaciones ...</p>
+    <div class="observation-container">
+      <div class="observation-card" *ngFor="let observation of observations">
+        <div class="obs-time">
+          {{ observation.hour }}
+          <small>{{ observation.date }}</small>
+        </div>
+        <div class="obs-desc {{ observation.color?.toLowerCase() }}">
+          <div class="obs-header">{{ observation.status }}</div>
+          <div class="obs-info" [title]="getTitle(observation.userType)">
+            <div class="obs-icon {{ observation.userType?.toLowerCase() }}" ></div>
+            <div class="obs-user">
+              {{ observation.username }}
+              <ng-container *ngIf="observation.phone">
+                <br/><small>{{ observation.phone }}</small>
+              </ng-container>
+            </div>
+          </div>
+          <div class="obs-content" [innerHTML]="observation.observation"></div>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <button 
+      nz-button nzType="primary"
+      class="btn btn-sm pl-5 pr-5 btn-success w-100"
+      [nzLoading]="loadingForm"
+      (click)="hideModal()">Aceptar</button>
+  </ng-container>
+</nz-modal>

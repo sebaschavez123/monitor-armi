@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="col">
+        <h4>{{ options.title }}</h4>
+    </div>
+    <div class="col">
+        <general-filter class="ml-2" [asControl]="true"
+            *ngFor="let filter of options.filters"
+            name="Proveedores"
+            [key]="options.key"
+            keyLocal="{{options.key}}-filter"
+            [filters]="[]" (filterEvent)="changeList($event)"
+            [function]="filter.filterFn"
+            
+            [options]="filter.options || []">
+        </general-filter>
+    </div>
+</div>
+<nz-table id="ms-table"
+    #rowSelectionTable
+    nzShowSizeChanger
+    [nzData]="listOfDisplayData"
+    [nzLoading]="isLoading"
+    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
+    >
+    <thead>
+        <tr nzCustomFilter>
+            <th *ngFor="let col of options.cols"
+                [nzAlign]="col.align" nzCustomFilter
+                [nzSortFn]="col.sortFn"
+                nzColumnKey="{{options.key}}-{{col.fieldName}}">
+                <div *ngIf="!col.hasSearch">
+                    {{ col.name }}
+                </div>
+                <div class="div-expand" *ngIf="col.hasSearch">
+                    {{ col.name }}
+                    <nz-filter-trigger
+                        [(nzVisible)]="col.showSearchInput"
+                        [nzActive]="true"
+                        [nzDropdownMenu]="menu">
+                        <i nz-icon nzType="search"></i>
+                    </nz-filter-trigger>      
+                    <nz-dropdown-menu #menu="nzDropdownMenu">
+                        <div class="ant-table-filter-dropdown">
+                            <div class="search-box">
+                                <input type="text" nz-input placeholder="Search name" [(ngModel)]="col.searchValue" name="searchValue" />
+                                <button nz-button nzSize="small" nzType="primary" (click)="search(col)" class="search-button">Búscar</button>
+                                <button nz-button nzSize="small" (click)="reset(col)">Reinciar</button>
+                            </div>
+                        </div>
+                    </nz-dropdown-menu>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of rowSelectionTable.data">
+            <td nzEllipsis
+                [nzAlign]="col.align"
+                [nzWidth]="col.width"
+                *ngFor="let col of options.cols">
+                {{ col.getFormatedData(data) }}
+            </td>
+        </tr>
+    </tbody>
+</nz-table>

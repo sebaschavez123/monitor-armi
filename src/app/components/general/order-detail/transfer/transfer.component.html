@@ -1,0 +1,187 @@
+<div class="modal fade" [ngClass]="{'show': showTransferModal, 'page-mode': false}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-custom">
+        <div class="modal-content">
+            <!-- MAP -->
+            <div class="map" [ngClass]="{'map--hide': !showMapResponsive}" #transferMap>
+                <app-transfer-map 
+                    [home]="customerAddressCoordinates"
+                    [stores]="storesCoordinates"
+                    [size]="transferMap?.clientHeight"
+                    [updateMap]="updateMap"
+                ></app-transfer-map>
+            </div>
+
+            <!-- TRANSFER -->
+            <div class="transfer" [ngClass]="{'transfer--hide-map': !showMapResponsive}">
+                <button class="button-show-map" (click)="changeShowMapResponsive()">
+                    {{ showMapResponsive ? 'Ocultar mapa ▲' : 'Ver mapa ▼' }}
+                </button>
+                <!-- HEADER -->
+                <div class="header">
+                    <span class="header__history" (click)="showHistory()">
+                        <img src="assets/svg/clock.svg" alt="clock icon" />
+                        <span>Historial</span>
+                    </span>
+                    <h3 class="header__title" style="text-align: center;">Completa los datos</h3>
+                    <div class="close header__close" (click)="closeModal()"><i class="fe fe-x"></i></div>
+                </div>
+
+                <!-- INFO -->
+                <div class="info" *ngIf="!loading?.getOrderProcessedList">
+                    <div class="info__item">
+                        <span class="info__title">Distancia</span>
+                        <span class="info__value">
+                            <img src="assets/svg/km.svg" alt="km icon" />
+                            <span>{{ orderProcessedList?.data?.distance || 0 | number: '1.0-2':'en-US' }} km</span>
+                        </span>
+                    </div>
+                    <div class="info__item" *ngIf="false">
+                        <span class="info__title">Tarifa</span>
+                        <span class="info__value">
+                            <img src="assets/svg/dolar.svg" alt="dolar icon" />
+                            <span>$5.300</span>
+                        </span>
+                    </div>
+                </div>
+                <button
+                    class="btn-reassing-store"
+                    *ngIf="products && !loading?.getOrderProcessedList"
+                    (click)="editStore($event)"
+                >
+                    Reasignar tienda completa
+                </button>
+
+                <ng-template #loadingTemplate>
+                    <div class="text-center mt-5">
+                        <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+                        <p class="ant-upload-text text-width">Cargando información</p>
+                    </div>
+                </ng-template>
+                <!-- TRANSFER CONTENT -->
+                <div class="transfer__content" *ngIf="!loading?.getOrderProcessedList else loadingTemplate">
+                    <!-- PRODUCTS -->
+                    <section class="products">
+                        <h4 class="products__title">Selecciona el producto:</h4>
+                        <ul class="products__list">
+                            <li class="product" *ngFor="let product of products" (click)="changeSelectedProducts(product)">
+                                <div 
+                                    class="product__check"
+                                    [ngClass]="{
+                                        'product__check--active': isSelectedProduct(product),
+                                        'product__check--disabled': getProductMissing(product) === 0
+                                    }"
+                                >
+                                    <img
+                                        *ngIf="isSelectedProduct(product) || getProductMissing(product) === 0"
+                                        src="assets/svg/check.svg"
+                                        alt="check icon"
+                                    />
+                                </div>
+                                <img class="product__image" [src]="product?.itemImage + '=s24'" [alt]="product?.itemName" />
+                                <div class="product__info">
+                                    <span class="product__description">{{ product?.itemName }}</span>
+                                    <span class="product__quantity">{{ product?.stock | i18nPlural:unitsMapping }}</span>
+                                </div>
+                                <div class="product__missing" *ngIf="getProductMissing(product) > 0">
+                                    {{ getProductMissing(product) | i18nPlural:missingMapping }}
+                                </div>
+                            </li>
+                        </ul>
+                    </section>
+
+                    <!-- STORES -->
+                    <section class="stores">
+                        <ul class="store__list">
+                            <li class="store" *ngFor="let store of stores; let i = index">
+                                <h4 class="store__title">
+                                    Tienda #{{ i + 1 }}{{ i === 0 ? ':' : '' }}
+                                    <span *ngIf="i > 0">(Transferencia):</span>
+                                </h4>
+                                <div class="store__item">
+                                    <div class="store__content" (click)="showStore(store?.storeId)">
+                                        <img src="assets/svg/point.svg" [alt]="store?.storeName" />
+                                        <div class="store__info">
+                                            <span class="store__name">{{ store?.storeName }}</span>
+                                            <span class="store__address">{{ store?.storeAddress }}</span>
+                                        </div>
+                                        <button
+                                            class="store__button"
+                                            (click)="i === 0 ? editStore($event) : deleteStore(store, $event)"
+                                        >
+                                            {{ i === 0 ? 'Editar' : 'Eliminar' }}
+                                        </button>
+                                        <img 
+                                            class="store__arrow"
+                                            [ngClass]="{'store__arrow--selected': isStoreSelected(store?.storeId)}"
+                                            src="assets/svg/arrow-down.svg" 
+                                            alt="arrow down"
+                                        />
+                                    </div>
+                                    <ul class="store__products" *ngIf="isStoreSelected(store?.storeId) && store?.products?.length > 0">
+                                        <li class="store-product" *ngFor="let product of store?.products">
+                                            <img class="store-product__image" [src]="product?.itemImage + '=s24'" [alt]="product?.itemName" />
+                                            <span class="store-product__description">
+                                                {{ product?.itemName }}
+                                            </span>
+                                            <div class="store-product__quantity">
+                                                <span class="store-product__missing" *ngIf="getProductMissing(product) > 0">
+                                                    {{ getProductMissing(product) | i18nPlural:missingMapping }}
+                                                </span>
+                                                <button
+                                                    class="store-product__button"
+                                                    (click)="changeQuantityProduct(product, store, 'DECREASE')"
+                                                >
+                                                    -
+                                                </button>
+                                                <span>{{ product?.stock }}</span>
+                                                <button
+                                                    class="store-product__button"
+                                                    (click)="changeQuantityProduct(product, store, 'ADD')"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        <button class="btn-transfer btn-transfer--outline" (click)="addStore()">
+                            <span class="plus-icon"></span>
+                            Agregar más tiendas
+                        </button>
+                    </section>
+                </div>
+                <button
+                    class="btn-transfer"
+                    *ngIf="!loading?.getOrderProcessedList"
+                    (click)="createTransfer()"
+                >
+                    Crear transferencia
+                </button>
+                <div
+                    class="loading text-center"
+                    *ngIf="loading?.setTransferOrderPartialStore || loading?.setTransferOrderFullStore"
+                >
+                    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+                    <p class="ant-upload-text text-width">Creando transferencia</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-container #selectStoreModal></ng-container>
+<app-select-store-transfer
+    [showModal]="showSelectStoreModal"
+    [orderId]="orderId"
+    [city]="city"
+    [stores]="stores"
+    [edit]="edit"
+    [itemList]="itemListSelectStore"
+    (changeShowModal)="changeShowSelectStoreModal($event)"
+    (onAddStore)="onAddStore($event)"
+    (onEditStore)="onEditStore($event)"
+></app-select-store-transfer>
+
+<!-- <app-select-store-transfer></app-select-store-transfer> -->

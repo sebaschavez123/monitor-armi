@@ -1,0 +1,36 @@
+<div *ngIf="!dataAssigned" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando datos</p>
+</div>
+
+<div *ngIf="dataAssigned && dataByAssigned" class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-4"><strong>Total Asignados {{getTotal(dataAssigned.series)}}</strong></h4>
+                <x-chartist [type]="'Pie'" [data]="dataAssigned" [options]="labelsPieOptions" [responsiveOptions]="responsiveOptions" class="height-300">
+                </x-chartist>
+
+                <div class="indicators mb-5">
+                    <div *ngFor="let item of dataAssigned.labels; let i = index" class="item"><span [ngStyle]="{'background': _rS.colorsChart[i]}" class="color"></span>{{item}}</div>
+                </div>
+
+                <general-data-options [export]="dataExport" [dataSearch]="dataSearch"></general-data-options>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-4"><strong>Por Asignar {{getTotal(dataByAssigned.series)}}</strong></h4>
+                <x-chartist [type]="'Pie'" [data]="dataByAssigned" [options]="labelsPieOptions" [responsiveOptions]="responsiveOptions" class="height-300">
+                </x-chartist>
+                <div class="indicators mb-5">
+                    <div *ngFor="let item of dataByAssigned.labels; let i = index" class="item"><span [ngStyle]="{'background': _rS.colorsChart[i]}" class="color"></span>{{item}}</div>
+                </div>
+
+                <general-data-options [export]="dataExport" [dataSearch]="dataSearchByAssgined"></general-data-options>
+            </div>
+        </div>
+    </div>
+</div>

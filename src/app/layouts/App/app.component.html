@@ -1,0 +1,31 @@
+<div [ngClass]="{air__layout__grayBackground: isGrayBackground}">
+    <nz-layout [ngClass]="{
+  air__layout__contentNoMaxWidth: isContentNoMaxWidth,
+  air__layout__appMaxWidth: isAppMaxWidth,
+  air__layout__squaredBorders: isSquaredBorders,
+  air__layout__cardsShadow: isCardShadow,
+  air__layout__borderless: isBorderless
+}">
+        <nz-sider *ngIf="menuLayoutType === 'left'" [nzWidth]="'auto'">
+            <air-menu-left></air-menu-left>
+        </nz-sider>
+        <nz-layout>
+            <nz-header class="air__layout__header" [ngClass]="{air__layout__fixedHeader: isTopbarFixed, air__layout__headerGray: isGrayTopbar}">
+                <air-topbar></air-topbar>
+                <!-- <air-subbar></air-subbar> -->
+            </nz-header>
+            <nz-content style="height: 100%; position: relative;">
+                <div class="air__utils__content" [ngClass]="{'p-0': menuService.isFullScreen()}">
+                    <div [@slideFadeinUp]="routeAnimation(outlet, 'slideFadeinUp')" [@slideFadeinRight]="routeAnimation(outlet, 'slideFadeinRight')" [@zoomFadein]="routeAnimation(outlet, 'zoomFadein')" [@fadein]="routeAnimation(outlet, 'fadein')">
+                        <router-outlet #outlet="outlet"></router-outlet>
+                    </div>
+                </div>
+            </nz-content>
+            <!-- Modal generales -->
+            <modal-observations></modal-observations>
+            <nz-footer>
+                <!-- <air-footer></air-footer> -->
+            </nz-footer>
+        </nz-layout>
+    </nz-layout>
+</div>

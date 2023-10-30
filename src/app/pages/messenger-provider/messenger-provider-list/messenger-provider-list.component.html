@@ -1,0 +1,96 @@
+<div *ngIf="providers == undefined" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando Proveedores</p>
+</div>
+
+<div class="operate mb-3" *ngIf="providers != undefined">
+    <div class="row m-0">
+        <div class="col-lg-3 col-sm-6 pb-2">
+            <button (click)="edit()" class="btn btn-info small btn-rounded-md"><i class="fe fe-user-plus r-1"></i> Registrar Proveedor</button>
+        </div>
+        <div class="col-lg-6 col-sm-6 ml-auto">
+            <nz-input-group [nzPrefix]="suffixIconSearch">
+                <input type="text" [(ngModel)]="searchText" (ngModelChange)="searchData()" nz-input placeholder="Busca por Código, perfil o nombre" />
+            </nz-input-group>
+            <ng-template #suffixIconSearch>
+                <i nz-icon nzType="search"></i>
+            </ng-template>
+        </div>
+    </div>
+</div>
+
+<nz-table *ngIf="providers != undefined" #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="providers" [ngClass]="{'empty-table': providers.length == 0}">
+    <thead>
+        <tr>
+            <th *ngFor="let col of cols; let i = index" [nzColumnKey]="col.key ? col.key : col.label" [nzSortOrder]="col.sortOrder" [nzSortFn]="col.sortFn" [nzFilters]="col.listOfFilter" [nzFilterFn]="col.filterFn">
+                <div style="font-size: 15px;" class="font-resalt text-body">{{col.label}}</div>
+            </th>
+            <th>
+                <div style="font-size: 15px;" class="font-resalt text-body text-center">Opción</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of rowSelectionTable.data; let i = index" class="option-border-color" (click)="userSelected = data">
+            <td *ngFor="let col of cols; let i = index">
+                <span [ngSwitch]=" col.label ">
+                    <div *ngSwitchCase="'Courier'">
+                        {{ data[col.name] ? data[col.name] : 'No definido' }}
+                    </div>
+                    <div *ngSwitchDefault>
+                        {{ data[col.name] ? data[col.name] : 'No data' }}
+                    </div>
+                </span>
+
+            </td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-opc btn-primary mr-xl-2 mr-md-0" (click)="edit(data)">Editar</button>
+                <!--button class="btn btn-sm btn-opc btn-danger" (click)="delete(data, i, $event)">Eliminar</button -->
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+<nz-modal [(nzVisible)]="providerSelected"
+    [nzTitle]="getFormLabel()"
+    (nzOnCancel)="handleCancel()"
+    (nzOnOk)="sendData()"
+    nzCancelText="Cancelar"
+    [nzOkLoading]="isLoading"
+    [nzCancelDisabled]="isLoading"
+    nzOkText="Actualizar">
+    <ng-container *nzModalContent>
+        <nz-spin [nzSpinning]="isLoading" nzTip="Un momento ...">
+            <div *ngIf="providerSelected">
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="7" nzRequired>Nombre</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzValidatingTip="Validating...">
+                    <input nz-input
+                        [(ngModel)]="providerSelected.providerName"
+                        placeholder="Nombre del proveedor"
+                        name="providerName" />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="7" nzRequired>E-mail</nz-form-label>
+                    <nz-form-control [nzSpan]="12">
+                    <input nz-input
+                        type="email"
+                        [(ngModel)]="providerSelected.providerEmail" 
+                        placeholder="correo@proveedor.xyz"
+                        name="providerEmail" />
+                    </nz-form-control>
+                </nz-form-item>
+                <!--nz-form-item>
+                    <nz-form-label [nzSpan]="7" nzRequired>Courier</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzDisableAutoTips nzErrorTip="Please input your password!">
+                    <nz-select [(ngModel)]="providerSelected.courierId" name="courierId">
+                        <nz-option [nzValue]="-1" nzLabel="Seleccione"></nz-option>
+                        <nz-option *ngFor="let courier of this.couriers" [nzValue]="courier.id" [nzLabel]="courier.name"></nz-option>
+                    </nz-select>
+                    </nz-form-control>
+                </nz-form-item -->
+            </div>
+        </nz-spin>
+    </ng-container>
+  </nz-modal>

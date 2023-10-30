@@ -1,0 +1,9 @@
+<div *ngIf="loading_search" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando clientes bloqueados</p>
+</div>
+
+<div *ngIf="customers">
+    <button (click)="downloadExcel()" class="btn btn-sm ml-sm-0 btn-lg font-weight-bold btn-outline-success btn-success"> <i class="fa fa-file-excel-o mr-2"></i> Exportar</button>
+    <customer-table *ngIf="customers" [cols]="cols" [customers]="customers" (refresh)="searchData($event)" [valuesTable]="valuesTable"></customer-table>
+</div>

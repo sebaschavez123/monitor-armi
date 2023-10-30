@@ -1,0 +1,31 @@
+    .btns{
+        height: 60px;
+        width: 60px;
+        outline: none !important;
+        box-shadow: none;
+        span {
+            font-weight: bold;
+            font-size: 20pt;
+          }
+        
+          &:first-child {
+            color: green;
+          }
+        
+          &:nth-child(2) {
+            color: red;
+          }
+          &:hover{
+            color:white
+          }
+         
+    }
+    .icon-white{
+      color:white !important;
+    }
+
+    .img-user{
+      border-radius: 18px;
+    }
+    
+   

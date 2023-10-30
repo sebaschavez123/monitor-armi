@@ -1,0 +1,66 @@
+<nz-tabset class="mb-2">
+    <nz-tab *ngIf="acctionsMessengers.length > 0" nzTitle="Liberaciones de mensajeros">
+        <nz-table *ngIf="acctionsMessengers" #rowSelectionTable [nzData]="acctionsMessengers">
+            <thead>
+                <tr>
+                    <th class="font-resalt text-body">Descripción</th>
+                    <th class="font-resalt text-body">Valor</th>
+                    <th></th>
+                    <th class="text-right font-resalt text-body">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of rowSelectionTable.data; let i = index" class="option-border-color" class="editable-row">
+                    <td>{{data.name}}</td>
+                    <ng-container [ngTemplateOutlet]="!data.multiInput ? input : multiInput" [ngTemplateOutletContext]="{data:data}"></ng-container>
+                    <td class="text-right">
+                        <button nz-button [nzType]="'dashed'" class="btn btn-info btn-sm" nz-popconfirm nzPopconfirmTitle="¿Seguro de realizar esta acción?" [disabled]="verifyAction(data)" (nzOnConfirm)="!data.multiInput ? data.action(i) : data.action(data.multiInput)">{{data.actionName}}</button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-tab>
+    <nz-tab *ngIf="acctionsRelease.length > 0" nzTitle="Liberación orden y carrito">
+
+        <nz-table *ngIf="acctionsRelease" #rowSelectionTableR [nzData]="acctionsRelease">
+            <thead>
+                <tr>
+                    <th class="font-resalt text-body">Descripción</th>
+                    <th class="font-resalt text-body">Valor</th>
+                    <th></th>
+                    <th class="text-right font-resalt text-body">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of rowSelectionTableR.data; let i = index" class="option-border-color" class="editable-row">
+                    <td>{{data.name}}</td>
+                    <ng-container [ngTemplateOutlet]="!data.multiInput ? input : multiInput" [ngTemplateOutletContext]="{data:data}"></ng-container>
+                    <td class="text-right">
+                        <button nz-button [nzType]="'dashed'" class="btn btn-info btn-sm" nz-popconfirm nzPopconfirmTitle="¿Seguro de realizar esta acción?" [disabled]="verifyAction(data)" (nzOnConfirm)="!data.multiInput ? data.action(i) : data.action(data.multiInput)">{{data.actionName}}</button>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+
+    </nz-tab>
+</nz-tabset>
+
+
+
+<ng-template #multiInput let-data='data'>
+    <td *ngFor="let input of data.multiInput">
+        <div class="editable-cell" [hidden]="actionEdit === input" (click)="actionEdit = input">
+            {{ input.value }} <span *ngIf="!input.value || input.value == ''" class="placeholder">{{input.inputPlaceholder}}</span>
+        </div>
+        <input [hidden]="actionEdit !== input" [type]="input.inputType" nz-input [(ngModel)]="input.value" (blur)="actionEdit = undefined" />
+    </td>
+</ng-template>
+
+<ng-template #input let-data='data'>
+    <td colspan="2">
+        <div class="editable-cell" [hidden]="actionEdit === data" (click)="actionEdit = data">
+            {{ data.value }} <span *ngIf="!data.value || data.value == ''" class="placeholder">{{data.inputPlaceholder}}</span>
+        </div>
+        <input [hidden]="actionEdit !== data" [type]="data.inputType" nz-input [(ngModel)]="data.value" (blur)="actionEdit = undefined" />
+    </td>
+</ng-template>

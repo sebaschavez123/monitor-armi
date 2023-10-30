@@ -1,0 +1,37 @@
+<div class="modal fade" [ngClass]="{'show': show}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-custom modal-sm">
+        <div class="modal-content" *ngIf="show">
+            <div class="head">
+                <div class="close" (click)="close.emit()"><i class="fe fe-x-circle"></i></div>
+                <div class="title">
+                    <h4>Registrar Reporte</h4>
+                </div>
+            </div>
+            <div class="content">
+                <form nz-form [nzLayout]="forma.get('formLayout')?.value" [formGroup]="forma">
+                    <div class="row m-0">
+                        <div class="col-lg-12">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Nombre</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes ingresar el nombre">
+                                    <input nz-input [nzSize]="'small'" type="text" formControlName="name" placeholder="Escribe aquí…" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                        <div class="col-lg-12">
+                            <nz-form-item class="mb-2">
+                                <nz-form-label class="w-100 text-left">Url</nz-form-label>
+                                <nz-form-control nzSpan nzErrorTip="Debes ingresar la url">
+                                    <input nz-input [nzSize]="'small'" type="text" formControlName="url" placeholder="Escribe aquí…" />
+                                </nz-form-control>
+                            </nz-form-item>
+                        </div>
+                    </div>
+                </form>
+                <nz-form-control class="mt-4 mb-4 ml-3 text-center">
+                    <button nz-button nzType="primary" class="btn btn-sm btn-success pl-5 pr-5 w-50" [nzLoading]="loadingForm" [disabled]="forma.invalid" (click)="save()">Guardar</button>
+                </nz-form-control>
+            </div>
+        </div>
+    </div>
+</div>

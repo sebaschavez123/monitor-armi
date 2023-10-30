@@ -1,0 +1,39 @@
+<div *ngIf="user == undefined" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando información de usuario</p>
+</div>
+
+<div *ngIf="user && thisProfile">
+
+    <div class="row">
+        <div class="col-lg-8 border-right text-center">
+            <user-edit [pageMode]="true" [user]="user"></user-edit>
+        </div>
+        <div class="col-lg-4">
+            <h4>Cambiar contraseña</h4>
+            <form nz-form [nzLayout]="form.get('formLayout')?.value" [formGroup]="form">
+                <nz-input-group [nzSuffix]="suffixTemplateOld" class="mb-3">
+                    <input [type]="visibiltyPass.old ? 'text' : 'password'" nz-input placeholder="Contraseña actual" formControlName="old" />
+                </nz-input-group>
+                <ng-template #suffixTemplateOld>
+                    <i nz-icon [nzType]="visibiltyPass.old ? 'eye-invisible' : 'eye'" (click)="visibiltyPass.old = !visibiltyPass.old"></i>
+                </ng-template>
+
+                <nz-input-group [nzSuffix]="suffixTemplateNew" class="mb-3">
+                    <input [type]="visibiltyPass.new ? 'text' : 'password'" nz-input placeholder="Nueva contraseña" formControlName="new" />
+                </nz-input-group>
+                <ng-template #suffixTemplateNew>
+                    <i nz-icon [nzType]="visibiltyPass.new ? 'eye-invisible' : 'eye'" (click)="visibiltyPass.new = !visibiltyPass.new"></i>
+                </ng-template>
+
+                <div *ngIf="form_error && form_error.length > 0" class="text-danger font-size-12">*{{form_error}}*</div>
+
+                <nz-form-control class="mt-4 text-right">
+                    <button nz-button nzType="primary" class="btn btn-sm btn-success btn-lg font-resalt pl-5 pr-5" [nzLoading]="loadingForm" [disabled]="form.invalid" (click)="changePassword()">Guardar</button>
+                </nz-form-control>
+            </form>
+
+        </div>
+    </div>
+
+</div>

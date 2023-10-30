@@ -1,0 +1,12 @@
+<div class="text-left w-50 col-sm-8 w-100 d-flex align-items-center">
+    <nz-range-picker [(ngModel)]="dateRange" [nzSize]="'large'" (ngModelChange)="changeValues()"></nz-range-picker>
+    <button (click)="search()" nz-button [nzType]="'primary'" class="btn btn-success btn-lg font-weight-bold ml-2" [disabled]="!dateRange || dateRange.length == 0">Buscar</button>
+    <general-data-options class="mt-3 ml-2" [export]="dataExport" [disabled]="!dateRange || dateRange.length == 0" [dataSearch]="dataSearch" [btnLg]="true"></general-data-options>
+</div>
+
+<div *ngIf="loading_search" class="text-center mt-5">
+    <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+    <p class="ant-upload-text text-width">Cargando clientes eliminados</p>
+</div>
+
+<customer-table *ngIf="customers" [customers]="customers" [cols]="cols"></customer-table>

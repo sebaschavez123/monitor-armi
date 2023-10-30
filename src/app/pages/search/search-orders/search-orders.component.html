@@ -1,0 +1,136 @@
+<div class="row" *ngIf="permissions.guide">
+    <div class="col-lg-12">
+        <h6 class="font-resalt text-body font-size-16" style="font-size: 15px;">Carga de guías</h6>
+        <general-data-options [uploadGuide]="upoladGuideConf" [disabled]="valuesTable.loading" [contentUploadFull]="true"></general-data-options>
+    </div>
+</div>
+
+<nz-tabset (nzSelectChange)="changeTab($event)" class="mb-2">
+    <nz-tab *ngIf="permissions.date" nzTitle="Rango de fechas">
+        <div class="row m-0" *ngIf="activeNumber == 1">
+            <nz-range-picker style="height: 50px;" [(ngModel)]="dateRange" [nzSize]="'large'" (ngModelChange)="changeValues($event)"></nz-range-picker>
+            <div class="ml-auto">
+                <ng-container [ngTemplateOutlet]="options"></ng-container>
+            </div>
+        </div>
+    </nz-tab>
+    <nz-tab *ngIf="permissions.document" nzTitle="Número de documento">
+        <div class="row m-0" *ngIf="activeNumber == 2">
+            <nz-input-group class="col-lg-6">
+                <input style="height: 50px;" nz-input nzSize="large" type="number" [(ngModel)]="number" (ngModelChange)="changeValues($event)" nz-input placeholder="Ingrese número de documento" />
+            </nz-input-group>
+            <div class="justify-con tent-center col-lg-6">
+                <ng-container [ngTemplateOutlet]="options"></ng-container>
+            </div>
+        </div>
+    </nz-tab>
+    <nz-tab *ngIf="permissions.order" nzTitle="Número de pedido">
+        <div class="row m-0" *ngIf="activeNumber == 3">
+            <nz-input-group class="col-lg-6">
+                <input style="height: 50px;" nz-input nzSize="large" type="number" [(ngModel)]="number" (ngModelChange)="changeValues($event)" nz-input placeholder="Ingrese número de pedido" />
+            </nz-input-group>
+            <div class="col-lg-6">
+                <ng-container [ngTemplateOutlet]="options"></ng-container>
+            </div>
+        </div>
+    </nz-tab>
+    <nz-tab *ngIf="permissions.messenger" nzTitle="Mensajero">
+        <div class="row m-0" *ngIf="activeNumber == 4">
+            <nz-input-group class="col-lg-6">
+                <input style="height: 50px;" nz-input nzSize="large" type="number" [(ngModel)]="number" (ngModelChange)="changeValues($event)" nz-input placeholder="Ingrese id de mensajero" />
+            </nz-input-group> 
+            <div class="col-lg-4">
+                <ng-container [ngTemplateOutlet]="options"></ng-container>
+            </div>
+        </div>
+    </nz-tab>
+    <nz-tab *ngIf="permissions.guide" nzTitle="Número de guía">
+        <div class="row m-0" *ngIf="activeNumber == 5">
+            <nz-input-group class="col-lg-6">
+                <input style="height: 50px;" nz-input nzSize="large" type="number" [(ngModel)]="number" (ngModelChange)="changeValues($event)" nz-input placeholder="Ingrese número de guía" />
+            </nz-input-group>
+            <div class="col-lg-6">
+                <ng-container [ngTemplateOutlet]="options"></ng-container>
+            </div>
+        </div>
+    </nz-tab>
+    <nz-tab *ngIf="permissions.agent" nzTitle="Agente">
+        <div class="row m-0" *ngIf="activeNumber == 6">
+            <nz-input-group class="col-lg-8">
+                <div class="d-flex flex-wrap">
+                    <nz-range-picker style="padding: 10px;" class="max-width-300" [(ngModel)]="dateRange" [nzSize]="'large'" (ngModelChange)="changeValues($event)"></nz-range-picker>
+                    <input class="max-width-300 col-sm ml-sm-2" nz-input nzSize="large" type="number" [(ngModel)]="number" (ngModelChange)="changeValues($event)" nz-input placeholder="Ingrese aquí id de agente" />
+                </div>
+            </nz-input-group>
+            <div class="col-lg-4">
+                <ng-container [ngTemplateOutlet]="options"></ng-container>
+            </div>
+        </div>
+    </nz-tab>
+    <nz-tab *ngIf="permissions.sas" nzTitle="Suscríbete y ahorra">
+        <div class="row m-0" *ngIf="activeNumber == 7">
+            <nz-input-group class="col-lg-6">
+                <input nz-input nzSize="large" type="number" [(ngModel)]="number" (ngModelChange)="changeValues($event)" nz-input placeholder="Ingrese aquí cédula de cliente" />
+            </nz-input-group>
+            <div class="col-lg-6">
+                <button (click)="searchSubscriptions()" [disabled]="valuesTable.loading" nz-button [nzType]="'primary'" class="btn btn-success btn-lg font-weight-bold mr-2 ml-auto" [disabled]="!validateSearch()">Buscar</button>
+            </div>
+        </div>
+    </nz-tab>
+</nz-tabset>
+
+
+<general-orders-table typeReport="search"
+    [cols]="cols" [showScores]="false"
+    [listOfAllData]="lstOrders"
+    (refresh)="refresh($event)"
+    [valuesTable]="valuesTable">
+</general-orders-table>
+
+
+
+<ng-template #options>
+    <div class="d-flex flex-wrap">
+        <button (click)="search()" [disabled]="valuesTable.loading || !validateSearch()" nz-button [nzType]="'primary'" class="btn btn-success btn-lg font-weight-bold mr-2 ml-auto">Buscar</button>
+        <general-data-options class="ml-auto" [export]="dataExport" [disabled]="valuesTable.loading || !validateSearch()" [exportDetail]="dataExportDetail" [listData]="lstOrdersId" [dataSearch]="dataSearch" [btnLg]="true"></general-data-options>
+    </div>
+</ng-template>
+
+
+<nz-modal [(nzVisible)]="openDetailSubscription" nzTitle="Detalle de suscripción" [nzFooter]="modalFooterSubscription" (nzOnCancel)="openDetailSubscription = false">
+    <ng-container *nzModalContent>
+        <div *ngIf="!customer?.lstProductsSubs" class="text-center mt-5">
+            <p class="ant-upload-drag-icon"><i nz-icon nzType="loading" style="font-size: 30px; color: #1b55e3;"></i></p>
+            <p class="ant-upload-text text-width">Cargando detalle</p>
+        </div>
+        <nz-table *ngIf="customer?.lstProductsSubs" #rowSelectionTable [nzData]="customer.lstProductsSubs">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Imagen</th>
+                    <th>Descripción</th>
+                    <th>Unidades</th>
+                    <th>Precio unitario</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of rowSelectionTable.data; let i = index" class="option-border-color" (click)="customerSelected = data">
+                    <td>{{data.id}} </td>
+                    <td>
+                        <img [src]="data.mediaImageUrl" alt="Imagen producto" style="height: 50px; width: 50px">
+                    </td>
+                    <td>{{data.mediaDescription}} </td>
+                    <td>{{data.quantity}} </td>
+                    <td>{{data.fullPrice}} </td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="font-resalt">Total</td>
+                    <td colspan="1" class="font-resalt text-right">{{getTotalPriceSubscription()}}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </ng-container>
+    <ng-template #modalFooterSubscription>
+        <button nz-button nzType="default" (click)="openDetailSubscription = false">Cerrar</button>
+    </ng-template>
+</nz-modal>

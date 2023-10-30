@@ -1,0 +1,16 @@
+<ul class="widget-products">
+    <li *ngFor="let product of products">
+        <div class="product-item">
+            <div class="ocheck" [attr.data-ocvalue]="JsonStringify(product)" (click)="chkToggle($event.target)">
+                {{ option }}
+            </div>
+            <img [src]="product.image" alt="">
+            <div class="desc">{{ product.itemName }}</div>
+            <div class="cant">{{ product.units }}</div>
+            <div class="total">{{ getTotal(product.price) }}</div>
+            <label>
+                <input type="hidden" name="productos" [(ngModel)]="values" >
+            </label>
+        </div>
+    </li>
+</ul>

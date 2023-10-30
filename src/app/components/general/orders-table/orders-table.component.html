@@ -1,0 +1,266 @@
+<div class="operate">
+    <div class="row m-0 pb-3 border-bottom">
+        <div class="col-lg-4 p-0 d-flex">
+            <nz-input-group [nzPrefix]="suffixIconSearch">
+                <input [disabled]="valuesTable.loading != undefined ? valuesTable.loading : isOperating == true" type="text" [(ngModel)]="searchText" (ngModelChange)="searchData()" nz-input placeholder="Buscar..." /> 
+            </nz-input-group>
+            <ng-template #suffixIconSearch>
+                <em nz-icon nzType="search"></em>
+            </ng-template>
+        </div>
+        <div class="col-lg-8 p-0 d-flex align-items-center ml-auto">
+            <button nz-button class="ml-auto btn btn-info" [disabled]="valuesTable.loading != undefined ? valuesTable.loading : isOperating == true" (click)="operateData()">Refrescar</button>
+        </div>
+    </div>
+
+    <div class="filters d-flex align-items-center flex-wrap pt-3 pb-3">
+        <div style="font-size: 15px;" class="font-resalt text-body ml-auto">Búsqueda por filtro:</div>
+        <general-filter *ngFor="let filter of getColsWithFilters()" class="ml-2"
+            [name]="filter.header"
+            [keyLocal]="filter.keyLocal"
+            [key]="filter.key"
+            [options]="filter?.listOfFilter"
+            [function]="filter.filterFn"
+            [filters]="filtersActived"
+            [byDefault]="filter.byDefault"
+            (filterEvent)="activeFilter($event)"
+            [disabled]="listOfAllData.length == 0">
+        </general-filter>
+    </div>
+    <div class="filters d-flex align-items-center flex-wrap pt-3 pb-3" *ngIf="showScores">
+        <div class="scores-container">
+            <table aria-labelledby="tblsScores">
+                <thead>
+                    <th scope="col"><div class="state">Enviada</div></th>
+                    <th scope="col"><div class="state">Asignada</div></th>
+                    <th scope="col"><div class="state">Picking</div></th>
+                    <th scope="col"><div class="state">Facturada</div></th>
+                    <th scope="col"><div class="state">Entrega</div></th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td *ngFor="let score of scores" title="Tiempo excedido (+10 min)">
+                            <div class="green">{{score['N'] || 0}}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngFor="let score of scores">
+                            <div class="yellow">{{score['A'] || 0}}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngFor="let score of scores" title="Tiempo excedido (+10 min)">
+                            <div class="red">{{score['R'] || 0}}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngFor="let score of scores">
+                            <div class="blue">{{score['B'] || 0}}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngFor="let score of scores">
+                            <div class="fuchsia">{{score['F'] || 0}}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngFor="let score of scores">
+                            <div class="blue-ligth">{{score['LB'] || 0}}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><div class="total">{{ totalScores[0] || 0}}</div></td>
+                        <td><div class="total">{{ totalScores[1] || 0}}</div></td>
+                        <td><div class="total">{{ totalScores[2] || 0}}</div></td>
+                        <td><div class="total">{{ totalScores[3] || 0}}</div></td>
+                        <td><div class="total">{{ totalScores[4] || 0}}</div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <app-glued [orderType]="orderType" [filters]="filtersActived" [fullsize]="false" (changeSize)="showGlued = $event"></app-glued>
+    </div>
+</div>
+<nz-table 
+    #rowSelectionTable
+    nzShowPagination
+    nzShowSizeChanger 
+    [nzData]="listOfAllData"
+    [nzLoading]="valuesTable.loading"
+    [nzTotal]="valuesTable.total"
+    [nzPageSize]="valuesTable.paginate"
+    [nzPageIndex]="valuesTable.pageIndex"
+    (nzQueryParams)="onQueryParamsChange($event)"
+    [nzFrontPagination]="valuesTable.total ? false : true" [ngClass]="{'empty-table': listOfAllData.length == 0}">
+    <thead>
+        <tr>
+            <th scope="col" >&nbsp;</th>
+            <th scope="col" *ngFor="let col of getCols(); let i = index" [title]="col.header" [nzColumnKey]="col.key ? col.key : col.label" [class]="'text'+col.textPo ? col.textPo : ''" [nzSortOrder]="col.sortOrder" [nzSortFn]="col.sortFn">
+                <div style="font-size: 15px;" class="font-resalt text-body">{{col.label}}</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of rowSelectionTable.data" id="order-{{data.orderId}}" class="option-border-color" [ngClass]="getBorderColor(data)" (click)="openOrder(data)">
+            <td *ngIf="!typeReport">
+                <ng-container *ngIf="!showButtonsReturn(); else returnTemplate">
+                    <button *ngIf="orderType !== 'NEGATIVE_RATING' || !isColombia
+                    R "class="btn btn-sm btn-opc" (click)="copyOrderURL($event, data)">Compartir</button>
+                    <button *ngIf="permissions?.reassign && (orderType !== 'NEGATIVE_RATING' || !isColombia)" class="btn btn-sm btn-opc" (click)="reassing($event, data)">Reasignar</button>
+                    <button *ngIf="orderType === 'REFUND' " class="btn btn-sm btn-opc" (click)="validateOrderRefund($event, data)" [disabled]="isReversing(data?.orderId)">Reversar</button>
+                    <button *ngIf="showButtonDiscardRefundOrder()" class="btn btn-sm btn-opc" (click)="discardRefundOrder($event, data)">Descartar</button>
+                </ng-container>
+                <ng-template #returnTemplate>
+                    <button
+                        class="btn btn-sm btn-opc"
+                        [ngClass]="{'btn-success': data?.returnSuccessful}"
+                        (click)="validateSuccessfulReturn($event, data?.orderId, 1)"
+                    >
+                        Gestionado
+                    </button>
+                    <button
+                        class="btn btn-sm btn-opc"
+                        [ngClass]="{'btn-danger': !data?.returnSuccessful}"
+                        (click)="validateSuccessfulReturn($event, data?.orderId, 0)"
+                    >
+                        Pendiente
+                    </button>
+                </ng-template>
+                <div *ngIf="orderType === 'NEGATIVE_RATING'">
+                    <button class="btn btn-sm btn-opc"  (click)="openObservation(0, data.orderId)" [ngClass]="{'btn-warning': data?.manageNegativeRating===0}">Pendiente </button>
+                    <button  class="btn btn-sm btn-opc" (click)="openObservation(2, data.orderId)">Cerrado</button>
+                    <button  class="btn btn-sm btn-opc" (click)="openObservation(3, data.orderId) ">Resuelto</button>
+                </div>
+            </td>
+            <td *ngIf="typeReport">
+                <button class="btn btn-sm btn-opc btn-opc-icon" title="Copiar enlace" (click)="copyOrderURL($event, data)"><em class="fa fa-copy"></em></button>
+                <button class="btn btn-sm btn-opc btn-opc-icon" title="Compartir en WhatsApp" (click)="shareWhatsApp($event, data)"><em class="fa fa-whatsapp"></em></button>
+            </td>
+            <td *ngFor="let col of getCols(); let i = index" class="row-order" [ngClass]="{'col-customer-address': col.name == 'customerAddress'}" (click)="openOrder(data)">
+                <span [ngSwitch]=" col.label ">
+                <div *ngSwitchCase=" 'Pedido' ">
+                    <div class="bubles ">
+                        <div class="notify-buble-white" *ngIf="data.hasCoupons=='TRUE'" title="Cupón activo "><em class="fa fa-ticket"></em></div>
+                        <div class="notify-buble-white" *ngIf="data.hasCreditNote=='TRUE'" title="Nota de credito "><em class="fa fa-asterisk"></em></div>
+                        <div class="notify-buble-white" *ngIf="data.isOrderReasigned=='TRUE'" title="Reasignado "><em>R</em></div>
+                        <div class="notify-buble-white" *ngIf="data.isOrderRelaunched=='TRUE'" title="Reasignado "><em class="fa fa-registered"></em></div>
+                        <div class="notify-buble-white" *ngIf="data.isOrderActivated=='TRUE'" title="Activo "><em>A</em></div>
+                        <div class="notify-buble-white" *ngIf="data.isHighPriceOrder=='TRUE'" title="Alto precio "><em class="fa fa-usd"></em></div>
+                        <div class="notify-buble-white" *ngIf="data.exceedKilometers=='TRUE'" title="Kilometraje excedido "><em>KM</em> </div>
+                        <div class="notify-buble-white" *ngIf="data.hasPinBlocked=='TRUE'" title="Pin bloqueado"><em>PN</em></div>
+                        <div class="notify-buble-white" *ngIf="data.pickingDate" title="Programado "><em>P</em></div>
+                        <div class="notify-buble-white" *ngIf="data.hasTicketZendesk=='TRUE'" title="Caso en zendesk"><em>Z</em></div>
+                        <div class="notify-buble-white" *ngIf="data.exceedWeight=='TRUE'" title="Peso Excedido!"><img class="bubles-icon" src="/assets/svg/weight.svg" alt="Peso Excedido!" /></div>
+                        <div class="notify-buble-white" *ngIf="data.exceedVolume=='TRUE'" title="Volument Excedido!"><img class="bubles-icon" src="/assets/svg/size.svg" alt="Volument Excedido!" /></div>
+                        <div class="notify-buble-white" *ngIf="data.manySkus=='TRUE'" title="Multiples SKU"><img class="bubles-icon" src="/assets/svg/products.svg" alt="Multiples SKU" /></div>
+                        <div class="notify-buble-white" *ngIf="data.fraudDescription" title="Posible Fraude : {{data.fraudDescription}}"><em>F</em></div>
+                        <div class="notify-buble-white" *ngIf="data.hasComplexOffer=='TRUE'" title="Ofertas complejas"><em>OC</em></div>
+                        <div class="notify-buble-white" *ngIf="data.hasMultipleOrders=='TRUE'" title="Multiples ordenes"><em>MO</em></div>
+                        <div class="notify-buble-white" *ngIf="data.hasAuction=='TRUE'" title="Subastada"><em>SU</em></div>
+                        <div class="notify-buble-white" *ngIf="data.isOrderFlash=='TRUE'" title="Flash"><em class="fa fa-bolt"></em></div>
+                        <div class="notify-buble-white full" *ngIf="data.firstBuy=='TRUE'" title="Primera compra"><img class="bubles-icon" src="/assets/svg/first-buy.svg" alt="Primera compra" /></div>
+<div class="notify-buble-white full" *ngIf="data.negativeRating=='TRUE'" title="Calificación Negativa"><img class="bubles-icon" src="/assets/svg/negative-rating.svg" alt="Calificación Negativa" /></div>
+                        
+
+                        <div class="notify-buble-white" *ngIf="data.isPrime=='TRUE'" title="Prime">
+                            <img class="bubles-icon prime" src="/assets/svg/prime_techo.svg" alt="icono prime" />
+                        </div>
+                        <div class="notify-buble-white" *ngIf="data.multiStore>1" title="transferencias: {{data.multiStore}}">
+                            <img class="bubles-icon prime" src="/assets/svg/transfer.svg" alt="icono prime" />
+                        </div>
+                        <div class="notify-buble-white" *ngIf="data.totalObservationsOrder != null && data.totalObservationsOrder > 0" title="Observaciones"><em>OB</em></div>
+                        <div class="notify-buble-white" *ngIf="data.orderExceedPrice == 'TRUE'" title="Supera tope 2 Millones.">
+                            <em>2M</em>
+                        </div>
+                        <div class="notify-buble-white"  title="Dirección verificada" *ngIf="data.verifiedAddress == 'TRUE' && isVenezuela"> 
+                            <img class="bubles-icon verified" src="/assets/svg/verified.svg" alt="icono verificado" />
+                        </div>
+                    </div>
+                    <div class="font-resalt">{{data[col.name]}}</div>
+                </div>
+                <div *ngSwitchCase=" 'Estado'"> <div class="font-resalt">{{data[col.name]}}</div></div>
+                <div *ngSwitchCase=" 'Tienda' " [innerHtml]="data[col.name]"></div>
+                <div *ngSwitchCase=" 'Ciudad' " [innerHtml]="data[col.name]"></div>
+                <div *ngSwitchCase=" 'Domiciliario'" class="d-flex align-items-center">
+                    <div>{{ data[col.name] ? data[col.name] : 'Sin información' }}</div>
+                    <div *ngIf="data[col.name]" class="ml-auto">
+                        <button title="Escribir a WhatsApp" class="btn-wp" (click)="openWapp($event, data.messengerPhoneCountry)"></button>
+                    </div>
+                </div>
+                <div *ngSwitchCase=" 'Cliente'" class="d-flex align-items-center">
+                    <div style="max-width: 100px;">{{ data[col.name] ? data[col.name] : 'Sin información' }}</div>
+                    <div *ngIf="permissions.customer_phone" class="ml-auto">
+                        <button title="Escribir a WhatsApp" class="btn-wp" (click)="openWapp($event, data.customerPhone, data.orderId)"></button>
+                    </div>
+                </div>
+                <div *ngSwitchCase=" 'KM' ">{{data[col.name] ? data[col.name] : ' '}}</div>
+                <div *ngSwitchCase=" 'RO' "><em  class="fa {{data[col.name]}}" aria-hidden="true"></em></div>
+                <div *ngSwitchCase=" 'Obs'" style="max-width: 150px;" (click)="showObservation($event, data.orderId)">
+                    {{ data[col.name] ? data[col.name] : 0 }}
+                </div>
+                <div *ngSwitchCase=" 'Tp'"> {{ data[col.name] ? data[col.name] : 0 }} </div>
+                <div *ngSwitchCase=" 'TAO'"> {{ data[col.name] ? data[col.name] : 0}} </div>
+                <div *ngSwitchCase=" 'Op'"> {{ data[col.name] | abbCourierName }} </div>
+                <div *ngSwitchDefault>
+                    {{ data[col.name] ? data[col.name] : 'No data' }}
+                </div>
+                </span>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+
+<div class="indicators" *ngIf="listOfAllData.length > 0">
+    <div class="item">
+        <div class="color yellow"></div>
+        <div class="text">Retraso</div>
+    </div>
+    <div class="item">
+        <div class="color red"></div>
+        <div class="text">Tiempo excedido</div>
+        <div class="subText">+10 min</div>
+    </div>
+    <div class="item">
+        <div class="color blue-light"></div>
+        <div class="text">Con mensajero</div>
+        <div class="subText">+20 min</div>
+    </div>
+    <div class="item">
+        <div class="color fuchsia"></div>
+        <div class="text">Facturado</div>
+        <div class="subText">+40 min</div>
+    </div>
+</div>
+
+<order-detail [typeReport]="typeReport" [order]="orderSelected " (close)="orderSelected=undefined " (refresh)="refresh.emit($event)" [exportPdf]="exportPdf" [editCourier]="editCourier" [missings]="missings"></order-detail>
+
+<nz-modal [(nzVisible)]="showGlued" nzTitle="Listado de encolamiento por ciudades"
+    [nzWidth]="830" height="80vh"
+    nzCancelText="Cerrar"
+    [nzFooter]="null"
+    (nzOnCancel)="showGlued = false">
+    <ng-container *nzModalContent>
+        <app-glued *ngIf="showGlued" [filters]="filtersActived" [orderType]="orderType"></app-glued>
+    </ng-container>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="showObs && isColombia" nzTitle="Observaciones"
+    [nzWidth]="500" 
+    nzCancelText="Cerrar"
+    [nzFooter]="null"
+    (nzOnCancel)="showObs = false">
+    <ng-container *nzModalContent class="observations">
+        <form [formGroup]="formObs">
+            <div class="col-lg-12">
+                <nz-form-item>
+                  <nz-form-control nzHasFeedback nzErrorTip="Campo obligatorio" class="mb-3">
+                    <nz-textarea-count [nzMaxCharacterCount]="2000">
+                      <textarea formControlName="observation" nz-input rows="4" placeholder="Escribe tus observaciones aquí…"></textarea>
+                    </nz-textarea-count>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <button nz-button nzType="primary" [disabled]="formObs.invalid" (click)="saveForm()">Enviar</button>
+        </form>
+    </ng-container>
+</nz-modal>

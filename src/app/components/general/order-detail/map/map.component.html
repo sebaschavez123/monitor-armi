@@ -1,0 +1,16 @@
+<div class="tracking">
+    <div id="map" 
+        style="--heigth: {{sizeGl ? '50rem':'300px'}}"
+        leaflet 
+        (leafletMapReady)="initializeMap($event)" 
+        [leafletOptions]="options" 
+        [ngStyle]="styleMap" 
+        [ngClass]="{'message-edting': edit}"
+        class="animated fadeIn map">
+    </div>
+    <div *ngIf="!coordinates && !coordinatesEdit" class="animated fadeIn not-tracking">
+        <img width="100%" src="/assets/images/map.jpg" alt="" style="max-height: 300px;">
+    </div>
+</div>
+
+<!-- 'heigth': sizeGl ? '50rem':'300px' -->

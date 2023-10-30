@@ -1,0 +1,52 @@
+<div class="all-settings" [ngClass]="{'all-open': open, 'all-close': !open}" (click)="event.emit(false)">
+    <div class="bar-settings" [ngClass]="{'open': open, 'close': !open}" (click)="$event.stopPropagation()">
+
+        <div class="body-settings">
+            <div class="title border-bottom">Ajustes <i class="fa fa-times-circle-o" (click)="event.emit(false)"></i></div>
+
+            <div class="m-b-20">
+                <small>Estos ajustes son a nivel general, asegurece bien antes de guardar todos los cambios.</small>
+            </div>
+
+            <div class="text-right">
+                <button class="btn btn-sm btn-primary btn-loading" (click)="save()">Guardar</button>
+                <br>
+                <label class="text text-sm-left text-danger" *ngIf="save_changes_opt.err_save_changes"><small>Error guardando datos</small></label>
+            </div>
+
+            <div class="conf">
+                <div class="t-conf"><span>{{_sS.settings.time.title}}</span></div>
+                <select [(ngModel)]="_sS.settings.time.value">
+                <option value="1">1 minuto</option>
+                <option value="2">2 minutos</option>
+                <option value="3">3 minutos</option>
+                <option value="4">4 minutos</option>
+                <option value="5">5 minutos</option>
+              </select>
+            </div>
+
+
+            <div class="conf conf-underline" *ngFor="let set of _sS.settings.params">
+                <div class="t-conf"><span>{{set.title}}</span></div>
+                <input type="number" [(ngModel)]="set.value" name="set.key">
+            </div>
+
+            <div class="conf" style=" margin-top: 50px;">
+                <div class="t-conf"><span>Revisión según puntaje</span></div>
+                <div class="row" *ngFor="let score of _sS.settings.purchase_score">
+                    <div class="col-lg-6">
+                        <span class="name-param">Puntaje</span>
+                        <label>{{score.number}}</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <span class="name-param">Número de compras</span>
+                        <input type="number" [(ngModel)]="score.value" name="score.number">
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

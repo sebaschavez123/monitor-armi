@@ -1,0 +1,86 @@
+<form nz-form (ngSubmit)="search(forma)" #forma="ngForm" class="ant-advanced-search-form" novalidate>
+    <div nz-row [nzGutter]="24">
+        <div nz-col [nzSpan]="8">
+            <nz-form-item>
+                <nz-form-label [nzFor]="'field'">Ciudad</nz-form-label>
+                <nz-form-control>
+                    <nz-select
+                        name="city"
+                        nzShowSearch
+                        nzAllowClear
+                        [(ngModel)]="selecteds.city"
+                        (ngModelChange)="changeCity($event)"
+                        nzPlaceHolder="Seleccione ...">
+                        <nz-option *ngFor="let city of citiesList"
+                            [nzLabel]="city.text" [nzValue]="city.value">
+                        </nz-option>
+                      </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="8">
+            <nz-form-item>
+                <nz-form-label [nzFor]="'field'">Tiendas</nz-form-label>
+                <nz-form-control>
+                    <general-filter
+                        key="stores"
+                        keyLocal="stores"
+                        name="Seleccione ..."
+                        [filters]="[]"
+                        [asControl]="true"
+                        [options]="storesList"
+                        [defaultAllState]="true"
+                        allSelectedText="Todas"
+                        (filterEvent)="changeStores($event)">
+                    </general-filter>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="8">
+            <nz-form-item>
+                <nz-form-label [nzFor]="'field'">Producto</nz-form-label>
+                <nz-form-control
+                    [nzValidateStatus]="hasError(inpSku)"
+                    nzErrorTip="* Este campo es requerido">
+                    <input 
+                    name="sku" #inpSku="ngModel"
+                    nz-input input-only-numbers required
+                    [(ngModel)]="selecteds.sku"
+                    placeholder="Ingrese número"/>
+                </nz-form-control>
+            </nz-form-item>
+        </div>
+    </div>
+    <div nz-row>
+      <div nz-col [nzSpan]="24" class="search-area">
+        <button nz-button [nzType]="'primary'">Búscar</button>
+        <button nz-button (click)="resetForm()">Limpiar</button>
+        <a class="collapse" (click)="toggleCollapse()">
+          Collapse
+          <span nz-icon [nzType]="isCollapse ? 'down' : 'up'"></span>
+        </a>
+      </div>
+    </div>
+</form>
+<br>
+<nz-spin nzTip="Cargando ..." [nzSpinning]="isLoading">
+    <nz-table #sortTable [nzData]="stockList" [nzPageSize]="30" nzTableLayout="fixed">
+        <thead>
+            <tr>
+                <th *ngFor="let column of listOfColumn"
+                    [nzAlign]="column.align"
+                    [nzSortFn]="column.compare"
+                    [nzSortPriority]="column.priority">
+                    {{ column.title }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of sortTable.data">
+                <td>{{ getLabelCity(data.cityName) }}</td>
+                <td>{{ data.storeName }}</td>
+                <td align="center">{{ data.stock }}</td>
+            </tr>
+        </tbody>
+    </nz-table>
+</nz-spin>

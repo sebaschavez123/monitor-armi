@@ -1,0 +1,61 @@
+<div class="header">
+    <h5>Usuarios Bloqueados</h5>
+</div>
+
+<div class="p-3 mt-4">
+    <h6 class="font-resalt text-body w-100" style="font-size: 16px;">Busqueda por:</h6>
+    <div class="search-head text-left w-50 col-lg-12 w-100 d-flex align-items-center border-bottom pb-4 mb-5">
+        <nz-form-item class="mb-0">
+            <div class="d-flex">
+                <select [(ngModel)]="searchParams.option" class="select-type mr-3">
+                    <option *ngFor="let opt of searchOptions" [value]="opt.field">{{opt.name}}</option>
+                </select>
+                <input [(ngModel)]="searchParams.text" id="'textSearch'" nz-input placeholder="Ingrese dato del cliente " class="pr-5" />
+            </div>
+        </nz-form-item>
+        <button (click)="search()" nz-button [nzType]="'primary'" class="btn btn-success btn-lg font-weight-bold ml-2" [disabled]="!validateSearch()">Buscar</button>
+        <general-data-options class="m-0 mt-2 ml-auto" [export]="dataExport" [dataSearch]="dataSearch" [btnLg]="true"></general-data-options>
+    </div>
+
+    <h6 class="font-resalt text-body w-100" style="font-size: 16px;">Usuarios bloqueados</h6>
+    <div class="users">
+        <nz-table #rowSelectionTable nzShowPagination nzShowSizeChanger [nzData]="dataCopy" [ngClass]="{'empty-table': dataCopy.length == 0}" [nzLoading]="valuesTable.loading" [nzTotal]="valuesTable.total" [nzPageSize]="valuesTable.paginate" [nzPageIndex]="valuesTable.pageIndex"
+            [nzFrontPagination]="valuesTable.total ? false : true" (nzQueryParams)="onQueryParamsChange($event)">
+            <thead>
+                <tr>
+                    <th *ngFor="let col of cols; let i = index" class="text-center" [nzColumnKey]="col.key ? col.key : col.label" [nzSortOrder]="col.sortOrder" [nzSortFn]="col.sortFn" [nzFilters]="col.listOfFilter" [nzFilterFn]="col.filterFn">
+                        <div style="font-size: 15px;" class="font-resalt text-body">{{col.label}}</div>
+                    </th>
+                    <th style="font-size: 15px;" class="font-resalt text-body text-right">
+                        <div style="font-size: 15px;" class="font-resalt text-body">Opción</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of rowSelectionTable.data; let i = index" class="option-border-color" [ngClass]="{'no-blocked': !data.blocked}">
+                    <td *ngFor="let col of cols; let i = index" [ngStyle]="{'width': col.label == 'Comentarios' ? '260px' : 'auto' }">
+                        <span [ngSwitch]=" col.label " class="text-center">
+                            <div *ngSwitchCase=" 'Id'" class="font-resalt">
+                                {{ data[col.name] ? data[col.name] : 'No data' }}
+                            </div>
+                            <div *ngSwitchCase=" 'Comentarios'">
+                                {{ data[col.name] }}
+                            </div>
+                            <div *ngSwitchDefault>
+                                {{ data[col.name] ? data[col.name] : 'No data' }}
+                            </div>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <button *ngIf="data.blocked === true" class="btn btn-sm btn-opc btn-danger btn-unblock" (click)="toUnlock(data)">Desbloquear</button>
+                        <small *ngIf="!data.blocked">Este usuario no está bloqueado actualmente</small>
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+
+
+
+<i class="fa fa-cart" aria-hidden="true"></i>
