@@ -1,6 +1,5 @@
 export const url = {
   urlBase:'https://gw-backend-corp.farmatodo.com/',
-  urlNx1: 'https://nx1-retro---monitor-30-voqp7ipqwq-uc.a.run.app/'
 }
 export const environment = {
   production: false,
@@ -18,7 +17,6 @@ export const environment = {
   support:            `${url.urlBase}delivery/v1`,
   uploadImages:       `${url.urlBase}`,
   searchCustomer:     `${url.urlBase}monitor/v3`,
-  nx1: `${url.urlNx1}monitor/v3`,
   firebaseConfig: {
     apiKey: "AIzaSyCUq3JkyEgJ2WJuTj-KQyaQXgY59d8z4MQ",
     authDomain: "stunning-base-164402.firebaseapp.com",

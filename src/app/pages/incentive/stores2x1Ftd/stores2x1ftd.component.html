@@ -1,12 +1,6 @@
 <div class="w-100">
-  <div style="display: flex; flex-direction: row; gap: 41px;  margin: 10px 0;">
-    <input #searchText placeholder="Buscar tiendas excluidas"  type="text" nz-input (input)="search(searchText.value , 'left')" />
-    <input #searchText2 placeholder="Buscar tiendas incluidas" type="text" nz-input (input)="search(searchText2.value,'right')" />
-  </div>
- 
-
   <nz-transfer
-    [nzDataSource]="filteredItems" 
+    [nzDataSource]="list"
     [nzDisabled]="disabled"
     [nzShowSearch]="showSearch"
     [nzShowSelectAll]="false"
@@ -34,23 +28,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let data of t.data" >
+          <tr *ngFor="let data of t.data" (click)="onItemSelect(data)">
             <td
               [nzChecked]="!!data.checked"
               [nzDisabled]="disabled || data.disabled"
               (nzCheckedChange)="onItemSelect(data)">
             </td>
             <td>{{ data.title }}</td>
-            <td class="align-center">
-              <nz-select [(ngModel)]="data.typeIncentive" (ngModelChange)="changeIncentive(data)">
+            <td class="align-center" *ngIf="direction === 'left'">
+              <nz-select [(ngModel)]="data.typeIncentive">
                 <nz-option *ngFor="let incentiveType of incentivesType"
                   [nzValue]="incentiveType.id"
                   [nzLabel]="incentiveType.incentiveName"></nz-option>
               </nz-select>
             </td>
-            <!-- <td class="align-center" *ngIf="direction === 'right'">
+            <td class="align-center" *ngIf="direction === 'right'">
               {{ getIncentiveTypeLabel(data.typeIncentive) }}
-            </td>  -->
+            </td>
           </tr>
         </tbody>
       </nz-table>

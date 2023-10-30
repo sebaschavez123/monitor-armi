@@ -21,7 +21,7 @@ const routes: Routes = [
       canActivate: [AuthGuard]
     },
     {
-      path: 'nx1-armi',
+      path: '2x1-apoyo-ftd',
       component: Store2x2FtdComponent,
       data: { breadcrumb: 'Tiendas 2x1 (Apoyo FTD)' },
       canActivate: [AuthGuard]
