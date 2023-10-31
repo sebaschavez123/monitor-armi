@@ -18,6 +18,7 @@ export const environment = {
   support:            'https://v4-dot-support-services-dot-stunning-base-164402.uc.r.appspot.com/delivery/v1',
   uploadImages:       'https://upload-images-dot-stunning-base-164402.appspot.com',
   searchCustomer:     'https://multicountry-apigateway-dot-stunning-base-164402.uc.r.appspot.com/backend/flexible/v2/monitor',
+  nx1Retro: 'https://nx1-retro---monitor-30-voqp7ipqwq-uc.a.run.app/monitor/v3',
   firebaseConfig: {
     apiKey: 'AIzaSyB1oqUaP_v6AS8kJu1FQZ7K16oOpf45gJg',
     authDomain: 'stunning-base-164402.firebaseapp.com',

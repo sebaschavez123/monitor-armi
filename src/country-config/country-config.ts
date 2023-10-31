@@ -18,7 +18,7 @@ const configuration: any = {
   isVenezuela: environment.isVenezuela,
   currency: environment.currency,
   cctld: environment.cctld,
-  phoneCode: environment.isColombia ? '57':'58',
+  phoneCode: environment.isColombia ? '57' : '58',
   coordinates: environment.coordinates,
   payments: environment.payments,
   zendesk: environment.zendesk,
@@ -26,11 +26,12 @@ const configuration: any = {
   uploadImages: environment.uploadImages,
   version: environment.version,
   searchCustomer: environment.searchCustomer,
+  nx1Retro: environment.nx1Retro,
   headersNgZorro: {
-     'country':(`${splitCountryname[0]}${splitCountryname[1]}${splitCountryname[2]}`).toString().toUpperCase()
+    'country': (`${splitCountryname[0]}${splitCountryname[1]}${splitCountryname[2]}`).toString().toUpperCase()
   },
-  isBlockedById:environment.isBlockedById,
+  isBlockedById: environment.isBlockedById,
   endpoints: environment.endpoints,
 };
 
-export {configuration as countryConfig};
+export { configuration as countryConfig };

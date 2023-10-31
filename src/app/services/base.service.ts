@@ -31,6 +31,7 @@ export class BaseService {
   zendesk:            string = countryConfig.zendesk;
   upload:             string = countryConfig.uploadImages;
   searchCustomer:     string = countryConfig.searchCustomer;
+  nx1Retro: string = countryConfig.nx1Retro;
   
   publicKey = '558a3421de06298a87ea086bae6272b3';
   privateKey = 'bf814549a16be56b0dc66386b2038470e5984473';

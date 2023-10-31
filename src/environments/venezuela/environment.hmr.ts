@@ -1,25 +1,27 @@
 export const url = {
-  urlBase:'https://multicountry-apigateway-dot-oracle-services-vzla.uc.r.appspot.com/',
+  urlBase: 'https://multicountry-apigateway-dot-oracle-services-vzla.uc.r.appspot.com/',
   antiFraud: 'https://antifraud-dot-oracle-services-vzla.uc.r.appspot.com/',
   gateway30Reports: 'https://search21---monitor-reports-iduiq3dhhq-uc.a.run.app/',
+  urlNx1: 'https://nx1-retro---monitor-30-voqp7ipqwq-uc.a.run.app/'
 }
 
 export const environment = {
   production: false,
   hmr: true,
-  gateway:            `${url.urlBase}_ah/api`,// Backend 2.0
-  gateway30:          `${url.urlBase}monitor/v3`, // Backend 3.0
+  gateway: `${url.urlBase}_ah/api`,// Backend 2.0
+  gateway30: `${url.urlBase}monitor/v3`, // Backend 3.0
   gateway30Antifraud: `${url.urlBase}antifraud/v3`, // Antifraude
   gateway30Dashboard: `${url.urlBase}monitor-dashboard/v3`, // DASHBOARD
-  gateway30Reports:   `${url.gateway30Reports}monitor-reports/v3`, // Reports
-  gatewayFirebase:    'https://sturdy-spanner-212219.firebaseio.com/appMensajerosQA', // PROD PROVISIONAL
-  gateway30SAS:       `${url.urlBase}`,
-  gatewaySB:          `${url.urlBase}_ah/api`,
-  payments:           `${url.urlBase}payments/v2`,
-  zendesk:            `${url.urlBase}backend/flexible/v2/zendesk`,
-  support:            `${url.urlBase}`, //no disponible para vzla
-  uploadImages:       `${url.urlBase}`,
-  searchCustomer:     `${url.urlBase}monitor/v3`,
+  gateway30Reports: `${url.gateway30Reports}monitor-reports/v3`, // Reports
+  gatewayFirebase: 'https://sturdy-spanner-212219.firebaseio.com/appMensajerosQA', // PROD PROVISIONAL
+  gateway30SAS: `${url.urlBase}`,
+  gatewaySB: `${url.urlBase}_ah/api`,
+  payments: `${url.urlBase}payments/v2`,
+  zendesk: `${url.urlBase}backend/flexible/v2/zendesk`,
+  support: `${url.urlBase}`, //no disponible para vzla
+  uploadImages: `${url.urlBase}`,
+  searchCustomer: `${url.urlBase}monitor/v3`,
+  nx1Retro: `${url.urlNx1}monitor/v3`,
   firebaseConfig: {
     apiKey: "AIzaSyCfrP99HvpCWenYVI3-7d3yxYz-OTwDS7w",
     authDomain: "oracle-services-vzla.firebaseapp.com",
