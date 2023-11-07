@@ -26,7 +26,6 @@
     "bad-test": "ng build --configuration production-col --build-optimizer --source-map",
     "deploy-col": "cp -R app-col.yaml dist/app.yaml && cd dist && gcloud app deploy --project=armirene-369418 --no-promote --version",
     "deploy-ven": "cp -R app-ven.yaml dist/app.yaml && cd dist && gcloud app deploy --project=armirene-369418 --no-promote --version",
-    "deploy-armi": "cp -R armi.yaml dist/app.yaml && cd dist && gcloud app deploy --project web-farmatodo --no-promote --version",
     "deploy-qa-col": "cp -R qa.yaml dist/app.yaml && cd dist && gcloud app deploy --project=armirene-369418 --no-promote --version",
     "deploy-qa-ven": "cp -R qa.yaml dist/app.yaml && cd dist && gcloud app deploy --project=armirene-369418 --no-promote --version",
     "bad-qa-col": "npm run build-qa-col && npm run deploy-qa-col",

@@ -53,12 +53,7 @@ export class Store2x2FtdComponent implements OnInit {
     }
     save() {
         let stores = this.setStores();
-        this._iS.basicLoadPromise(
-            firstValueFrom(this._iS.saveIncentivesChange({ stores: stores })),
-            "Actualizando ...",
-            "¡Información actualizada!",
-            "Error al actualizar información!!"
-        );
+        this._iS.saveIncentivesChange({ stores: stores }).subscribe();
         for (let index = 0; index < this.list.length; index++) {
             const row = this.list[index];
             let city = { ...this.register.cityConfigs[row.key] };
@@ -66,7 +61,6 @@ export class Store2x2FtdComponent implements OnInit {
             city.storeConfigs[row.index].active = row.direction == 'right';
             this.register.cityConfigs[row.key] = { ...city };
         }
-
         this._iS.basicLoadPromise(
             firstValueFrom(this._iS.setArmireneIncentives(this.register)),
             "Actualizando ...",
