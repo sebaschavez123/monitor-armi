@@ -52,16 +52,19 @@ export class Store2x2FtdComponent implements OnInit {
         return stores
     }
     save() {
-        console.log("stores", this.storesIncludedIncentiveChange)
         let stores = this.setStores();
-        this._iS.saveIncentivesChange({ stores: stores }).subscribe(res => console.log("respuesta inceni", res)
-        )
+        this._iS.basicLoadPromise(
+            firstValueFrom(this._iS.saveIncentivesChange({ stores: stores })),
+            "Actualizando ...",
+            "¡Información actualizada!",
+            "Error al actualizar información!!"
+        );
         for (let index = 0; index < this.list.length; index++) {
             const row = this.list[index];
-            let city = {...this.register.cityConfigs[row.key]};
+            let city = { ...this.register.cityConfigs[row.key] };
             city.storeConfigs[row.index].typeIncentive = row.typeIncentive;
             city.storeConfigs[row.index].active = row.direction == 'right';
-            this.register.cityConfigs[row.key] = {...city};
+            this.register.cityConfigs[row.key] = { ...city };
         }
 
         this._iS.basicLoadPromise(
@@ -96,7 +99,7 @@ export class Store2x2FtdComponent implements OnInit {
         this.loadingData = true;
         this._iS.getArmireneIncentives().subscribe({
             next: (resp: any) => {
-                console.log("armirene incentives" , resp)
+                console.log("armirene incentives", resp)
                 this.register = resp;
                 this.reset();
             },
