@@ -1,4 +1,4 @@
-service: staging-monitor4
+service: monitor-staging
 runtime: php55
 api_version: 1
 threadsafe: yes

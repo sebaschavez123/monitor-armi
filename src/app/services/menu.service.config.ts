@@ -327,10 +327,10 @@ export const getMenuColombia: any[] = [
         url: '/incentives/2x1-mu',
       },
       {
-        title: 'N X 1 (ARMI)',
+        title: '2 X 1 (Apoyo FTD)',
         key: 'incentive2x1FTD',
         moduleName:'incentives',
-        url: '/incentives/nx1-armi',
+        url: '/incentives/2x1-apoyo-ftd',
       }
     ]
   },

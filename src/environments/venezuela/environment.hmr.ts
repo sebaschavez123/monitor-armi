@@ -2,7 +2,6 @@ export const url = {
   urlBase:'https://multicountry-apigateway-dot-oracle-services-vzla.uc.r.appspot.com/',
   antiFraud: 'https://antifraud-dot-oracle-services-vzla.uc.r.appspot.com/',
   gateway30Reports: 'https://search21---monitor-reports-iduiq3dhhq-uc.a.run.app/',
-  urlNx1: 'https://nx1-retro---monitor-30-voqp7ipqwq-uc.a.run.app/'
 }
 
 export const environment = {
@@ -21,7 +20,6 @@ export const environment = {
   support:            `${url.urlBase}`, //no disponible para vzla
   uploadImages:       `${url.urlBase}`,
   searchCustomer:     `${url.urlBase}monitor/v3`,
-  nx1: `${url.urlNx1}monitor/v3`,
   firebaseConfig: {
     apiKey: "AIzaSyCfrP99HvpCWenYVI3-7d3yxYz-OTwDS7w",
     authDomain: "oracle-services-vzla.firebaseapp.com",
