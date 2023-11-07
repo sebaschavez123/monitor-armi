@@ -3,6 +3,7 @@ import { IncentiveService } from 'src/app/services/incentive.service';
 import { Store } from '../../../core/interfaces';
 import { TransferItem } from 'ng-zorro-antd/transfer';
 import { firstValueFrom } from 'rxjs';
+import { data } from 'jquery';
 
 @Component({
     selector: 'app-store-2x1-ftd',
@@ -42,23 +43,33 @@ export class Store2x2FtdComponent implements OnInit {
         }
     }
 
-    save() {
-        console.log(this.storesIncludedIncentiveChange)
-        this._iS.saveIncentivesChange(this.storesIncludedIncentiveChange).subscribe(res => console.log(res))
-        // for (let index = 0; index < this.list.length; index++) {
-        //     const row = this.list[index];
-        //     let city = {...this.register.cityConfigs[row.key]};
-        //     city.storeConfigs[row.index].typeIncentive = row.typeIncentive;
-        //     city.storeConfigs[row.index].active = row.direction == 'right';
-        //     this.register.cityConfigs[row.key] = {...city};
-        // }
+    setStores() {
+        let stores = this.storesIncludedIncentiveChange.map(({ ...data }) => ({
+            incentive: data.typeIncentive,
+            storeId: data.storeId
+        }))
 
-        // this._iS.basicLoadPromise(
-        //     firstValueFrom(this._iS.setArmireneIncentives(this.register)),
-        //     "Actualizando ...",
-        //     "¡Información actualizada!",
-        //     "Error al actualizar información!!"
-        // );
+        return stores
+    }
+    save() {
+        console.log("stores", this.storesIncludedIncentiveChange)
+        let stores = this.setStores();
+        this._iS.saveIncentivesChange({ stores: stores }).subscribe(res => console.log("respuesta inceni", res)
+        )
+        for (let index = 0; index < this.list.length; index++) {
+            const row = this.list[index];
+            let city = {...this.register.cityConfigs[row.key]};
+            city.storeConfigs[row.index].typeIncentive = row.typeIncentive;
+            city.storeConfigs[row.index].active = row.direction == 'right';
+            this.register.cityConfigs[row.key] = {...city};
+        }
+
+        this._iS.basicLoadPromise(
+            firstValueFrom(this._iS.setArmireneIncentives(this.register)),
+            "Actualizando ...",
+            "¡Información actualizada!",
+            "Error al actualizar información!!"
+        );
 
     }
 
@@ -75,6 +86,7 @@ export class Store2x2FtdComponent implements OnInit {
     getIncentivetypes() {
         this._iS.getIncentiveTypes().subscribe({
             next: (resp: any) => {
+                console.log("increntives", resp)
                 this.incentivesType = resp;
             }
         });
@@ -84,6 +96,7 @@ export class Store2x2FtdComponent implements OnInit {
         this.loadingData = true;
         this._iS.getArmireneIncentives().subscribe({
             next: (resp: any) => {
+                console.log("armirene incentives" , resp)
                 this.register = resp;
                 this.reset();
             },
